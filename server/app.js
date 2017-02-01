@@ -45,7 +45,7 @@ module.exports = function() {
   }));
 
   // Register the API
-  app.use(api);
+  app.use(api());
 
   const port = process.env.PORT || 5000;
   app.set('port', port);
