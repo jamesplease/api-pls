@@ -13,11 +13,11 @@ module.exports = function() {
 
   // The names of our resources. This needs to be substituted for resource
   // definitions.
-  var resourceNames = loadResources();
+  var resources = loadResources();
 
-  var resources = resourceNames.map(name => new Resource({
+  var resources = resources.map(resource => new Resource({
     version: apiVersion,
-    name
+    resource
   }));
 
   // Configure routes for our resources.
