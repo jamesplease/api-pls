@@ -1,6 +1,6 @@
 name: 'transaction'
 
-validation:
+validations:
 
   create:
     type: 'object'

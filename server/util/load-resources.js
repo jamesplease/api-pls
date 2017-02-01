@@ -1,7 +1,9 @@
+const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 const log = require('./log');
+const defaultValidations = require('./default-validations');
 
 const cwd = process.cwd();
 const resourceDirectory = process.argv[2];
@@ -20,7 +22,15 @@ function loadResource(filename) {
     log.warn({resourceName}, 'Resource file could not be parsed.');
   }
 
-  return doc;
+  const validations = Object.assign(_.cloneDeep(defaultValidations), doc.validations);
+
+  console.log('validations!', validations);
+
+  return Object.assign({
+    plural_form: resourceName + 's'
+  }, doc, {
+    validations
+  });
 }
 
 module.exports = function() {
