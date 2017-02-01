@@ -10,10 +10,9 @@ module.exports = function({resource, version}) {
 
   var routes = new Routes({
     resourceName: resource.name,
+    validations: resource.validations,
     controller,
-    version,
-    version,
-    validations: resource.validations
+    version
   });
 
   return {

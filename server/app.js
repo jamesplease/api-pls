@@ -1,7 +1,5 @@
 'use strict';
 
-const pgp = require('pg-promise');
-const path = require('path');
 const helmet = require('helmet');
 const express = require('express');
 const addRequestId = require('express-request-id');

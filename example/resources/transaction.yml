@@ -1,7 +1,5 @@
 name: 'transaction'
-
 validations:
-
   create:
     type: 'object'
     required: true,

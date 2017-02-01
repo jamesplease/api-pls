@@ -18,19 +18,17 @@ function loadResource(filename) {
   let doc;
   try {
     doc = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
-  } catch (e) {
+  } catch(e) {
     log.warn({resourceName}, 'Resource file could not be parsed.');
   }
 
   const validations = Object.assign(_.cloneDeep(defaultValidations), doc.validations);
 
-  console.log('validations!', validations);
-
-  return Object.assign({
-    plural_form: resourceName + 's'
-  }, doc, {
-    validations
-  });
+  return Object.assign(
+    {plural_form: resourceName + 's'},
+    doc,
+    {validations}
+  );
 }
 
 module.exports = function() {
