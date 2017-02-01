@@ -1,8 +1,8 @@
 'use strict';
 
 const throng = require('throng');
-const app = require('./app');
-const log = require ('./util/log');
+const app = require('./server/app');
+const log = require ('./server/util/log');
 
 const WORKERS = process.env.WEB_CONCURRENCY || 1;
 

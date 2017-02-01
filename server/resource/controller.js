@@ -1,14 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
-const pgp = require('pg-promise');
-const db = require('../util/db');
 const log = require('../util/log');
 
-// A controller represents an interface to the data
-// stored in our database. Eventually, this might be
-// turned into a separate library, rather than part of this
-// app specifically
+// The Controller interfaces with the database. It performs our CRUD operations.
+// Access to the controller occurs through the routes.
 function Controller({table}) {
   this.table = table;
   _.bindAll(this, ['create', 'read', 'update', 'delete']);
@@ -16,22 +12,26 @@ function Controller({table}) {
 
 Object.assign(Controller.prototype, {
   create(req, res) {
+    log.info({reqId: req.id}, `Created a ${this.table}`);
     res.status(201).send({
       data: {created: true}
     });
   },
 
   read(req, res) {
+    log.info({reqId: req.id}, `Retrieved a ${this.table}`);
     res.send({
       data: {hungry: true}
     });
   },
 
   update(req, res) {
+    log.info({reqId: req.id}, `Updated a ${this.table}`);
     res.send([1, 2, 3]);
   },
 
   delete(req, res) {
+    log.info({reqId: req.id}, `Deleted a ${this.table}`);
     res.status(204).end();
   }
 });

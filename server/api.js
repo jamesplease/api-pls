@@ -4,11 +4,6 @@ const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 
-// const migrate = require('./util/migrate');
-// const resources = require('./resources');
-
-// migrate.up();
-
 const router = express.Router();
 
 // What version this API is. Eventually this could be automated...perhaps?
