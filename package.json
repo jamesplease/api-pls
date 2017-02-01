@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "local-server": "nodemon --watch server index.js | bunyan -o short"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,8 @@
     "path": "0.12.7",
     "pg-promise": "5.5.6",
     "throng": "4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "1.11.0"
   }
 }

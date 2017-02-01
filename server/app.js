@@ -51,7 +51,7 @@ module.exports = function() {
   app.set('port', port);
 
   if (!global.TESTING) {
-    app.listen(port, () => log.info({port}, 'Node app running'));
+    app.listen(port, () => log.info({port}, 'Node app running on localhost'));
   }
 
   return app;
