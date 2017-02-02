@@ -4,19 +4,21 @@ const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
-const loadResources = require('./util/load-resources');
+const loadResourceConfigs = require('./util/load-resource-configs');
 
 module.exports = function() {
   const router = express.Router();
 
-  // This version needs to be externalized
+  // This version needs to be made external
   var apiVersion = 1;
 
-  var resources = loadResources()
-    .map(resource => new Resource({
-      version: apiVersion,
-      resource
-    }));
+  var resourceConfigs = loadResourceConfigs();
+  var definitions = resourceConfigs.map(r => r.definition);
+
+  var resources = definitions.map(resource => new Resource({
+    version: apiVersion,
+    resource
+  }));
 
   // Configure routes for our resources.
   resources.forEach(resource =>
@@ -31,7 +33,7 @@ module.exports = function() {
   router.get('/', (req, res) => {
     res.send({
       version: 'v1',
-      endpoints: resources.map(resource => {
+      endpoints: definitions.map(resource => {
         return {
           route: resource.location,
           methods: Object.keys(resource.routes)

@@ -1,6 +1,7 @@
 'use strict';
 
 const helmet = require('helmet');
+const cors = require('cors');
 const express = require('express');
 const addRequestId = require('express-request-id');
 const compress = require('compression');
@@ -22,6 +23,8 @@ module.exports = function() {
 
   app.set('env', NODE_ENV);
 
+  // Enable all CORS requests, for now
+  app.use(cors());
   app.use(helmet({
     // This application should never appear in an iFrame
     frameguard: {action: 'deny'},
