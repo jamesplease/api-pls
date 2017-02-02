@@ -3,6 +3,7 @@
 const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
+const serverErrors = require('./util/server-errors');
 const loadResources = require('./util/load-resources');
 
 module.exports = function() {
@@ -38,6 +39,13 @@ module.exports = function() {
       })
     });
   });
+
+  // All other requests get a default 404 error.
+  router.get('*', (req, res) => {
+    res.status(serverErrors.notFound.code).send({
+      errors: [serverErrors.notFound.body()]
+    });
+  })
 
   return router;
 };
