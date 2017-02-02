@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "local-server": "nodemon --watch server index.js | bunyan -o short",
-    "example": "nodemon --watch server index.js ./example/resources | bunyan -o short"
+    "example": "nodemon --watch server index.js ./example/resource-definitions | bunyan -o short"
   },
   "repository": {
     "type": "git",

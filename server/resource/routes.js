@@ -3,10 +3,10 @@
 const controller = require('./controller');
 const validator = require('../util/validator');
 
-module.exports = function({version, resourceName, routes, controller, validations}) {
+module.exports = function({version, pluralResourceName, routes, controller, validations}) {
   return {
     // The root location of this resource
-    location: `/v${version}/${resourceName}`,
+    location: `/v${version}/${pluralResourceName}`,
 
     // Four routes for the four CRUD ops
     routes: {

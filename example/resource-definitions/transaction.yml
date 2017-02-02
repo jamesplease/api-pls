@@ -1,0 +1,13 @@
+name: 'transaction'
+validations:
+  create:
+    type: 'object'
+    required: true,
+    properties:
+      body:
+        type: 'object'
+        properties:
+          value:
+            required: true
+          date:
+            format: 'date'

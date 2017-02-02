@@ -9,7 +9,7 @@ module.exports = function({resource, version}) {
   });
 
   var routes = new Routes({
-    resourceName: resource.name,
+    pluralResourceName: resource.plural_form,
     validations: resource.validations,
     controller,
     version
