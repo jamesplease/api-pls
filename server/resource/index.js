@@ -4,9 +4,7 @@ const Controller = require('./controller');
 const Routes = require('./routes');
 
 module.exports = function({resource, version}) {
-  var controller = new Controller({
-    table: resource.name
-  });
+  var controller = new Controller(resource);
 
   var routes = new Routes({
     pluralResourceName: resource.plural_form,

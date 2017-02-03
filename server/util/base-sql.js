@@ -20,8 +20,8 @@ exports.read = function(table, fields, options) {
 
   const tableName = pgp.as.name(table);
 
-  var singular = options.singular;
-  singular = _.isUndefined(singular) ? true : singular;
+  var isSingular = options.isSingular;
+  isSingular = _.isUndefined(isSingular) ? true : isSingular;
   fields = fields ? fields : '*';
 
   var columns;
@@ -35,7 +35,7 @@ exports.read = function(table, fields, options) {
   var query = `SELECT ${columns} FROM ${tableName}`;
 
   // If we're looking for one, we modify the query string
-  if (singular) {
+  if (isSingular) {
     query += ' WHERE id = $[id]';
   }
 
