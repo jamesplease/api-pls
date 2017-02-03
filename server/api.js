@@ -5,6 +5,7 @@ const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const loadResourceConfigs = require('./util/load-resource-configs');
+const sendJson = require('./util/send-json');
 
 module.exports = function() {
   const router = express.Router();
@@ -31,7 +32,7 @@ module.exports = function() {
 
   // Set up the root route that describes the available endpoints.
   router.get('/', (req, res) => {
-    res.send({
+    sendJson(res, {
       version: 'v1',
       endpoints: definitions.map(resource => {
         return {
@@ -44,7 +45,8 @@ module.exports = function() {
 
   // All other requests get a default 404 error.
   router.get('*', (req, res) => {
-    res.status(serverErrors.notFound.code).send({
+    res.status(serverErrors.notFound.code);
+    sendJson(res, {
       errors: [serverErrors.notFound.body()]
     });
   })

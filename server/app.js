@@ -32,7 +32,7 @@ module.exports = function() {
     hsts: false,
     noCache: {}
   }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({type:'application/vnd.api+json'}));
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(compress());
   app.use(addRequestId({

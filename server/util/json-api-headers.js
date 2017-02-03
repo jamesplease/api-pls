@@ -1,18 +1,46 @@
 'use strict';
 
-// This module checks the request headers to ensure they comply with the JSON
-// API spec. If they do, then we add the proper response headers.
+const _ = require('lodash');
+const accepts = require('accepts');
+const contentType = require('content-type');
+const sendJson = require('./send-json');
+
+//
+// This module does three things with headers:
+//
+// 1. Checks request header to make sure that if they specified that they've
+//    sent over data with the JSON API content type, that it has no params. If
+//    it does, then we error out.
+//
+// 2. Checks request header that if they've specified that they accept the JSON
+//    API content type, that they have no parameters. If they do, then we error
+//    out.
+//
+// 3. If everything checks out, then we add the JSON API content-type header.
+//
 module.exports = function(req, res, next) {
-  // Todo: check for request headers and send an error body
-  if (false) {
-    res.status(415).send({}).end();
+  let contentTypeObj = {};
+  try {
+    contentTypeObj = contentType.parse(req);
+  } catch(e) {
+    // Intentionally blank
   }
 
-  // Todo: same as above
-  else if (false) {
-    res.status(406).send({}).end();
+  const hasJsonApiType = contentTypeObj.type === 'application/vnd.api+json';
+  const hasParameters = _.size(contentTypeObj.parameters);
+
+  if (hasJsonApiType && hasParameters) {
+    res.status(415);
+    return sendJson(res, {}).end();
   }
 
-  res.setHeader('Content-Type', 'application/vnd.api+json');
+  const acceptsJsonApi = accepts(req).types(['application/vnd.api+json']);
+
+  if (!acceptsJsonApi) {
+    res.status(406);
+    return sendJson(res, {}).end();
+  }
+
+  res.type('application/vnd.api+json');
   next();
 }

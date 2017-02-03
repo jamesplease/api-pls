@@ -7,6 +7,7 @@ const db = require('../util/db');
 const baseSql = require('../util/base-sql');
 const serverErrors = require('../util/server-errors');
 const mapPgError = require('../util/map-pg-error');
+const sendJson = require('../util/send-json');
 
 // This is the function called when a query fails.
 function handleQueryError(res, err) {
@@ -24,7 +25,8 @@ function handleQueryError(res, err) {
     serverError = serverErrors.generic;
   }
 
-  res.status(serverError.code).send({
+  res.status(serverError.code);
+  sendJson(res, {
     errors: [serverError.body()]
   });
 }
@@ -39,7 +41,9 @@ function Controller({table}) {
 Object.assign(Controller.prototype, {
   create(req, res) {
     log.info({reqId: req.id}, `Created a ${this.table}`);
-    res.status(201).send({
+
+    res.status(201);
+    sendJson(res, {
       data: {created: true}
     });
   },
@@ -61,7 +65,7 @@ Object.assign(Controller.prototype, {
         } else {
           formattedResult = _.map(result, formatTransaction);
         }
-        res.send({
+        sendJson(res, {
           data: formattedResult
         });
       })
@@ -72,7 +76,7 @@ Object.assign(Controller.prototype, {
     console.log('wat', _.pick(req, ['body', 'params']));
 
     log.info({reqId: req.id}, `Updated a ${this.table}`);
-    res.send([1, 2, 3]);
+    sendJson(res, [1, 2, 3]);
   },
 
   delete(req, res) {
