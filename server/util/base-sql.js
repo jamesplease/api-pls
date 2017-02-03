@@ -3,10 +3,9 @@
 const pgp = require('pg-promise');
 const _ = require('lodash');
 
-// These are functions that return the "base"
-// queries to be passed into pg-promise. The CRUD methods
-// of most controllers will likely use these, though they may
-// also author their own, more complex versions.
+// These are functions that return the "base" queries to be passed into
+// pg-promise. The CRUD methods of the Controller will use these, though they
+// may eventually also author their own extensions or replacements.
 
 exports.create = function(table, fields) {
   const columns = fields.map(pgp.as.name).join(',');
