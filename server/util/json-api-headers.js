@@ -5,6 +5,7 @@ const accepts = require('accepts');
 const contentType = require('content-type');
 const sendJson = require('./send-json');
 const serverErrors = require('./server-errors');
+const jsonApiMediaType = require('./json-api-media-type');
 
 //
 // This module does three things with headers:
@@ -27,7 +28,7 @@ module.exports = function(req, res, next) {
     // Intentionally blank
   }
 
-  const hasJsonApiType = contentTypeObj.type === 'application/vnd.api+json';
+  const hasJsonApiType = contentTypeObj.type === jsonApiMediaType;
   const hasParameters = _.size(contentTypeObj.parameters);
 
   if (hasJsonApiType && hasParameters) {
@@ -35,13 +36,13 @@ module.exports = function(req, res, next) {
     return sendJson(res, serverErrors.contentTypeHasParams.body()).end();
   }
 
-  const acceptsJsonApi = accepts(req).types(['application/vnd.api+json']);
+  const acceptsJsonApi = accepts(req).types([jsonApiMediaType]);
 
   if (!acceptsJsonApi) {
     res.status(serverErrors.acceptsHasParams.code);
     return sendJson(res, serverErrors.acceptsHasParams.body()).end();
   }
 
-  res.type('application/vnd.api+json');
+  res.type(jsonApiMediaType);
   next();
 }
