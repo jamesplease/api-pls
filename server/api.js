@@ -37,10 +37,12 @@ module.exports = function() {
     ))
   );
 
+  router.get('/', (req, res) => res.redirect(`/v${apiVersion}`));
+
   // Set up the root route that describes the available endpoints.
-  router.get('/', (req, res) => {
+  router.get(`/v${apiVersion}`, (req, res) => {
     sendJson(res, {
-      version: 'v1',
+      version: `v${apiVersion}`,
       endpoints: resources.map(resource => {
         return {
           route: resource.location,
