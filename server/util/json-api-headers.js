@@ -4,6 +4,7 @@ const _ = require('lodash');
 const accepts = require('accepts');
 const contentType = require('content-type');
 const sendJson = require('./send-json');
+const serverErrors = require('./server-errors');
 
 //
 // This module does three things with headers:
@@ -30,15 +31,15 @@ module.exports = function(req, res, next) {
   const hasParameters = _.size(contentTypeObj.parameters);
 
   if (hasJsonApiType && hasParameters) {
-    res.status(415);
-    return sendJson(res, {}).end();
+    res.status(serverErrors.contentTypeHasParams.code);
+    return sendJson(res, serverErrors.contentTypeHasParams.body()).end();
   }
 
   const acceptsJsonApi = accepts(req).types(['application/vnd.api+json']);
 
   if (!acceptsJsonApi) {
-    res.status(406);
-    return sendJson(res, {}).end();
+    res.status(serverErrors.acceptsHasParams.code);
+    return sendJson(res, serverErrors.acceptsHasParams.body()).end();
   }
 
   res.type('application/vnd.api+json');
