@@ -2,6 +2,7 @@
 
 const controller = require('./controller');
 const validator = require('../util/validator');
+const jsonApiHeaders = require('../util/json-api-headers');
 
 module.exports = function({version, pluralResourceName, routes, controller, validations}) {
 
@@ -13,6 +14,7 @@ module.exports = function({version, pluralResourceName, routes, controller, vali
     routes: {
       post: {
         '/': [
+          jsonApiHeaders,
           validator(validations.create),
           controller.create
         ]
@@ -20,10 +22,12 @@ module.exports = function({version, pluralResourceName, routes, controller, vali
 
       get: {
         '/': [
+          jsonApiHeaders,
           validator(validations.readMany),
           controller.read
         ],
         '/:id': [
+          jsonApiHeaders,
           validator(validations.readOne),
           controller.read
         ]
@@ -31,6 +35,7 @@ module.exports = function({version, pluralResourceName, routes, controller, vali
 
       patch: {
         '/:id': [
+          jsonApiHeaders,
           validator(validations.update),
           controller.update
         ]
@@ -38,6 +43,7 @@ module.exports = function({version, pluralResourceName, routes, controller, vali
 
       delete: {
         '/:id': [
+          jsonApiHeaders,
           validator(validations.delete),
           controller.delete
         ]
