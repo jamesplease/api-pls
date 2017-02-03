@@ -5,7 +5,6 @@ const validator = require('../util/validator');
 const jsonApiHeaders = require('../util/json-api-headers');
 
 module.exports = function({version, pluralResourceName, routes, controller, validations}) {
-
   return {
     // The root location of this resource
     location: `/v${version}/${pluralResourceName}`,

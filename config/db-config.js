@@ -1,7 +1,7 @@
 var dbConfig;
 
-// If this variable exists, then we're either on production
-// or working with the production database locally
+// If this variable exists, then we're either on production or working with the
+// production database locally
 if (process.env.DATABASE_URL) {
   dbConfig = `${process.env.DATABASE_URL}?ssl=true`;
 }

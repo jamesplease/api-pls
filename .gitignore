@@ -39,3 +39,6 @@ jspm_packages
 .env
 
 test.json
+example/migrations/*
+# This migration is needed for built-in migrations
+!example/migrations/0.functions.sql

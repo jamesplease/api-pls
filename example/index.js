@@ -40,6 +40,13 @@ const resources = fs.readdirSync(resourceDir)
   // DB.
   .map(resourceTransform);
 
+// Write the migrations out so that Careen can read them. This is temporary:
+// eventually, we need to store these in the database.
+resources.forEach(resource => {
+  const migrationPath = path.join(__dirname, 'migrations', `${new Date().valueOf().toString(36)}.${resource.definition.name}.sql`);
+  fs.writeFileSync(migrationPath, resource.migration);
+});
+
 // Convert it to a JSON string so we can hand it off to the generated API.
 const resourceString = JSON.stringify(resources);
 
