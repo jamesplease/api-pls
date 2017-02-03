@@ -5,8 +5,8 @@ module.exports = {
     code: 404,
     body() {
       return {
-        title: 'Server Error',
-        detail: 'There was an error while processing your request'
+        title: 'Resource Not Found',
+        detail: 'The requested resource does not exist.'
       };
     }
   },
@@ -36,7 +36,7 @@ module.exports = {
     body() {
       return {
         title: 'Server Error',
-        detail: 'There was an error while processing your request'
+        detail: 'The server encounted an error while processing your request'
       };
     }
   }
