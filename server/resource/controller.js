@@ -10,7 +10,7 @@ const mapPgError = require('../util/map-pg-error');
 const sendJson = require('../util/send-json');
 
 // This is the function called when a query fails.
-function handleQueryError(res, err) {
+function handleQueryError(err, res, resource, crudAction) {
   var serverError;
 
   // First, check to see if it's a pgp QueryResultError. If it
@@ -21,10 +21,13 @@ function handleQueryError(res, err) {
 
   // If it's not a pgp QueryResultError, we send over tbe generic server error.
   else {
-    log.warn({err}, 'There was an unknown server error.');
     serverError = serverErrors.generic;
   }
 
+  log.warn({
+    resourceName: resource.name,
+    err, crudAction
+  }, 'There was a query error with a CRUD request.');
   res.status(serverError.code);
   sendJson(res, {
     errors: [serverError.body()]
@@ -67,11 +70,12 @@ Object.assign(Controller.prototype, {
     db.one(query, body)
       .then(result => {
         log.info({query, resourceName: this.resource.name}, 'Resource created.');
-        res.status(201).send({
+        res.status(201);
+        sendJson(res, {
           data: this.formatTransaction(result)
         });
       })
-      .catch(_.partial(handleQueryError, res));
+      .catch(err => handleQueryError(err, res, this.resource, 'create'));
   },
 
   read(req, res) {
@@ -83,6 +87,8 @@ Object.assign(Controller.prototype, {
     const query = baseSql.read(this.table, '*', {isSingular});
     const method = isSingular ? 'one' : 'any';
 
+    log.info({query, resourceName: this.resource.name}, 'Reading a resource');
+
     db[method](query, {id})
       .then(result => {
         var formattedResult;
@@ -91,11 +97,15 @@ Object.assign(Controller.prototype, {
         } else {
           formattedResult = _.map(result, this.formatTransaction);
         }
+        log.info({query, resourceName: this.resource.name}, 'Read a resource');
         sendJson(res, {
           data: formattedResult
         });
       })
-      .catch(_.partial(handleQueryError, res));
+      .catch(err => {
+        const crudAction = isSingular ? 'readOne' : 'readMany';
+        handleQueryError(err, res, this.resource, crudAction);
+      });
   },
 
   update(req, res) {
@@ -124,22 +134,25 @@ Object.assign(Controller.prototype, {
     db.one(query, queryData)
       .then(result => {
         log.info({query, resourceName: this.resource.name}, 'Updated a resource');
-        res.send({
+        sendJson(res, {
           data: this.formatTransaction(result)
         });
       })
-      .catch(_.partial(handleQueryError, res));
+      .catch(err => handleQueryError(err, res, this.resource, 'update'));
   },
 
   delete(req, res) {
     const id = req.params.id;
     const query = baseSql.delete(this.table);
 
+    log.info({query, resourceName: this.resource.name}, 'Deleting a resource');
+
     db.one(query, {id})
       .then(() => {
+        log.info({query, resourceName: this.resource.name}, 'Deleted a resource');
         res.status(204).end();
       })
-      .catch(_.partial(handleQueryError, res));
+      .catch(err => handleQueryError(err, res, this.resource, 'delete'));
   }
 });
 
