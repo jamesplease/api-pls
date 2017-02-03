@@ -6,8 +6,13 @@ const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const loadResourceConfigs = require('./util/load-resource-configs');
 const sendJson = require('./util/send-json');
+const migrate = require('./util/migrate');
 
 module.exports = function() {
+  // Run our migrations each time the app is started to make sure that we're
+  // up-to-date.
+  migrate.up();
+
   const router = express.Router();
 
   // This version needs to be made external
