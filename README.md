@@ -1,2 +1,7 @@
 # json-api-builder
-Declaratively build a JSON API-compliant API
+
+Quickly build JSON API-compliant APIs.
+
+### Getting Started
+
+Coming soon...
