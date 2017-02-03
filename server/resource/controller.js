@@ -73,8 +73,6 @@ Object.assign(Controller.prototype, {
   },
 
   update(req, res) {
-    console.log('wat', _.pick(req, ['body', 'params']));
-
     log.info({reqId: req.id}, `Updated a ${this.table}`);
     sendJson(res, [1, 2, 3]);
   },
