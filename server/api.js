@@ -7,6 +7,7 @@ const serverErrors = require('./util/server-errors');
 const loadResourceConfigs = require('./util/load-resource-configs');
 const sendJson = require('./util/send-json');
 const migrate = require('./util/migrate');
+const jsonApiHeaders = require('./util/json-api-headers');
 
 module.exports = function() {
   // Run our migrations each time the app is started to make sure that we're
@@ -14,6 +15,7 @@ module.exports = function() {
   migrate.up();
 
   const router = express.Router();
+  router.use(jsonApiHeaders);
 
   // This version needs to be made external
   var apiVersion = 1;
@@ -39,7 +41,7 @@ module.exports = function() {
   router.get('/', (req, res) => {
     sendJson(res, {
       version: 'v1',
-      endpoints: definitions.map(resource => {
+      endpoints: resources.map(resource => {
         return {
           route: resource.location,
           methods: Object.keys(resource.routes)
@@ -50,7 +52,7 @@ module.exports = function() {
 
   // All other requests get a default 404 error.
   router.get('*', (req, res) => {
-    res.status(serverErrors.notFound.code);
+    res.status(404);
     sendJson(res, {
       errors: [serverErrors.notFound.body()]
     });

@@ -6,5 +6,6 @@
 // For more on Express' behavior:
 // https://github.com/expressjs/express/issues/2921
 module.exports = function(res, body) {
+  body = body || {};
   return res.send(new Buffer(JSON.stringify(body)));
 };
