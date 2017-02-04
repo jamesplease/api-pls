@@ -15,10 +15,9 @@ Simply define resource models (in JSON) and this tool will automatically:
 ✓ Configure a database for you  
 ✓ Set up a web server that adheres to JSON API for interactions with those resources  
 ✓ Create and run migrations for you when you change your resource models  
-✓ Manage database backups  
 
-This project is a work in progress; only the first two of those items are
-functioning, and only partially so.
+This project is a work in progress. Resource migrations beyond the initial
+set up are currently unsupported.
 
 ### Technologies Used
 
