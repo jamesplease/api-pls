@@ -1,6 +1,6 @@
 {
   "globals": {
-    "expect": true,
+    "assert": true,
     "mock": true,
     "sandbox": true,
     "spy": true,

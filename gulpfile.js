@@ -39,17 +39,11 @@ function _mocha() {
     }));
 }
 
-function _registerBabel() {
-  require('babel-register');
-}
-
 function test() {
-  _registerBabel();
   return _mocha();
 }
 
 function coverage(done) {
-  _registerBabel();
   gulp.src(['src/**/*.js'])
     .pipe($.istanbul({
       instrumenter: Instrumenter,

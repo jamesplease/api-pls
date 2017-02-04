@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "gulp lint",
-    "test": "npm run lint",
+    "test": "gulp",
     "local-server": "nodemon --watch server index.js | bunyan -o short",
     "example": "npm run clean-up && nodemon --watch server index.js '$(node ./example/index.js)' | bunyan -o short",
     "clean-up": "node ./example/clean-up.js"
