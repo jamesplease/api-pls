@@ -39,6 +39,6 @@ jspm_packages
 .env
 
 test.json
-example/migrations/*
+packages/api-pls/migrations/*
 # This migration is needed for built-in migrations
-!example/migrations/0.functions.sql
+!packages/api-pls/migrations/0.functions.sql
