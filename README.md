@@ -1,5 +1,7 @@
 # API Pls
 
+[![Travis build status](http://img.shields.io/travis/jmeas/api-pls.svg?style=flat)](https://travis-ci.org/jmeas/api-pls)
+
 This tool enables you to effortlessly create
 [JSON API](http://jsonapi.org/)-compliant APIs.
 
