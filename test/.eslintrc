@@ -1,12 +1,10 @@
 {
   "extends": [
-    "../node_modules/pleaserc/.eslintrc-test"
+    "../node_modules/pleaserc/.eslintrc-test",
+    "./globals.json"
   ],
   "env": {
     "node": true,
     "mocha": true
-  },
-  "globals": {
-    "assert": true
   }
 }
