@@ -1,4 +1,3 @@
 {
-  "resourcesDirectory": "./resources",
-  "migrationsDirectory": "./migrations"
+  "resourcesDirectory": "./resources/pls"
 }

@@ -6,8 +6,7 @@
   "scripts": {
     "migrate": "pls migrate",
     "reset": "pls reset",
-    "run": "pls start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "pls start"
   },
   "repository": {
     "type": "git",
