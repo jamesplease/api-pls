@@ -1,4 +1,4 @@
-# json-api-builder
+# API Pls
 
 This tool enables you to effortlessly create
 [JSON API](http://jsonapi.org/)-compliant APIs.
@@ -98,14 +98,14 @@ Unhandled rejection TypeError: Cannot read property '0' of undefined
 then this is a known issue. The offending tool is careen, which is what is
 used to run migrations. It seems to have a 30-50% chance of failing when the
 example is run, and
-[I'm still investigating the cause](https://github.com/jmeas/json-api-builder/issues/16).
+[I'm still investigating the cause](https://github.com/jmeas/api-pls/issues/16).
 
 If the error is something else, then please
-[open an issue](https://github.com/jmeas/json-api-builder/issues/new?title=Error+on+start+up).
+[open an issue](https://github.com/jmeas/api-pls/issues/new?title=Error+on+start+up).
 
 #### Why is the automatic server reloading throwing an error?
 
-[This is also a known issue.](https://github.com/jmeas/json-api-builder/issues/31)
+[This is also a known issue.](https://github.com/jmeas/api-pls/issues/31)
 
 ### Acknowledgements
 
