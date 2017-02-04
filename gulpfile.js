@@ -44,7 +44,7 @@ function test() {
 }
 
 function coverage(done) {
-  gulp.src(['src/**/*.js'])
+  gulp.src(['{server,example,lib}/**/*.js'])
     .pipe($.istanbul({
       instrumenter: Instrumenter,
       includeUntested: true
@@ -57,7 +57,7 @@ function coverage(done) {
     });
 }
 
-const watchFiles = ['src/**/*', 'test/**/*', 'package.json', '**/.eslintrc'];
+const watchFiles = ['{server/example/lib/test}/**/*', 'package.json', '**/.eslintrc'];
 
 // Run the headless unit tests as you make changes.
 function watch() {
