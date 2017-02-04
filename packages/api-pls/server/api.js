@@ -6,14 +6,9 @@ const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const loadResourceConfigs = require('./util/load-resource-configs');
 const sendJson = require('./util/send-json');
-const migrate = require('./util/migrate');
 const jsonApiHeaders = require('./util/json-api-headers');
 
 module.exports = function() {
-  // Run our migrations each time the app is started to make sure that we're
-  // up-to-date.
-  migrate.up();
-
   const router = express.Router();
   router.use(jsonApiHeaders);
 
