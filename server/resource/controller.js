@@ -65,11 +65,11 @@ Object.assign(Controller.prototype, {
     const fields = Object.keys(body);
     const query = baseSql.create(this.table, fields);
 
-    log.info({query, resourceName: this.resource.name}, 'Creating a resource');
+    log.info({query, resource: this.resource}, 'Creating a resource');
 
     db.one(query, body)
       .then(result => {
-        log.info({query, resourceName: this.resource.name}, 'Resource created.');
+        log.info({query, resource: this.resource}, 'Resource created.');
         res.status(201);
         sendJson(res, {
           data: this.formatTransaction(result)
@@ -129,11 +129,11 @@ Object.assign(Controller.prototype, {
 
     const queryData = Object.assign({id}, body);
 
-    log.info({query, resourceName: this.resource.name}, 'Updating a resource');
+    log.info({query, resource: this.resource}, 'Updating a resource');
 
     db.one(query, queryData)
       .then(result => {
-        log.info({query, resourceName: this.resource.name}, 'Updated a resource');
+        log.info({query, resource: this.resource}, 'Updated a resource');
         sendJson(res, {
           data: this.formatTransaction(result)
         });
