@@ -58,7 +58,7 @@ module.exports = function() {
     sendJson(res, {
       errors: [serverErrors.notFound.body()]
     });
-  })
+  });
 
   return router;
 };

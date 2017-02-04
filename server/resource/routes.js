@@ -1,9 +1,8 @@
 'use strict';
 
-const controller = require('./controller');
 const validator = require('../util/validator');
 
-module.exports = function({version, pluralResourceName, routes, controller, validations}) {
+module.exports = function({version, pluralResourceName, controller, validations}) {
   return {
     // The root location of this resource
     location: `/v${version}/${pluralResourceName}`,
