@@ -1,7 +1,7 @@
 {
-  "name": "json-api-builder",
-  "version": "1.0.0",
-  "description": "Declaratively build a JSON API-compliant API",
+  "name": "api-pls",
+  "version": "0.1.0",
+  "description": "Effortless JSON API-compliant APIs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,14 +11,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jmeas/json-api-builder.git"
+    "url": "git+https://github.com/jmeas/api-pls.git"
   },
+  "keywords": [
+    "json-api",
+    "api",
+    "json",
+    "rest",
+    "restful",
+    "postgresql",
+    "orm",
+    "resource",
+    "resources",
+    "database",
+    "db",
+    "boilerplate"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jmeas/json-api-builder/issues"
+    "url": "https://github.com/jmeas/api-pls/issues"
   },
-  "homepage": "https://github.com/jmeas/json-api-builder#readme",
+  "homepage": "https://github.com/jmeas/api-pls#readme",
   "dependencies": {
     "accepts": "1.3.3",
     "body-parser": "1.16.0",

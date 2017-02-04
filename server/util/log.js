@@ -12,7 +12,7 @@ function resourceSerializer(resource) {
 }
 
 const log = bunyan.createLogger({
-  name: 'JSON-API-Builder',
+  name: 'API-Pls',
   serializers: bunyan.stdSerializers,
   src: isDevEnv
 });
