@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 const path = require('path');
 const del = require('del');
 const chalk = require('chalk');
@@ -7,7 +5,7 @@ const chalk = require('chalk');
 const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
 require('dotenv').config({path: envPath});
 
-const db = require('../../server/util/db');
+const db = require('../server/util/db');
 
 console.log(chalk.gray('Cleaning up previous example (if one exists)...'));
 
@@ -24,10 +22,10 @@ COMMENT ON SCHEMA public IS 'standard public schema';`);
 // then start it up to get an entirely new app for the new resources.
 const deleteMigrations = del([
   // Get rid of all migrations
-  path.join(__dirname, '..', 'migrations', '*'),
+  path.join(__dirname, 'migrations', '*'),
   // ...except for the built-in functions migration, which is used for built-in
   // attributes
-  `!${path.join(__dirname, '..', 'migrations', '0.functions.sql')}`
+  `!${path.join(__dirname, 'migrations', '0.functions.sql')}`
 ]);
 
 Promise.all([wipeDb, deleteMigrations])
