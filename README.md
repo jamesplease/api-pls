@@ -5,6 +5,8 @@
 This tool enables you to effortlessly create
 [JSON API](http://jsonapi.org/)-compliant APIs.
 
+> Note: this project is a work in progress. It cannot be used yet, although you can run the example.
+
 ### Motivation
 
 It can be time consuming to put together an application with a robust backend.
