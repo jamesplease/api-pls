@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "local-server": "nodemon --watch server index.js | bunyan -o short",
-    "example": "npm run wipe-example-migrations && npm run wipe-example-db && nodemon --watch server index.js '$(node ./example/index.js)' | bunyan -o short",
-    "wipe-example-db": "./example/bin/wipe-db.sh",
-    "wipe-example-migrations": "./example/bin/wipe-migrations.sh"
+    "example": "npm run clean-up && nodemon --watch server index.js '$(node ./example/index.js)' | bunyan -o short",
+    "clean-up": "./example/bin/clean-up.sh"
   },
   "repository": {
     "type": "git",
@@ -42,6 +41,7 @@
     "throng": "4.0.0"
   },
   "devDependencies": {
+    "chalk": "1.1.3",
     "del": "2.2.2",
     "nodemon": "1.11.0"
   }
