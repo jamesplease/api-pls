@@ -1,0 +1,29 @@
+{
+  "name": "api-pls-example",
+  "version": "0.1.0",
+  "description": "An example project consuming API Pls",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "pls migrate",
+    "reset": "pls reset",
+    "run": "pls start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jmeas/api-pls.git"
+  },
+  "keywords": [
+    "api-pls",
+    "api",
+    "json",
+    "example",
+    "boilerplate"
+  ],
+  "author": "Jmeas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmeas/api-pls/issues"
+  },
+  "homepage": "https://github.com/jmeas/api-pls#readme"
+}

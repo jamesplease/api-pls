@@ -1,0 +1,10 @@
+# this is the name of the resource. It also acts as the database table.
+name: 'category'
+# specify the plural form of this resource. This is used for the URL.
+plural_form: 'categories'
+
+# attributes are the "data" associated with this resource. Eventually,
+# this could be an ORM layer for different databases, but for now it's
+# a pretty straightforward mapping to Postgres.
+attributes:
+  title: 'VARCHAR(30)'
