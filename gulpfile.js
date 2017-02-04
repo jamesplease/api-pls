@@ -39,18 +39,12 @@ function _mocha() {
     }));
 }
 
-function _registerBabel() {
-  require('babel-register');
-}
-
 function test() {
-  _registerBabel();
   return _mocha();
 }
 
 function coverage(done) {
-  _registerBabel();
-  gulp.src(['src/**/*.js'])
+  gulp.src(['{server,example,lib}/**/*.js'])
     .pipe($.istanbul({
       instrumenter: Instrumenter,
       includeUntested: true
@@ -63,7 +57,7 @@ function coverage(done) {
     });
 }
 
-const watchFiles = ['src/**/*', 'test/**/*', 'package.json', '**/.eslintrc'];
+const watchFiles = ['{server/example/lib/test}/**/*', 'package.json', '**/.eslintrc'];
 
 // Run the headless unit tests as you make changes.
 function watch() {
