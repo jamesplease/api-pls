@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
@@ -15,14 +14,11 @@ const resourceDir = path.join(__dirname, './resources');
 // in support for JSON.
 function loadResource(filename) {
   const filePath = path.join(resourceDir, filename);
-  const fileExt = path.extname(filePath);
-  const fileBasename = path.basename(filePath, fileExt);
-  const resourceName = fileBasename.toLowerCase();
 
   let doc;
   try {
     doc = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
-  } catch(e) {
+  } catch (e) {
     console.warn('Resource file could not be loaded');
   }
 
@@ -43,7 +39,11 @@ const resources = fs.readdirSync(resourceDir)
 // Write the migrations out so that Careen can read them. This is temporary:
 // eventually, we need to store these in the database.
 resources.forEach(resource => {
-  const migrationPath = path.join(__dirname, 'migrations', `${new Date().valueOf().toString(36)}.${resource.definition.name}.sql`);
+  const timeBasedId = new Date()
+    .valueOf()
+    .toString(36);
+  const filename = `${timeBasedId}.${resource.definition.name}.sql`;
+  const migrationPath = path.join(__dirname, 'migrations', filename);
   fs.writeFileSync(migrationPath, resource.migration);
 });
 
@@ -54,5 +54,5 @@ const resourceString = JSON.stringify(resources);
 // the routes and database.
 console.log(resourceString);
 
-// Write this out to the disk – this is useful for debugging purposes.
+// Write this out to the disk – this is useful for debugging purposes.
 fs.writeFileSync('./test.json', resourceString);

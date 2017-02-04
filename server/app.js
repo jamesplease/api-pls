@@ -13,7 +13,6 @@ const jsonApiMediaType = require('./util/json-api-media-type');
 const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
 require('dotenv').config({path: envPath});
 
-const dbConfig = require('../config/db-config');
 const api = require('./api');
 
 // Heroku sets NODE_ENV to production by default. So if we're not
@@ -41,7 +40,7 @@ module.exports = function() {
     let contentTypeObj = {};
     try {
       contentTypeObj = contentType.parse(req);
-    } catch(e) {
+    } catch (e) {
       // Intentionally blank
     }
     const type = contentTypeObj.type;

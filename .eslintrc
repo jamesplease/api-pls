@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "./node_modules/pleaserc/.eslintrc",
+    "./node_modules/pleaserc/.eslintrc-server"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "rules": {},
+  "env": {
+    "node": true
+  }
+}

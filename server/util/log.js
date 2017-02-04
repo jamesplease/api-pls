@@ -19,6 +19,6 @@ const log = bunyan.createLogger({
 
 log.addSerializers({
   resource: resourceSerializer
-})
+});
 
 module.exports = log;

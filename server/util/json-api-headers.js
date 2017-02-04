@@ -24,7 +24,7 @@ module.exports = function(req, res, next) {
   let contentTypeObj = {};
   try {
     contentTypeObj = contentType.parse(req);
-  } catch(e) {
+  } catch (e) {
     // Intentionally blank
   }
 
@@ -45,4 +45,4 @@ module.exports = function(req, res, next) {
 
   res.type(jsonApiMediaType);
   next();
-}
+};
