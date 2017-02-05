@@ -38,7 +38,7 @@ module.exports = function(options) {
       console.log(chalk.green('✔ Migrations successfully built.'));
       console.log(chalk.grey('Running migrations...'));
 
-      const db = require('../../database');
+      const db = require('../../database')(options);
       const query = db.$config.pgp.helpers.concat(migrations);
       db.query(query)
         .then(() => {

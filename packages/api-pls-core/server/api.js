@@ -25,7 +25,8 @@ module.exports = function(options) {
 
   var resources = definitions.map(resource => new Resource({
     version: apiVersion,
-    resource
+    resource,
+    options
   }));
 
   // Configure routes for our resources.

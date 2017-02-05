@@ -3,8 +3,8 @@
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 
-function performWipe() {
-  const db = require('../../database');
+function performWipe(options) {
+  const db = require('../../database')(options);
 
   console.log(chalk.grey('Resetting the database...'));
 
@@ -23,7 +23,7 @@ function performWipe() {
     });
 }
 
-module.exports = function() {
+module.exports = function(options) {
   inquirer.prompt([{
     type: 'confirm',
     name: 'confirmation',
@@ -32,7 +32,7 @@ module.exports = function() {
   }])
     .then((answers) => {
       if (answers.confirmation) {
-        performWipe();
+        performWipe(options);
       }
     });
 };
