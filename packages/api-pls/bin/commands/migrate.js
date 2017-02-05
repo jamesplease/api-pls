@@ -6,7 +6,6 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 const loadResourceModels = require('api-pls-util/load-resource-models');
 const buildMigrations = require('api-pls-util/build-migrations');
-const deleteMigrations = require('../util/delete-migrations');
 
 module.exports = function(options) {
   inquirer.prompt([{
@@ -20,36 +19,33 @@ module.exports = function(options) {
         return;
       }
 
-      console.log(chalk.grey('Deleting old migrations...'));
+      console.log(chalk.grey('Building migrations...'));
 
-      deleteMigrations()
+      const migrationsDir = options.migrationsDirectory;
+      const resourcesDir = options.resourcesDirectory;
+      const resources = loadResourceModels(resourcesDir);
+
+      const fnMigration = fs.readFileSync(path.join(migrationsDir, 'functions.sql'), {encoding: 'utf8'});
+
+      // Create our up migrations. We assume that the resource has never
+      // existed. Eventually, we will need to first diff the resource
+      // against the previous version, then pass that diff into a method
+      // to get the migration!
+      const migrations = resources.map(resource => buildMigrations(resource));
+
+      migrations.unshift(fnMigration);
+
+      console.log(chalk.green('✔ Migrations successfully built.'));
+      console.log(chalk.grey('Running migrations...'));
+
+      const db = require('../../database');
+      const query = db.$config.pgp.helpers.concat(migrations);
+      db.query(query)
         .then(() => {
-          console.log(chalk.green('✔ Existing migrations successfully deleted.'));
-          console.log(chalk.grey('Building migrations...'));
-
-          const migrationsDir = options.migrationsDirectory;
-          const resourcesDir = options.resourcesDirectory;
-          const resources = loadResourceModels(resourcesDir);
-
-          // Write the migrations out so that Careen can read them. This is temporary:
-          // eventually, we need to store these in the database.
-          resources.forEach(resource => {
-            const migration = buildMigrations(resource);
-            const timeBasedId = new Date()
-              .valueOf()
-              .toString(36);
-            const filename = `${timeBasedId}.${resource.name}.sql`;
-            const migrationPath = path.join(migrationsDir, filename);
-            fs.writeFileSync(migrationPath, migration);
-          });
-
-          console.log(chalk.green('✔ Migrations successfully built.'));
-          console.log(chalk.grey('Running migrations...'));
-
-          const migrate = require('../../database/migrate');
-          migrate.up();
-
           console.log(chalk.green('✔ Migrations successfully run. The database is up to date.'));
+        })
+        .catch((e) => {
+          console.log(chalk.red('There was an error while running the migrations.', e));
         });
     });
 };

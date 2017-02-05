@@ -43,7 +43,6 @@
     "api-pls-util": "0.1.0",
     "body-parser": "1.16.0",
     "bunyan": "1.8.5",
-    "careen": "0.1.1",
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "compression": "1.6.2",

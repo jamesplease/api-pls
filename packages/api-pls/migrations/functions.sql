@@ -7,7 +7,3 @@ CREATE OR REPLACE FUNCTION updated_at() RETURNS TRIGGER AS $$
     RETURN OLD;
   END;
 $$ LANGUAGE plpgsql;
-
----
-
-DROP FUNCTION updated_at();
