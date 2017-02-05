@@ -50,11 +50,13 @@ Object.assign(Controller.prototype, {
   // layer. For now it's pretty basic.
   formatTransaction(t) {
     const attrs = ([]).concat(Object.keys(this.resource.attributes));
+    const meta = ([]).concat(Object.keys(this.resource.meta));
 
     return {
       id: t.id,
       type: this.resource.plural_form,
-      attributes: _.pick(t, attrs)
+      attributes: _.pick(t, attrs),
+      meta: _.pick(t, meta)
     };
   },
 

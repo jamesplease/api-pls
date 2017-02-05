@@ -31,7 +31,7 @@ function getAttrs(resource) {
   attrs = attrs.concat(attrStrings);
 
   // Push our built in attributes
-  _.forEach(resource.built_in_attributes, (include, attrName) => {
+  _.forEach(resource.built_in_meta_attributes, (include, attrName) => {
     if (include) {
       attrs.push(builtInAttributes[attrName]);
     }
@@ -42,7 +42,7 @@ function getAttrs(resource) {
 
 function getTriggers(resource) {
   const triggers = [];
-  if (resource.built_in_attributes.updated_at) {
+  if (resource.built_in_meta_attributes.updated_at) {
     triggers.push(
 `CREATE TRIGGER updated_at BEFORE UPDATE ON ${resource.name}
   FOR EACH ROW EXECUTE PROCEDURE updated_at();`

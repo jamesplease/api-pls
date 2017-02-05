@@ -13,8 +13,12 @@ module.exports = function(resourceModel) {
       // "book" => "books"
       plural_form: `${resourceModel.name}s`,
       attributes: {},
+      meta: {
+        created_at: _.get(resourceModel, 'built_in_meta_attributes.created_at'),
+        updated_at: _.get(resourceModel, 'resourceModel.built_in_meta_attributes.updated_at')
+      },
       // All resources get these unless they opt out of them
-      built_in_attributes: {
+      built_in_meta_attributes: {
         created_at: true,
         updated_at: true
       }
