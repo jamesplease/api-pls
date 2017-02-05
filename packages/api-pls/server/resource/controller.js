@@ -49,7 +49,7 @@ Object.assign(Controller.prototype, {
   // This would one day have things like supporting more types from the ORM
   // layer. For now it's pretty basic.
   formatTransaction(t) {
-    const attrs = ([]).concat(this.resource.attributes);
+    const attrs = ([]).concat(Object.keys(this.resource.attributes));
 
     return {
       id: t.id,
@@ -60,7 +60,7 @@ Object.assign(Controller.prototype, {
 
   create(req, res) {
     const attrs = _.get(req, 'body.attributes', {});
-    const body = _.pick(attrs, this.resource.attributes);
+    const body = _.pick(attrs, Object.keys(this.resource.attributes));
 
     const fields = Object.keys(body);
     const query = baseSql.create(this.table, fields);
@@ -111,7 +111,7 @@ Object.assign(Controller.prototype, {
   update(req, res) {
     const id = req.params.id;
     const attrs = _.get(req, 'body.attributes', {});
-    const body = _.pick(attrs, this.resource.attributes);
+    const body = _.pick(attrs, Object.keys(this.resource.attributes));
 
     const fields = Object.keys(body);
 
