@@ -39,7 +39,7 @@ api-pls in action.
 
 ### Installation
 
-`api-pls` is a CLI tool. Install it into your project using
+api-pls is a CLI tool. Install it into your project using
 [npm](https://www.npmjs.com/).
 
 ```

@@ -70,9 +70,9 @@ function parseBoolean(val) {
 }
 
 program
-  .option('-d, --database <url>', 'Specify the database URL to connect to')
-  .option('-p, --port <n>', 'Customize the webserver port', parseInt)
-  .option('-r, --resources <path>', 'The directory where your resource models exist')
-  .option('-s, --ssl <boolean>', 'Whether or not to connect to the DB with SSL', parseBoolean);
+  .option('-d, --database <url>', 'specify the database URL to connect to')
+  .option('-p, --port <n>', 'set the webserver port', parseInt)
+  .option('-r, --resources <path>', 'the directory where your resource models exist')
+  .option('-s, --ssl <boolean>', 'whether or not to connect to the DB with SSL', parseBoolean);
 
 program.parse(process.argv);
