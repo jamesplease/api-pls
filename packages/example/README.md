@@ -22,6 +22,6 @@ If you open up `package.json`, you'll see three scripts related to API Pls:
   have defined. You'll need to do this one time before you can start up the API.
 2. `npm run reset` - This resets the database you've specified by wiping all of
   the data inside of it. This lets you start anew.
-3. `npm run` - Start up the API webserver.
+3. `npm run start` - Start up the API webserver.
 
 That's all there is to it!

@@ -6,7 +6,7 @@
   "scripts": {
     "migrate": "pls migrate",
     "reset": "pls reset-database",
-    "run": "pls start"
+    "start": "pls start"
   },
   "repository": {
     "type": "git",
