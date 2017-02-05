@@ -1,7 +1,7 @@
 {
   "name": "api-pls-example",
   "version": "0.1.0",
-  "description": "An example project consuming API Pls",
+  "description": "An example project that utilizes API Pls",
   "main": "index.js",
   "scripts": {
     "migrate": "pls migrate",
@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/jmeas/api-pls/issues"
   },
-  "homepage": "https://github.com/jmeas/api-pls#readme"
+  "homepage": "https://github.com/jmeas/api-pls#readme",
+  "dependencies": {
+    "api-pls": "0.1.0"
+  }
 }
