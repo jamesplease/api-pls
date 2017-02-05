@@ -1,5 +1,8 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 const yaml = require('js-yaml');
 const normalizeModel = require('../normalize-model');
 
@@ -26,4 +29,4 @@ module.exports = function(resourcesDir) {
     // Open them up and parse them as JSON
     .map(r => loadResource(r, resourcesDir))
     .map(normalizeModel);
-}
+};
