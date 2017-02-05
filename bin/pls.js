@@ -9,8 +9,6 @@ const migrate = require('./commands/migrate');
 const resetDatabase = require('./commands/reset-database');
 const start = require('./commands/start');
 
-// Remove this usage of dotenv. Currently, this is used for one thing:
-// getting the database URL. This needs to passed in through some other means.
 const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
 require('dotenv').config({path: envPath});
 
@@ -24,6 +22,8 @@ let options = rc('pls', {
 options = Object.assign(options, {
   migrationsDirectory: path.join(__dirname, '..', 'migrations')
 });
+
+program.version('0.8.0', '-v, --version');
 
 program
   .command('migrate')
