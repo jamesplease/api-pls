@@ -50,8 +50,6 @@ line to the file, replacing the database URL with your own:
 DATABASE_URL='postgres://user@example.com:5432/example'
 ```
 
-> Note: It is required that your database has SSL enabled.
-
 Next, you'll need to create resource models. These are the definitions that
 describe what tables and endpoints are created for you. Place your resource
 models in the directory `./resources`.
