@@ -2,11 +2,19 @@
 
 const chalk = require('chalk');
 const inquirer = require('inquirer');
+const log = require('../util/log');
 
 function performWipe(options) {
   const db = require('../../database')(options);
 
-  console.log(chalk.grey('Resetting the database...'));
+  log(
+    chalk.grey('Resetting the database...'),
+    options,
+    {
+      databaseUrl: options.DATABASE_URL,
+      ssl: options.ssl
+    }
+  );
 
   db.query(`DROP SCHEMA public CASCADE;
   CREATE SCHEMA public;
@@ -14,11 +22,23 @@ function performWipe(options) {
   GRANT ALL ON SCHEMA public TO public;
   COMMENT ON SCHEMA public IS 'standard public schema';`)
     .then(() => {
-      console.log(chalk.green('✔ The database has been reset.'));
+      log(chalk.green('✔ The database has been reset.'), options);
       process.exit();
     })
-    .catch(() => {
-      console.log(chalk.red('There was an error while cleaning up the previous example.'));
+    .catch((e) => {
+      log(
+        chalk.red('There was an error while cleaning up the previous example.'),
+        options,
+        e
+      );
+
+      if (!options.verbose) {
+        log(
+          chalk.red('Re-run this command with --verbose to see more information about this problem.'),
+          options
+        );
+      }
+
       process.exit(1);
     });
 }

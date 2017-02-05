@@ -98,6 +98,8 @@ All of the options may also be specified in `.plsrc`, if you would prefer.
 | -p, --port       | 5000        | Configure the port of the webserver         |
 | -r, --resources  | ./resources | Set the directory of your resources         |
 | -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
+| --silent         |             | Disable logging                             |
+| --verbose        |             | Enable verbose logging                      |
 
 ### Example CLI Usage
 
