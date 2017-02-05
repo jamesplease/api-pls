@@ -26,48 +26,38 @@ The only supported database is currently
 in [Node.js](https://nodejs.org/en/) using
 [Express](https://github.com/expressjs/express).
 
-### Running the Example
+### Getting Started
 
-#### Prerequisites
+Install the `api-pls` CLI.
 
-- [Node.js](https://nodejs.org/en/) v7+
-- a [PostgreSQL database](#setting-up-a-database)
+`npm install api-pls --global`
 
-#### Getting Started
-
-Clone this project. Then, navigate to the root of the directory and install
-the Node dependencies:
-
-```sh
-npm install
-```
-
-Next, create a file in the root of this project called `.env`. Add the following
-line to the file, replacing the database URL with your own:
+Next, create a file in the root of your project called `.env`. Add the following
+line to the file, replacing the database URL
+[with your own](#how-can-i-start-a-postgresql-database):
 
 ```sh
 DATABASE_URL='postgres://user@example.com:5432/example'
 ```
 
-**Warning: Each time that you run the example, the database specified will be
-completely wiped.**
-
 Next, you'll need to create resource models. These are the definitions that
-describe what tables and endpoints are created for you.
+describe what tables and endpoints are created for you. Documentation for
+the resource model files is coming soon.
 
-There are two examples already created for you in the `/examples/resources`
-directory: `transaction` and `category`. Review those, and make changes as
-you see fit. For now, the documentation for a resource model is contained
-within those example files.
+Once you've defined your resoures, run `api migrate`. This will generate
+database migrations from your resource models, and then run the migrations.
 
-You're now ready to start the example.
+You're now ready to start an API webserver. Run `api start` to start the server.
 
-Run `npm run example` to get it running. Once it's up, navigate your browser
-to `localhost:5000` to begin CRUD'ing.
+You can access the API webserver at `localhost:5000`.
+
+Anytime you make changes to your resource models, be sure to run
+`pls reset-database` to clear out all of the previous models. Presently,
+only the initial migrations are supported.
 
 ### FAQ
 
-#### How can I start a PostgreSQL database to run the example?
+#### How can I start a PostgreSQL database?
 
 To run the example, you'll need a PostgreSQL database URL. It is recommended
 that you create a database specifically for testing this tool.
