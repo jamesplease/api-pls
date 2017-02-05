@@ -5,11 +5,12 @@
 api-pls enables you to effortlessly create
 [JSON API](http://jsonapi.org/)-compliant APIs.
 
-> Note: this project is a work in progress. It currently functions in a limited manner.
+> Note: this project is a work in progress. It currently functions in a limited
+  manner.
 
 ### Motivation
 
-It can be time consuming to put together an application with a robust backend.
+It can be time-consuming to put together an application with a robust backend.
 Use api-pls to speed up that process considerably.
 
 Instead of writing database and API code within your project, simply define
@@ -52,11 +53,14 @@ DATABASE_URL='postgres://user@example.com:5432/example'
 > Note: It is required that your database has SSL enabled.
 
 Next, you'll need to create resource models. These are the definitions that
-describe what tables and endpoints are created for you. Documentation for
-the resource model files is coming soon.
+describe what tables and endpoints are created for you. Place your resource
+models in the directory `./resources`.
+
+More complete documentation for the resource model files is coming soon; for
+now, refer to the [example project](https://github.com/jmeas/api-pls-example).
 
 Once you've defined your resources, run `pls migrate`. This will generate
-database migrations from your resource models, and then run the migrations.
+database migrations from your resource models, and then run those migrations.
 
 You're now ready to start an API webserver. Run `pls start` to start the server.
 
@@ -65,11 +69,6 @@ You can access the API webserver at `localhost:5000`.
 Anytime you make changes to your resource models, be sure to run
 `pls reset-database` to clear out all of the previous models. Presently,
 only the initial migrations are supported.
-
-### Caveats
-
-api-pls can only manage one project at a time right now per machine.
-[I'm working on fixing that.](https://github.com/jmeas/api-pls/issues/9)
 
 ### Acknowledgements
 
