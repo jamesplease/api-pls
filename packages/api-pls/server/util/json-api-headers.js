@@ -43,6 +43,13 @@ module.exports = function(req, res, next) {
     return sendJson(res, serverErrors.acceptsHasParams.body()).end();
   }
 
-  res.type(jsonApiMediaType);
+  // Some browsers (like Safari Version 10.0.3 (12602.4.8)) will force the user
+  // to download content if it has the JSON API media type. Presently, at least
+  // that browser also ignores the Content-Disposition header, so we must use
+  // the non-standard `application/json`.
+  res.type('application/json');
+  // Attempt to tell browsers that we want to display this in the browser,
+  // rather than download it.
+  res.header('Content-Disposition', 'inline');
   next();
 };

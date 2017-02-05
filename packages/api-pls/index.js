@@ -1,16 +1,9 @@
 'use strict';
 
-const throng = require('throng');
 const app = require('./server/app');
 const log = require ('./server/util/log');
 
-const WORKERS = process.env.WEB_CONCURRENCY || 1;
-
-throng({
-  workers: WORKERS,
-  lifetime: Infinity,
-  start: app
-});
+app();
 
 process.on('uncaughtException', (err) => {
   log.fatal({err}, 'Uncaught exception')
