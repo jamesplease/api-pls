@@ -78,7 +78,15 @@ Anytime you make changes to your resource models, be sure to run
 `pls reset-database` to clear out all of the previous models. Presently,
 only the initial migrations are supported.
 
-### CLI
+### CLI Commands
+
+##### `pls -h`
+
+View all the commands from the command line.
+
+##### `pls -v`
+
+Display the version of api-pls
 
 ##### `pls reset-database`
 
@@ -97,13 +105,25 @@ database.
 
 Starts up the API webserver.
 
-##### `pls -h`
+### CLI Options
 
-View all the commands from the command line.
+All of these options may also be specified in `.plsrc`, if you would prefer.
 
-#### `pls -v`
+| Options          | Default     | Description                                 |
+|----------------- |-------------|---------------------------------------------|
+| -d, --database   |             | Specify the database URL                    |
+| -p, --port       | 5000        | Configure the port of the webserver         |
+| -r, --resources  | ./resources | Set the directory of your resources         |
+| -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
 
-Displays the version of api-pls.
+### Example CLI Usage
+
+The following example turns off SSL, sets the port to be 6000, and sets the
+resource directory.
+
+```sh
+pls start -p 6000 -s false -r ./my-resources
+```
 
 ### Acknowledgements
 
