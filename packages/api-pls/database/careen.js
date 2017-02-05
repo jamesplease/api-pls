@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const dbConfig = require('./config');
 
@@ -16,11 +18,11 @@ if (typeof dbConfig === 'string') {
 
 module.exports = {
   client: {
-    name: "postgresql",
-    config: config
+    name: 'postgresql',
+    config
   },
 
   files: {
     directory: path.join(__dirname, '..', 'migrations')
   }
-}
+};

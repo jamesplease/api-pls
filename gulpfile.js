@@ -5,14 +5,14 @@ const loadPlugins = require('gulp-load-plugins');
 const isparta = require('isparta');
 
 const Instrumenter = isparta.Instrumenter;
-const mochaGlobals = require('./test/globals');
+const mochaGlobals = require('./test-globals');
 
 // Load all of our Gulp plugins
 const $ = loadPlugins();
 
 // Lint a set of files
 function lint() {
-  return gulp.src('packages/**/*.js')
+  return gulp.src(['packages/**/*.js', '!packages/*/node_modules/**/*'])
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());
@@ -53,7 +53,7 @@ function watch() {
 }
 
 // Lint
-gulp.task('lint', ['lint']);
+gulp.task('lint', lint);
 
 // Lint and run our tests
 gulp.task('test', ['lint'], test);

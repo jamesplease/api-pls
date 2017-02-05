@@ -12,10 +12,10 @@ module.exports = function() {
     path.join(__dirname, '..', '..', 'migrations', '*'),
     // ...except for the built-in functions migration, which is used for built-in
     // attributes
-    `!${path.join(__dirname,  '..', '..', 'migrations', '0.functions.sql')}`
+    `!${path.join(__dirname, '..', '..', 'migrations', '0.functions.sql')}`
   ], {
     // This is necessary because these files are sometimes outside of the CWD;
     // for instance, when the example is run from within the monorepo.
     force: true
   });
-}
+};

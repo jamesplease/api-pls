@@ -1,3 +1,5 @@
+'use strict';
+
 var dbConfig;
 
 // If this variable exists, then we're either on production or working with the

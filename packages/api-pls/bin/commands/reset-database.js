@@ -1,7 +1,5 @@
 'use strict';
 
-const path = require('path');
-const del = require('del');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const deleteMigrations = require('../util/delete-migrations');
@@ -31,12 +29,12 @@ function performWipe() {
 
 module.exports = function() {
   inquirer.prompt([{
-      type: 'confirm',
-      name: 'confirmation',
-      message: 'Are you sure? This will completely wipe your database. It cannot be undone.',
-      default: false
-    }])
-    .then(function(answers) {
+    type: 'confirm',
+    name: 'confirmation',
+    message: 'Are you sure? This will completely wipe your database. It cannot be undone.',
+    default: false
+  }])
+    .then((answers) => {
       if (answers.confirmation) {
         performWipe();
       }

@@ -1,7 +1,7 @@
 {
   "extends": [
-    "../node_modules/pleaserc/.eslintrc-test",
-    "./globals.json"
+    "../../../node_modules/pleaserc/.eslintrc-test",
+    "../../../test-globals.json"
   ],
   "env": {
     "node": true,

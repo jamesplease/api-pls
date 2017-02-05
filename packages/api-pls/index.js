@@ -1,14 +1,14 @@
 'use strict';
 
 const app = require('./server/app');
-const log = require ('./server/util/log');
+const log = require('./server/util/log');
 
 module.exports = function(options) {
   app(options);
-}
+};
 
 process.on('uncaughtException', (err) => {
-  log.fatal({err}, 'Uncaught exception')
+  log.fatal({err}, 'Uncaught exception');
   process.exit(1);
 });
 

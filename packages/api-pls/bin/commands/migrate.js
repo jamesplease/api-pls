@@ -10,12 +10,12 @@ const deleteMigrations = require('../util/delete-migrations');
 
 module.exports = function(options) {
   inquirer.prompt([{
-      type: 'confirm',
-      name: 'confirmation',
-      message: 'Would you like to build and run migrations? This cannot be undone',
-      default: false
-    }])
-    .then(function(answers) {
+    type: 'confirm',
+    name: 'confirmation',
+    message: 'Would you like to build and run migrations? This cannot be undone',
+    default: false
+  }])
+    .then((answers) => {
       if (!answers.confirmation) {
         return;
       }
@@ -23,7 +23,7 @@ module.exports = function(options) {
       console.log(chalk.grey('Deleting old migrations...'));
 
       deleteMigrations()
-        .then(function() {
+        .then(() => {
           console.log(chalk.green('✔ Existing migrations successfully deleted.'));
           console.log(chalk.grey('Building migrations...'));
 

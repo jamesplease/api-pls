@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+'use strict';
+
 const rc = require('rc');
 const path = require('path');
 const program = require('commander');
@@ -7,14 +9,14 @@ const migrate = require('./commands/migrate');
 const resetDatabase = require('./commands/reset-database');
 const start = require('./commands/start');
 
-// TODO: Remove this usage of dotenv. Currently, this is used for one thing:
+// Remove this usage of dotenv. Currently, this is used for one thing:
 // getting the database URL. This needs to passed in through some other means.
 const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
 require('dotenv').config({path: envPath});
 
 // Load up our configuration, passing the defaults in.
 let options = rc('pls', {
-  resourcesDirectory: "./resources"
+  resourcesDirectory: './resources'
 });
 
 options = Object.assign(options, {
@@ -24,21 +26,21 @@ options = Object.assign(options, {
 program
   .command('migrate')
   .description('Build and run resource migrations')
-  .action(function() {
+  .action(() => {
     migrate(options);
   });
 
 program
   .command('reset-database')
   .description('Remove all data from the database.')
-  .action(function() {
+  .action(() => {
     resetDatabase(options);
   });
 
 program
   .command('start')
   .description('Start the API.')
-  .action(function() {
+  .action(() => {
     start(options);
   });
 
