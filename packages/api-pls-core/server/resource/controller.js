@@ -3,7 +3,6 @@
 const _ = require('lodash');
 const pgp = require('pg-promise');
 const log = require('../util/log');
-const db = require('../../database');
 const baseSql = require('../util/base-sql');
 const serverErrors = require('../util/server-errors');
 const mapPgError = require('../util/map-pg-error');
@@ -36,10 +35,10 @@ function handleQueryError(err, res, resource, crudAction, query) {
 
 // The Controller interfaces with the database. It performs our CRUD operations.
 // Access to the controller occurs through the routes.
-function Controller(resource, options) {
+function Controller(resource, db) {
   this.resource = resource;
   this.table = resource.name;
-  this.db = db(options);
+  this.db = db;
 
   _.bindAll(this, ['create', 'read', 'update', 'delete', 'formatTransaction']);
 }

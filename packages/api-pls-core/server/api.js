@@ -8,10 +8,13 @@ const loadResourceModels = require('api-pls-util/load-resource-models');
 const buildJsonSchema = require('api-pls-util/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
+const createDb = require('../database');
 
 module.exports = function(options) {
   const router = express.Router();
   router.use(jsonApiHeaders);
+
+  const db = createDb(options);
 
   // This version needs to be made external
   var apiVersion = 1;
@@ -26,7 +29,7 @@ module.exports = function(options) {
   var resources = definitions.map(resource => new Resource({
     version: apiVersion,
     resource,
-    options
+    db
   }));
 
   // Configure routes for our resources.
