@@ -66,6 +66,11 @@ Anytime you make changes to your resource models, be sure to run
 `pls reset-database` to clear out all of the previous models. Presently,
 only the initial migrations are supported.
 
+### Caveats
+
+api-pls can only manage one project at a time right now per machine.
+[I'm working on fixing that.](https://github.com/jmeas/api-pls/issues/9)
+
 ### Acknowledgements
 
 Many thanks goes to [Tyler Kellen](https://github.com/tkellen) for his work on
