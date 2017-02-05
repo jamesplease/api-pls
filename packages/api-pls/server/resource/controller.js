@@ -10,7 +10,7 @@ const mapPgError = require('../util/map-pg-error');
 const sendJson = require('../util/send-json');
 
 // This is the function called when a query fails.
-function handleQueryError(err, res, resource, crudAction) {
+function handleQueryError(err, res, resource, crudAction, query) {
   var serverError;
 
   // First, check to see if it's a pgp QueryResultError. If it
@@ -26,7 +26,7 @@ function handleQueryError(err, res, resource, crudAction) {
 
   log.warn({
     resourceName: resource.name,
-    err, crudAction
+    err, crudAction, query
   }, 'There was a query error with a CRUD request.');
   res.status(serverError.code);
   sendJson(res, {
@@ -60,6 +60,7 @@ Object.assign(Controller.prototype, {
 
   create(req, res) {
     const attrs = _.get(req, 'body.attributes', {});
+
     const body = _.pick(attrs, Object.keys(this.resource.attributes));
 
     const fields = Object.keys(body);
@@ -75,7 +76,7 @@ Object.assign(Controller.prototype, {
           data: this.formatTransaction(result)
         });
       })
-      .catch(err => handleQueryError(err, res, this.resource, 'create'));
+      .catch(err => handleQueryError(err, res, this.resource, 'create', query));
   },
 
   read(req, res) {
@@ -104,7 +105,7 @@ Object.assign(Controller.prototype, {
       })
       .catch(err => {
         const crudAction = isSingular ? 'readOne' : 'readMany';
-        handleQueryError(err, res, this.resource, crudAction);
+        handleQueryError(err, res, this.resource, crudAction, query);
       });
   },
 
@@ -138,7 +139,7 @@ Object.assign(Controller.prototype, {
           data: this.formatTransaction(result)
         });
       })
-      .catch(err => handleQueryError(err, res, this.resource, 'update'));
+      .catch(err => handleQueryError(err, res, this.resource, 'update', query));
   },
 
   delete(req, res) {
@@ -152,7 +153,7 @@ Object.assign(Controller.prototype, {
         log.info({query, resourceName: this.resource.name}, 'Deleted a resource');
         res.status(204).end();
       })
-      .catch(err => handleQueryError(err, res, this.resource, 'delete'));
+      .catch(err => handleQueryError(err, res, this.resource, 'delete', query));
   }
 });
 
