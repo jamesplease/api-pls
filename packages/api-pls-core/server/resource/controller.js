@@ -3,7 +3,6 @@
 const _ = require('lodash');
 const pgp = require('pg-promise');
 const log = require('../util/log');
-const db = require('../../database');
 const baseSql = require('../util/base-sql');
 const serverErrors = require('../util/server-errors');
 const mapPgError = require('../util/map-pg-error');
@@ -36,9 +35,10 @@ function handleQueryError(err, res, resource, crudAction, query) {
 
 // The Controller interfaces with the database. It performs our CRUD operations.
 // Access to the controller occurs through the routes.
-function Controller(resource) {
+function Controller(resource, db) {
   this.resource = resource;
   this.table = resource.name;
+  this.db = db;
 
   _.bindAll(this, ['create', 'read', 'update', 'delete', 'formatTransaction']);
 }
@@ -68,7 +68,7 @@ Object.assign(Controller.prototype, {
 
     log.info({query, resource: this.resource}, 'Creating a resource');
 
-    db.one(query, body)
+    this.db.one(query, body)
       .then(result => {
         log.info({query, resource: this.resource}, 'Resource created.');
         res.status(201);
@@ -90,7 +90,7 @@ Object.assign(Controller.prototype, {
 
     log.info({query, resourceName: this.resource.name}, 'Reading a resource');
 
-    db[method](query, {id})
+    this.db[method](query, {id})
       .then(result => {
         var formattedResult;
         if (!Array.isArray(result)) {
@@ -132,7 +132,7 @@ Object.assign(Controller.prototype, {
 
     log.info({query, resource: this.resource}, 'Updating a resource');
 
-    db.one(query, queryData)
+    this.db.one(query, queryData)
       .then(result => {
         log.info({query, resource: this.resource}, 'Updated a resource');
         sendJson(res, {
@@ -148,7 +148,7 @@ Object.assign(Controller.prototype, {
 
     log.info({query, resourceName: this.resource.name}, 'Deleting a resource');
 
-    db.one(query, {id})
+    this.db.one(query, {id})
       .then(() => {
         log.info({query, resourceName: this.resource.name}, 'Deleted a resource');
         res.status(204).end();

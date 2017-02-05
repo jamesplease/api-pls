@@ -16,7 +16,9 @@ require('dotenv').config({path: envPath});
 
 // Load up our configuration, passing the defaults in.
 let options = rc('pls', {
-  resourcesDirectory: './resources'
+  resourcesDirectory: './resources',
+  ssl: true,
+  DATABASE_URL: process.env.DATABASE_URL
 });
 
 options = Object.assign(options, {
