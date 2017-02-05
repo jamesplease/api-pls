@@ -5,13 +5,13 @@ const loadPlugins = require('gulp-load-plugins');
 const isparta = require('isparta');
 
 const Instrumenter = isparta.Instrumenter;
-const mochaGlobals = require('./test-globals');
+const mochaGlobals = require('./test/globals');
 
 // Load all of our Gulp plugins
 const $ = loadPlugins();
 
-const allJsFiles = 'packages/**/*.js';
-const ignoreNodeModules = '!packages/*/node_modules/**/*';
+const allJsFiles = '**/*.js';
+const ignoreNodeModules = '!node_modules/**/*';
 
 // Lint a set of files
 function lint() {
@@ -22,7 +22,7 @@ function lint() {
 }
 
 function _mocha() {
-  return gulp.src(['packages/api-pls-core/test/setup.js', 'packages/api-pls-core/test/unit/**/*.js'], {read: false})
+  return gulp.src(['./test/setup.js', './test/unit/**/*.js'], {read: false})
     .pipe($.mocha({
       reporter: 'dot',
       globals: Object.keys(mochaGlobals.globals),
