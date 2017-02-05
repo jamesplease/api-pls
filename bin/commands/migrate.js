@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const loadResourceModels = require('api-pls-util/load-resource-models');
-const buildMigrations = require('api-pls-util/build-migrations');
+const loadResourceModels = require('../../util/load-resource-models');
+const buildMigrations = require('../../util/build-migrations');
 
 module.exports = function(options) {
   inquirer.prompt([{
