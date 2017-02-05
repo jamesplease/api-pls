@@ -1,6 +1,6 @@
 {
   "name": "api-pls",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Effortless JSON API-compliant APIs",
   "main": "index.js",
   "scripts": {
