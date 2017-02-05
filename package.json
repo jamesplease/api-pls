@@ -44,7 +44,6 @@
     "compression": "1.6.2",
     "content-type": "1.0.2",
     "cors": "2.8.1",
-    "del": "^2.2.2",
     "dotenv": "4.0.0",
     "express": "4.14.1",
     "express-request-id": "1.2.0",
@@ -55,11 +54,9 @@
     "js-yaml": "3.7.0",
     "kapow": "1.0.0",
     "lodash": "4.17.4",
-    "nodemon": "^1.11.0",
     "path": "0.12.7",
     "pg-promise": "5.5.6",
-    "rc": "^1.1.6",
-    "throng": "4.0.0"
+    "rc": "^1.1.6"
   },
   "devDependencies": {
     "gulp": "3.9.1",
@@ -70,7 +67,6 @@
     "gulp-watch": "4.3.11",
     "isparta": "4.0.0",
     "pleaserc": "2.3.1",
-    "sinon": "1.17.7",
-    "lerna": "2.0.0-beta.36"
+    "sinon": "1.17.7"
   }
 }
