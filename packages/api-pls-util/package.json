@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/jmeas/api-pls#readme",
   "dependencies": {
-    "lodash": "4.17.4"
+    "lodash": "4.17.4",
+    "js-yaml": "3.7.0"
   }
 }

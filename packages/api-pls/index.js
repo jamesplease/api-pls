@@ -3,7 +3,9 @@
 const app = require('./server/app');
 const log = require ('./server/util/log');
 
-app();
+module.exports = function(options) {
+  app(options);
+}
 
 process.on('uncaughtException', (err) => {
   log.fatal({err}, 'Uncaught exception')

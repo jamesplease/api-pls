@@ -10,16 +10,13 @@ const bodyParser = require('body-parser');
 const log = require('./util/log');
 const jsonApiMediaType = require('./util/json-api-media-type');
 
-const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
-require('dotenv').config({path: envPath});
-
 const api = require('./api');
 
 // Heroku sets NODE_ENV to production by default. So if we're not
 // on Heroku, we assume that we're developing locally.
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-module.exports = function() {
+module.exports = function(options) {
   const app = express();
 
   app.set('env', NODE_ENV);
@@ -60,7 +57,7 @@ module.exports = function() {
   }));
 
   // Register the API
-  app.use(api());
+  app.use(api(options));
 
   const port = process.env.PORT || 5000;
   app.set('port', port);

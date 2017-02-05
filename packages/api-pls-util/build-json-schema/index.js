@@ -1,9 +1,9 @@
 'use strict';
 
 const _ = require('lodash');
-const uniquelyIdentifyValidation = require('./uniquely-identify-validation');
-const requireId = require('./require-id-validation');
-const typesToFormatsMap = require('./types-to-formats-map');
+const uniquelyIdentifyValidation = require('./util/uniquely-identify-validation');
+const requireId = require('./util/require-id-validation');
+const typesToFormatsMap = require('./util/types-to-formats-map');
 
 function generateCreateOrUpdateForAttribute(attr, isCreate) {
   const validation = {};

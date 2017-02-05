@@ -2,17 +2,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const normalizeModel = require('api-pls-util/normalize-model');
+const loadResourceModels = require('api-pls-util/load-resource-models');
 const buildMigrations = require('api-pls-util/build-migrations');
 const deleteMigrations = require('../util/delete-migrations');
-
-// TODO: Remove this usage of dotenv. This needs to get passed in through
-// the rc file or some other means.
-const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
-require('dotenv').config({path: envPath});
 
 module.exports = function(options) {
   inquirer.prompt([{
@@ -33,31 +27,9 @@ module.exports = function(options) {
           console.log(chalk.green('✔ Existing migrations successfully deleted.'));
           console.log(chalk.grey('Building migrations...'));
 
-          const resourcesDir = options.resourcesDirectory;
           const migrationsDir = options.migrationsDirectory;
-
-          // This function reads and parses the resource from the disk, and returns it.
-          // At the moment, only YAML files are supported, although it'd be simple to add
-          // in support for JSON.
-          function loadResource(filename) {
-            const filePath = path.join(resourcesDir, filename);
-
-            let doc;
-            try {
-              doc = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
-            } catch (e) {
-              console.log(chalk.red(`There was an error while parsing the "${filename}" resource file.`));
-              process.exit(1);
-            }
-
-            return doc;
-          }
-
-          // Loop through all files in the directory
-          const resources = fs.readdirSync(resourcesDir)
-            // Open them up and parse them as JSON
-            .map(loadResource)
-            .map(normalizeModel);
+          const resourcesDir = options.resourcesDirectory;
+          const resources = loadResourceModels(resourcesDir);
 
           // Write the migrations out so that Careen can read them. This is temporary:
           // eventually, we need to store these in the database.

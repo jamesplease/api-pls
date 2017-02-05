@@ -6,11 +6,6 @@ const chalk = require('chalk');
 const inquirer = require('inquirer');
 const deleteMigrations = require('../util/delete-migrations');
 
-// TODO: Remove this usage of dotenv. This needs to get passed in through
-// the rc file or some other means.
-const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
-require('dotenv').config({path: envPath});
-
 function performWipe() {
   const db = require('../../database');
 

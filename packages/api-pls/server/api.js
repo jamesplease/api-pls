@@ -4,19 +4,24 @@ const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
-const loadResourceConfigs = require('./util/load-resource-configs');
+const loadResourceModels = require('api-pls-util/load-resource-models');
+const buildJsonSchema = require('api-pls-util/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
 
-module.exports = function() {
+module.exports = function(options) {
   const router = express.Router();
   router.use(jsonApiHeaders);
 
   // This version needs to be made external
   var apiVersion = 1;
 
-  var resourceConfigs = loadResourceConfigs();
-  var definitions = resourceConfigs.map(r => r.definition);
+  var definitions = loadResourceModels(options.resourcesDirectory)
+    .map(resourceModel => {
+      return Object.assign(resourceModel, {
+        validations: buildJsonSchema(resourceModel)
+      });
+    });
 
   var resources = definitions.map(resource => new Resource({
     version: apiVersion,
