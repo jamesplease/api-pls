@@ -5,33 +5,24 @@ const loadPlugins = require('gulp-load-plugins');
 const isparta = require('isparta');
 
 const Instrumenter = isparta.Instrumenter;
-const mochaGlobals = require('./test/globals');
+const mochaGlobals = require('./test-globals');
 
 // Load all of our Gulp plugins
 const $ = loadPlugins();
 
+const allJsFiles = 'packages/**/*.js';
+const ignoreNodeModules = '!packages/*/node_modules/**/*';
+
 // Lint a set of files
-function lint(files) {
-  return gulp.src(files)
+function lint() {
+  return gulp.src([allJsFiles, ignoreNodeModules])
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());
 }
 
-function lintSrc() {
-  return lint('{server,lib,example}/**/*.js');
-}
-
-function lintTest() {
-  return lint('test/**/*.js');
-}
-
-function lintGulpfile() {
-  return lint('gulpfile.js');
-}
-
 function _mocha() {
-  return gulp.src(['test/setup.js', 'test/unit/**/*.js'], {read: false})
+  return gulp.src(['packages/api-pls/test/setup.js', 'packages/api-pls/test/unit/**/*.js'], {read: false})
     .pipe($.mocha({
       reporter: 'dot',
       globals: Object.keys(mochaGlobals.globals),
@@ -44,7 +35,7 @@ function test() {
 }
 
 function coverage(done) {
-  gulp.src(['{server,example,lib}/**/*.js'])
+  gulp.src(allJsFiles)
     .pipe($.istanbul({
       instrumenter: Instrumenter,
       includeUntested: true
@@ -57,24 +48,15 @@ function coverage(done) {
     });
 }
 
-const watchFiles = ['{server/example/lib/test}/**/*', 'package.json', '**/.eslintrc'];
+const watchFiles = [allJsFiles, 'package.json', '**/.eslintrc', ignoreNodeModules];
 
 // Run the headless unit tests as you make changes.
 function watch() {
   $.watch(watchFiles, ['test']);
 }
 
-// Lint our source code
-gulp.task('lint-src', lintSrc);
-
-// Lint our test code
-gulp.task('lint-test', lintTest);
-
-// Lint this file
-gulp.task('lint-gulpfile', lintGulpfile);
-
-// Lint everything
-gulp.task('lint', ['lint-src', 'lint-test', 'lint-gulpfile']);
+// Lint
+gulp.task('lint', lint);
 
 // Lint and run our tests
 gulp.task('test', ['lint'], test);

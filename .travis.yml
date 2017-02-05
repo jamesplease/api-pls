@@ -3,5 +3,7 @@ language: node_js
 node_js:
   - "7.5.0"
 script: "npm run test"
+# Install Lerna deps
+before_script: "./node_modules/.bin/lerna bootstrap"
 notifications:
   email: false
