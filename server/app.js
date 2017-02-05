@@ -59,7 +59,7 @@ module.exports = function(options) {
   // Register the API
   app.use(api(options));
 
-  const port = process.env.PORT || 5000;
+  const port = options.port;
   app.set('port', port);
 
   if (!global.TESTING) {

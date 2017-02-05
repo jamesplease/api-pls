@@ -33,6 +33,7 @@ module.exports = function(options) {
       // to get the migration!
       const migrations = resources.map(resource => buildMigrations(resource));
 
+      // Ensure that the function migration is added
       migrations.unshift(fnMigration);
 
       console.log(chalk.green('✔ Migrations successfully built.'));

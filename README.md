@@ -39,11 +39,21 @@ api-pls in action.
 
 ### Installation
 
-Install the `api-pls` CLI.
+api-pls is a CLI tool. Install it into your project using
+[npm](https://www.npmjs.com/).
 
-`npm install api-pls --global`
+```
+npm install api-pls --save
+```
 
-Next, create a file in the root of your project called `.env`. Add the following
+The name of the CLI program is `pls`. The rest of this guide assumes that
+`pls` is on your path. If you've installed it locally into a project, then
+you will need to call it from within an
+[npm script](https://docs.npmjs.com/misc/scripts#path).
+
+### Basic Usage
+
+Create a file in the root of your project called `.env`. Add the following
 line to the file, replacing the database URL with your own:
 
 ```sh
@@ -67,6 +77,36 @@ You can access the API webserver at `localhost:5000`.
 Anytime you make changes to your resource models, be sure to run
 `pls reset-database` to clear out all of the previous models. Presently,
 only the initial migrations are supported.
+
+### CLI
+
+| Command          | Description                                   |
+|----------------- |---------------------------------------------  |
+| reset-database   |  Removes all tables from the database         |
+| migrate          |  Builds, then applies, migrations             |
+| start            |  Starts up the API webserver.                 |
+
+### CLI Flags
+
+All of the options may also be specified in `.plsrc`, if you would prefer.
+
+| Flags            | Default     | Description                                 |
+|----------------- |-------------|---------------------------------------------|
+| -h, --help       | N/A         | View all the commands from the command line |
+| -v, --version    | N/A         | Display the version of api-pls              |
+| -d, --database   |             | Specify the database URL                    |
+| -p, --port       | 5000        | Configure the port of the webserver         |
+| -r, --resources  | ./resources | Set the directory of your resources         |
+| -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
+
+### Example CLI Usage
+
+The following example turns off SSL, sets the port to be 6000, and sets the
+resource directory.
+
+```sh
+pls start -p 6000 -s false -r ./my-resources
+```
 
 ### Acknowledgements
 
