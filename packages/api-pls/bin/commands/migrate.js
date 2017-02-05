@@ -9,6 +9,11 @@ const normalizeModel = require('api-pls-util/normalize-model');
 const buildMigrations = require('api-pls-util/build-migrations');
 const deleteMigrations = require('../util/delete-migrations');
 
+// TODO: Remove this usage of dotenv. This needs to get passed in through
+// the rc file or some other means.
+const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
+require('dotenv').config({path: envPath});
+
 module.exports = function(options) {
   inquirer.prompt([{
       type: 'confirm',

@@ -24,10 +24,5 @@ module.exports = function(resourceModel) {
 
   resource.attributes = normalizeAttributes(resource.attributes);
 
-  return Object.assign(
-    resource,
-    {
-      attributes: Object.keys(resource.attributes),
-    }
-  );
+  return resource;
 };
