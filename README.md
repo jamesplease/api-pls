@@ -5,7 +5,7 @@
 API Pls enables you to effortlessly create
 [JSON API](http://jsonapi.org/)-compliant APIs.
 
-> Note: this project is a work in progress. It cannot be used yet, although you can run the example.
+> Note: this project is a work in progress. It currently functions in a limited manner.
 
 ### Motivation
 
