@@ -78,39 +78,22 @@ Anytime you make changes to your resource models, be sure to run
 `pls reset-database` to clear out all of the previous models. Presently,
 only the initial migrations are supported.
 
-### CLI Commands
+### CLI
 
-##### `pls -h`
+| Command          | Description                                   |
+|----------------- |---------------------------------------------  |
+| reset-database   |  Removes all tables from the database         |
+| migrate          |  Builds, then applies, migrations             |
+| start            |  Starts up the API webserver.                 |
 
-View all the commands from the command line.
+### CLI Flags
 
-##### `pls -v`
+All of the options may also be specified in `.plsrc`, if you would prefer.
 
-Display the version of api-pls
-
-##### `pls reset-database`
-
-Removes all tables from the database. This is useful if you've made changes to
-your resources, and would like them to be reflected on your server.
-
-Eventually, api-pls will support migrating from one state to another, but
-not now.
-
-##### `pls migrate`
-
-Builds migrations from your resource models, and then applies them to the
-database.
-
-##### `pls start`
-
-Starts up the API webserver.
-
-### CLI Options
-
-All of these options may also be specified in `.plsrc`, if you would prefer.
-
-| Options          | Default     | Description                                 |
+| Flags            | Default     | Description                                 |
 |----------------- |-------------|---------------------------------------------|
+| -h, --help       | N/A         | View all the commands from the command line |
+| -v, --version    | N/A         | Display the version of api-pls              |
 | -d, --database   |             | Specify the database URL                    |
 | -p, --port       | 5000        | Configure the port of the webserver         |
 | -r, --resources  | ./resources | Set the directory of your resources         |
