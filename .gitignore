@@ -37,7 +37,3 @@ jspm_packages
 .node_repl_history
 
 .env
-
-packages/api-pls/migrations/*
-# This migration is needed for built-in migrations
-!packages/api-pls/migrations/0.functions.sql

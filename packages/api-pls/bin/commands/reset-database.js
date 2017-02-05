@@ -2,21 +2,17 @@
 
 const chalk = require('chalk');
 const inquirer = require('inquirer');
-const deleteMigrations = require('../util/delete-migrations');
 
 function performWipe() {
   const db = require('../../database');
 
   console.log(chalk.grey('Resetting the database...'));
 
-  // This performs the wiping of the database.
-  const wipeDb = db.query(`DROP SCHEMA public CASCADE;
+  db.query(`DROP SCHEMA public CASCADE;
   CREATE SCHEMA public;
   GRANT ALL ON SCHEMA public TO postgres;
   GRANT ALL ON SCHEMA public TO public;
-  COMMENT ON SCHEMA public IS 'standard public schema';`);
-
-  Promise.all([wipeDb, deleteMigrations()])
+  COMMENT ON SCHEMA public IS 'standard public schema';`)
     .then(() => {
       console.log(chalk.green('✔ The database has been reset.'));
       process.exit();

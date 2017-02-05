@@ -60,10 +60,5 @@ module.exports = function(resource) {
   ${attrs.join(',\n')}
 );
 
-${triggers.join('\n\n')}
-
----
-
-DROP TABLE ${resource.name};
-  `;
+${triggers.join('\n\n')}`;
 };
