@@ -10,16 +10,19 @@ const mochaGlobals = require('./test-globals');
 // Load all of our Gulp plugins
 const $ = loadPlugins();
 
+const allJsFiles = 'packages/**/*.js';
+const ignoreNodeModules = '!packages/*/node_modules/**/*';
+
 // Lint a set of files
 function lint() {
-  return gulp.src(['packages/**/*.js', '!packages/*/node_modules/**/*'])
+  return gulp.src([allJsFiles, ignoreNodeModules])
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());
 }
 
 function _mocha() {
-  return gulp.src(['test/setup.js', 'test/unit/**/*.js'], {read: false})
+  return gulp.src(['packages/api-pls/test/setup.js', 'packages/api-pls/test/unit/**/*.js'], {read: false})
     .pipe($.mocha({
       reporter: 'dot',
       globals: Object.keys(mochaGlobals.globals),
@@ -32,7 +35,7 @@ function test() {
 }
 
 function coverage(done) {
-  gulp.src(['{server,example,lib}/**/*.js'])
+  gulp.src(allJsFiles)
     .pipe($.istanbul({
       instrumenter: Instrumenter,
       includeUntested: true
@@ -45,7 +48,7 @@ function coverage(done) {
     });
 }
 
-const watchFiles = ['{server/example/lib/test}/**/*', 'package.json', '**/.eslintrc'];
+const watchFiles = [allJsFiles, 'package.json', '**/.eslintrc', ignoreNodeModules];
 
 // Run the headless unit tests as you make changes.
 function watch() {
