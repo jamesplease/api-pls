@@ -7,11 +7,11 @@
 const exec = require('child_process').execSync;
 const path = require('path');
 
-const configPath = path.resolve(__dirname, '../../', 'careen.js');
+const configPath = path.resolve(__dirname, 'careen.js');
 
 const migrator = path.resolve(
   __dirname,
-  '../../',
+  '..',
   'node_modules',
   '.bin',
   'careen'

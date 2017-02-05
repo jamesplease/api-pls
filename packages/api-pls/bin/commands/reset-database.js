@@ -4,6 +4,7 @@ const path = require('path');
 const del = require('del');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
+const deleteMigrations = require('../util/delete-migrations');
 
 // TODO: Remove this usage of dotenv. This needs to get passed in through
 // the rc file or some other means.
@@ -22,22 +23,7 @@ function performWipe() {
   GRANT ALL ON SCHEMA public TO public;
   COMMENT ON SCHEMA public IS 'standard public schema';`);
 
-  // This deletes old migrations from the filesystem. Eventually, these will
-  // be stored in the database itself, but currently all migration tools
-  // require them to be on the filesystem.
-  const deleteMigrations = del([
-    // Get rid of all migrations
-    path.join(__dirname, '..', '..', 'migrations', '*'),
-    // ...except for the built-in functions migration, which is used for built-in
-    // attributes
-    `!${path.join(__dirname,  '..', '..', 'migrations', '0.functions.sql')}`
-  ], {
-    // This is necessary because these files are sometimes outside of the CWD;
-    // for instance, when the example is run from within the monorepo.
-    force: true
-  });
-
-  Promise.all([wipeDb, deleteMigrations])
+  Promise.all([wipeDb, deleteMigrations()])
     .then(() => {
       console.log(chalk.green('✔ The database has been reset.'));
       process.exit();

@@ -1,5 +1,5 @@
 const path = require('path');
-const dbConfig = require('./config/db-config');
+const dbConfig = require('./config');
 
 var config;
 
@@ -20,8 +20,7 @@ module.exports = {
     config: config
   },
 
-  // Right now, we hard code this to use the files from the examples directory
   files: {
-    directory: path.join(__dirname, 'example', 'migrations')
+    directory: path.join(__dirname, '..', 'migrations')
   }
 }

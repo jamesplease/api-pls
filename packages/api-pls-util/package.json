@@ -1,12 +1,10 @@
 {
-  "name": "api-pls-example",
+  "name": "api-pls-util",
   "version": "0.1.0",
-  "description": "An example project consuming API Pls",
+  "description": "Utilities for API Pls",
   "main": "index.js",
   "scripts": {
-    "migrate": "pls migrate",
-    "reset": "pls reset-database",
-    "run": "pls start"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -15,14 +13,15 @@
   "keywords": [
     "api-pls",
     "api",
-    "json",
-    "example",
-    "boilerplate"
+    "utilities"
   ],
   "author": "Jmeas",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jmeas/api-pls/issues"
   },
-  "homepage": "https://github.com/jmeas/api-pls#readme"
+  "homepage": "https://github.com/jmeas/api-pls#readme",
+  "dependencies": {
+    "lodash": "4.17.4"
+  }
 }

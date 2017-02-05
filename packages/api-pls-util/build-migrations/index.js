@@ -56,8 +56,7 @@ module.exports = function(resource) {
   const triggers = getTriggers(resource);
   const attrs = getAttrs(resource);
 
-  return `
-CREATE TABLE ${resource.name} (
+  return `CREATE TABLE ${resource.name} (
   ${attrs.join(',\n')}
 );
 
