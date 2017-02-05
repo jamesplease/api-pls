@@ -43,9 +43,11 @@ module.exports = function(options) {
       db.query(query)
         .then(() => {
           console.log(chalk.green('✔ Migrations successfully run. The database is up to date.'));
+          process.exit();
         })
         .catch((e) => {
           console.log(chalk.red('There was an error while running the migrations.', e));
+          process.exit(1);
         });
     });
 };
