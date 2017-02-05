@@ -73,6 +73,8 @@ program
   .option('-d, --database <url>', 'specify the database URL to connect to')
   .option('-p, --port <n>', 'set the webserver port', parseInt)
   .option('-r, --resources <path>', 'the directory where your resource models exist')
-  .option('-s, --ssl <boolean>', 'whether or not to connect to the DB with SSL', parseBoolean);
+  .option('-s, --ssl <boolean>', 'whether or not to connect to the DB with SSL', parseBoolean)
+  .option('--silent', 'disable logging')
+  .option('--verbose', 'enable verbose logging');
 
 program.parse(process.argv);
