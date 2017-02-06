@@ -1,6 +1,8 @@
 'use strict';
 
-const pgp = require('pg-promise')();
+const pgp = require('pg-promise')({
+  capSQL: true
+});
 const dbConfig = require('./config');
 
 let db;
