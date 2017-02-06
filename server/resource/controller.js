@@ -62,12 +62,18 @@ Object.assign(Controller.prototype, {
 
   create(req, res) {
     const rawAttrs = _.get(req, 'body.attributes', {});
+    const rawMeta = _.get(req, 'body.meta', {});
     const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
+    // At the moment, this allows users to modify the built-in-meta, which is
+    // no good.
+    const meta = _.pick(rawMeta, Object.keys(this.resource.meta));
+
+    const columns = Object.assign(attrs, meta);
 
     const query = baseSql.create({
       tableName: this.tableName,
       db: this.db,
-      attrs
+      attrs: columns
     });
 
     log.info({query, resource: this.resource}, 'Creating a resource');
@@ -121,12 +127,18 @@ Object.assign(Controller.prototype, {
   update(req, res) {
     const id = req.params.id;
     const rawAttrs = _.get(req, 'body.attributes', {});
+    const rawMeta = _.get(req, 'body.meta', {});
     const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
+    // At the moment, this allows users to modify the built-in-meta, which is
+    // no good.
+    const meta = _.pick(rawMeta, Object.keys(this.resource.meta));
+
+    const columns = Object.assign(attrs, meta);
 
     let query;
 
     // If there's nothing to update, we can use a read query.
-    if (!_.size(attrs)) {
+    if (!_.size(columns)) {
       query = baseSql.read({
         tableName: this.tableName,
         db: this.db,
@@ -140,7 +152,8 @@ Object.assign(Controller.prototype, {
       query = baseSql.update({
         tableName: this.tableName,
         db: this.db,
-        attrs, id
+        attrs: columns,
+        id
       });
     }
 

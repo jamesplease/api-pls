@@ -12,7 +12,7 @@ const builtInMeta = {
   },
   updated_at: {
     type: 'TIMESTAMPTZ',
-    nullable: false,
+    nullable: true,
     default: null
   }
 };
