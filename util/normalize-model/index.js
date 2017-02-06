@@ -1,7 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
-const normalizeAttributes = require('./util/normalize-attributes');
+const normalizeFields = require('./util/normalize-fields');
+const normalizeBuiltInMeta = require('./util/normalize-built-in-meta');
+
+const resourceProps = ['name', 'plural_form', 'attributes', 'meta'];
 
 // Resource Models written by hand are allowed to be incomplete; for instance,
 // if you're OK with accepting a default value.
@@ -13,11 +16,8 @@ module.exports = function(resourceModel) {
       // "book" => "books"
       plural_form: `${resourceModel.name}s`,
       attributes: {},
-      meta: {
-        created_at: _.get(resourceModel, 'built_in_meta_attributes.created_at'),
-        updated_at: _.get(resourceModel, 'resourceModel.built_in_meta_attributes.updated_at')
-      },
-      // All resources get these unless they opt out of them
+      meta: {},
+      // Set the default built-in-meta
       built_in_meta_attributes: {
         created_at: true,
         updated_at: true
@@ -26,7 +26,12 @@ module.exports = function(resourceModel) {
     resourceModel
   );
 
-  resource.attributes = normalizeAttributes(resource.attributes);
+  resource.attributes = normalizeFields(resource.attributes);
 
-  return resource;
+  // Combine the built in meta with any user-defined meta
+  const builtInMeta = normalizeBuiltInMeta(resource.built_in_meta_attributes);
+  const userDefinedMeta = normalizeFields(resource.meta);
+  resource.meta = Object.assign(builtInMeta, userDefinedMeta);
+
+  return _.pick(resource, resourceProps);
 };
