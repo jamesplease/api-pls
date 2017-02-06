@@ -110,6 +110,26 @@ resource directory.
 pls start -p 6000 -s false -r ./my-resources
 ```
 
+### JSON API Feature Support
+
+This project only partially supports JSON API. Features currently supported are:
+
+- [x] CRUD'ing resources
+- [x] Attributes
+- [x] Meta
+- [x] Consistent errors
+- [ ] Sparse fieldsets
+- [ ] Sorting
+- [ ] Pagination
+- [ ] Filtering
+- [ ] Links
+- [ ] Relations
+  - [ ] One-to-one
+  - [ ] Many-to-one
+  - [ ] Many-to-many
+  - [ ] Relationship endpoints (`/v1/:resource/relationships/:related`)
+  - [ ] Related endpoints (`/v1/:resource/:related`)
+
 ### Acknowledgements
 
 Many thanks goes to [Tyler Kellen](https://github.com/tkellen) for his work on
