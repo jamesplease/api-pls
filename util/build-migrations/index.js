@@ -2,47 +2,27 @@
 
 const _ = require('lodash');
 
-// Yeah I'm building this text migration in JS. Fight me!
-// No but really, I should probably move this into a Handlebars template or
-// something more sane.
-
-const builtInAttributes = {
-  created_at: '  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP',
-  updated_at: '  updated_at TIMESTAMPTZ'
-};
+// I need to update this to at least use pgp's formatting library, and possibly
+// also a templating language. This is bad, I know.
 
 const idAttr = 'id SERIAL PRIMARY KEY';
 
 function generateAttrRow(value, attrName) {
   let nullable = '';
   if (!value.nullable) {
-    nullable = ' NOT NULL';
+    nullable = 'NOT NULL';
   }
-  return `  ${attrName} ${value.type} ${nullable}`;
-}
 
-function getAttrs(resource) {
-  // By default, everything will have the same ID (for now)
-  let attrs = [idAttr];
-
-  const attrStrings = _.map(resource.attributes, generateAttrRow);
-
-  // Merge in our attributes
-  attrs = attrs.concat(attrStrings);
-
-  // Push our built in attributes
-  _.forEach(resource.built_in_attributes, (include, attrName) => {
-    if (include) {
-      attrs.push(builtInAttributes[attrName]);
-    }
-  });
-
-  return attrs;
+  let defaultValue = '';
+  if (value.default) {
+    defaultValue = `DEFAULT ${value.default}`;
+  }
+  return `  ${attrName} ${value.type} ${nullable} ${defaultValue}`;
 }
 
 function getTriggers(resource) {
   const triggers = [];
-  if (resource.built_in_attributes.updated_at) {
+  if (resource.meta.updated_at) {
     triggers.push(
 `CREATE TRIGGER updated_at BEFORE UPDATE ON ${resource.name}
   FOR EACH ROW EXECUTE PROCEDURE updated_at();`
@@ -54,10 +34,15 @@ function getTriggers(resource) {
 
 module.exports = function(resource) {
   const triggers = getTriggers(resource);
-  const attrs = getAttrs(resource);
+
+  const idAttrColumn = [idAttr];
+  const attrs = _.map(resource.attributes, generateAttrRow);
+  const meta = _.map(resource.meta, generateAttrRow);
+
+  const allColumns = idAttrColumn.concat(attrs, meta);
 
   return `CREATE TABLE ${resource.name} (
-  ${attrs.join(',\n')}
+  ${allColumns.join(',\n')}
 );
 
 ${triggers.join('\n\n')}`;
