@@ -132,6 +132,9 @@ This project only partially supports JSON API. Features currently supported are:
 
 ### Acknowledgements
 
-Many thanks goes to [Tyler Kellen](https://github.com/tkellen) for his work on
+[Tyler Kellen](https://github.com/tkellen) for his work on
 [Endpoints](https://github.com/endpoints/endpoints) (which inspired me to write
 this) and for our many conversations about REST.
+
+[Eric Valadas](https://github.com/ericvaladas) for helping plan the API and
+implementation of this library.
