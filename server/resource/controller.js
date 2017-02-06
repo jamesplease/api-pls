@@ -37,7 +37,7 @@ function handleQueryError(err, res, resource, crudAction, query) {
 // Access to the controller occurs through the routes.
 function Controller(resource, db) {
   this.resource = resource;
-  this.table = resource.name;
+  this.tableName = resource.name;
   this.db = db;
 
   _.bindAll(this, ['create', 'read', 'update', 'delete', 'formatTransaction']);
@@ -59,16 +59,18 @@ Object.assign(Controller.prototype, {
   },
 
   create(req, res) {
-    const attrs = _.get(req, 'body.attributes', {});
+    const rawAttrs = _.get(req, 'body.attributes', {});
+    const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
 
-    const body = _.pick(attrs, Object.keys(this.resource.attributes));
-
-    const fields = Object.keys(body);
-    const query = baseSql.create(this.table, fields);
+    const query = baseSql.create({
+      tableName: this.tableName,
+      db: this.db,
+      attrs
+    });
 
     log.info({query, resource: this.resource}, 'Creating a resource');
 
-    this.db.one(query, body)
+    this.db.one(query)
       .then(result => {
         log.info({query, resource: this.resource}, 'Resource created.');
         res.status(201);
@@ -85,12 +87,17 @@ Object.assign(Controller.prototype, {
     // `isSingular` is whether or not we're looking for 1
     // or all. This coercion is fine because SERIALs start at 1
     const isSingular = Boolean(id);
-    const query = baseSql.read(this.table, '*', {isSingular});
+    const query = baseSql.read({
+      tableName: this.tableName,
+      db: this.db,
+      fields: '*',
+      id
+    });
     const method = isSingular ? 'one' : 'any';
 
     log.info({query, resourceName: this.resource.name}, 'Reading a resource');
 
-    this.db[method](query, {id})
+    this.db[method](query)
       .then(result => {
         var formattedResult;
         if (!Array.isArray(result)) {
@@ -111,28 +118,33 @@ Object.assign(Controller.prototype, {
 
   update(req, res) {
     const id = req.params.id;
-    const attrs = _.get(req, 'body.attributes', {});
-    const body = _.pick(attrs, Object.keys(this.resource.attributes));
-
-    const fields = Object.keys(body);
+    const rawAttrs = _.get(req, 'body.attributes', {});
+    const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
 
     let query;
 
-    // If there's nothing to update, we can use a read query
-    if (!fields.length) {
-      query = baseSql.read(this.table, '*', {singular: true});
+    // If there's nothing to update, we can use a read query.
+    if (!_.size(attrs)) {
+      query = baseSql.read({
+        tableName: this.tableName,
+        db: this.db,
+        fields: '*',
+        id
+      });
     }
 
     // Otherwise, we get the update query.
     else {
-      query = baseSql.update(this.table, fields);
+      query = baseSql.update({
+        tableName: this.tableName,
+        db: this.db,
+        attrs, id
+      });
     }
-
-    const queryData = Object.assign({id}, body);
 
     log.info({query, resource: this.resource}, 'Updating a resource');
 
-    this.db.one(query, queryData)
+    this.db.one(query)
       .then(result => {
         log.info({query, resource: this.resource}, 'Updated a resource');
         sendJson(res, {
@@ -143,12 +155,15 @@ Object.assign(Controller.prototype, {
   },
 
   delete(req, res) {
-    const id = req.params.id;
-    const query = baseSql.delete(this.table);
+    const query = baseSql.delete({
+      tableName: this.tableName,
+      db: this.db,
+      id: req.params.id
+    });
 
     log.info({query, resourceName: this.resource.name}, 'Deleting a resource');
 
-    this.db.one(query, {id})
+    this.db.one(query)
       .then(() => {
         log.info({query, resourceName: this.resource.name}, 'Deleted a resource');
         res.status(204).end();
