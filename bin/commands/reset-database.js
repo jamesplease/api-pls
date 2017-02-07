@@ -34,7 +34,7 @@ function performWipe(options) {
 
       if (!options.verbose) {
         log(
-          chalk.red('Re-run this command with --verbose to see more information about this problem.'),
+          chalk.red('Run this command with --verbose to see more information about this error.'),
           options
         );
       }
