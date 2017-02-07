@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const pgp = require('pg-promise');
 
 // I need to update this to at least use pgp's formatting library, and possibly
 // also a templating language. This is bad, I know.
@@ -15,18 +16,31 @@ function generateAttrRow(value, attrName) {
 
   let defaultValue = '';
   if (value.default) {
-    defaultValue = `DEFAULT ${value.default}`;
+    // SQL Injection could occur here from `defaultValue`
+    defaultValue = pgp.as.format(`DEFAULT $[defaultValue^]`, {
+      defaultValue: value.default
+    });
   }
-  return `  ${attrName} ${value.type} ${nullable} ${defaultValue}`;
+
+  // SQL Injection could occur here from `type`
+  const query = pgp.as.format(`$[attrName~] $[type^] ${nullable} ${defaultValue}`, {
+    type: value.type,
+    attrName
+  });
+
+  return `  ${query}`;
 }
 
 function getTriggers(resource) {
   const triggers = [];
   if (resource.meta.updated_at) {
-    triggers.push(
-`CREATE TRIGGER updated_at BEFORE UPDATE ON ${resource.name}
-  FOR EACH ROW EXECUTE PROCEDURE updated_at();`
-);
+    const query = pgp.as.format(
+      `CREATE TRIGGER updated_at BEFORE UPDATE ON $[resourceName~]
+      FOR EACH ROW EXECUTE PROCEDURE updated_at();`, {
+        resourceName: resource.name
+      });
+
+    triggers.push(query);
   }
 
   return triggers;
@@ -40,7 +54,12 @@ function generateRelationRow(relation, columnBaseName) {
     nullable = ' NOT NULL';
   }
 
-  return `  ${columnBaseName}_id INTEGER references ${relation.resource}(id) ${nullable}`;
+  const query = pgp.as.format(`$[columnName~] INTEGER references $[tableName~](id) ${nullable}`, {
+    columnName: `${columnBaseName}_id`,
+    tableName: relation.resource
+  });
+
+  return `  ${query}`;
 }
 
 module.exports = function(resource) {
@@ -53,7 +72,11 @@ module.exports = function(resource) {
 
   const allColumns = idAttrColumn.concat(attrs, meta, relations);
 
-  return `CREATE TABLE ${resource.name} (
+  const createTableQuery = pgp.as.format('CREATE TABLE $[resourceName~]', {
+    resourceName: resource.name
+  });
+
+  return `${createTableQuery} (
   ${allColumns.join(',\n')}
 );
 
