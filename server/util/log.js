@@ -1,6 +1,9 @@
 'use strict';
 
-const bunyan = require('bunyan');
+const pino = require('pino');
+
+const pretty = pino.pretty();
+pretty.pipe(process.stdout);
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isDevEnv = NODE_ENV === 'development';
@@ -11,14 +14,12 @@ function resourceSerializer(resource) {
   };
 }
 
-const log = bunyan.createLogger({
-  name: 'API-Pls',
-  serializers: bunyan.stdSerializers,
+const log = pino({
+  name: 'api-pls',
+  serializers: Object.assign({
+    resource: resourceSerializer
+  }, pino.stdSerializers),
   src: isDevEnv
-});
-
-log.addSerializers({
-  resource: resourceSerializer
-});
+}, pretty);
 
 module.exports = log;

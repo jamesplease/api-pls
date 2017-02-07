@@ -49,7 +49,7 @@ module.exports = function(options) {
   app.use(addRequestId({
     // We're using this middleware for logging purposes. Each request having
     // a unique ID can help filter many requests coming in. If we set it as a
-    // header, we'd get the benefit of Bunyan automatically logging it. But
+    // header, we'd get the benefit of Pino automatically logging it. But
     // then we'd also be sending it over the wire unnecessarily. So we turn
     // that off, which means we must remember to attach the `req.id` to all logs
     // that are sent a request. i.e.; `log.info({reqId: req.id})`
