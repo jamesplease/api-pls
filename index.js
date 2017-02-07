@@ -16,7 +16,7 @@ process.on('unhandledRejection', (reason) => {
   const logObj = {};
 
   // Assign the `reason` to the `err` key if it is
-  // an error. This is so that Bunyan's error serializer
+  // an error. This is so that pino's error serializer
   // picks it up.
   if (reason instanceof Error) {
     logObj.err = reason;
