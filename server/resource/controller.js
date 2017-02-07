@@ -84,7 +84,7 @@ Object.assign(Controller.prototype, {
       response.attributes = pickedAttrs;
     }
     if (_.size(pickedMeta)) {
-      response.meta = _.pick(t, meta);
+      response.meta = pickedMeta;
     }
     if (_.size(relationships)) {
       response.relationships = relationships;
@@ -135,14 +135,25 @@ Object.assign(Controller.prototype, {
 
   read(req, res) {
     const id = req.params.id;
+    const isSingular = Boolean(id);
+
+    const pagination = this.resource.pagination;
+    const pageNumber = Number(_.get(req.query, 'page.number', pagination.defaultPageNumber));
+    const pageSize = Number(_.get(req.query, 'page.size', pagination.defaultPageSize));
+
+    // Only paginate if this is a readMany, and if the resource has specified
+    // pagination.
+    const enablePagination = !isSingular && pagination.enabled;
 
     // `isSingular` is whether or not we're looking for 1
     // or all. This coercion is fine because SERIALs start at 1
-    const isSingular = Boolean(id);
     const query = baseSql.read({
       tableName: this.tableName,
       db: this.db,
       fields: '*',
+      pageSize,
+      pageNumber,
+      enablePagination,
       id
     });
     const method = isSingular ? 'one' : 'any';
@@ -151,16 +162,29 @@ Object.assign(Controller.prototype, {
 
     this.db[method](query)
       .then(result => {
-        var formattedResult;
+        let formattedResult;
+        let totalCount;
         if (!Array.isArray(result)) {
           formattedResult = this.formatTransaction(result);
         } else {
+          totalCount = result.length ? result[0].total_count : 0;
           formattedResult = _.map(result, this.formatTransaction);
         }
         log.info({query, resourceName: this.resource.name, reqId: req.id}, 'Read a resource');
-        sendJson(res, {
-          data: formattedResult
-        });
+
+        const dataToSend = {
+          data: formattedResult,
+        };
+
+        if (enablePagination) {
+          dataToSend.meta = {
+            page_number: pageNumber,
+            page_size: pageSize,
+            total_count: Number(totalCount)
+          };
+        }
+
+        sendJson(res, dataToSend);
       })
       .catch(err => {
         const crudAction = isSingular ? 'readOne' : 'readMany';
