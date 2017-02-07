@@ -15,6 +15,7 @@ module.exports = function({resource, version, db}) {
 
   return {
     routes: routes.routes,
-    location: routes.location
+    location: routes.location,
+    resource
   };
 };
