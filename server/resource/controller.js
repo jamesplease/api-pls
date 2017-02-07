@@ -141,6 +141,44 @@ Object.assign(Controller.prototype, {
     const pageNumber = Number(_.get(req.query, 'page.number', pagination.defaultPageNumber));
     const pageSize = Number(_.get(req.query, 'page.size', pagination.defaultPageSize));
 
+    // Find the fields to return
+    let fieldsToReturn = _.get(req.query, `fields.${this.resource.plural_form}`, '*');
+
+    // This captures if the user specifies the parameter, but doesn't actually
+    // enter a value.
+    if (!fieldsToReturn) {
+      fieldsToReturn = '*';
+    }
+
+    // The user can pass in comma-separated fields. i.e.
+    // ?fields[people]=first_name,last_name,address
+    // to just get those fields.
+    if (fieldsToReturn !== '*') {
+      fieldsToReturn = fieldsToReturn
+        .split(',')
+        // Ensure only valid fields are specified
+        .filter(field => _.includes(Object.keys(this.resource.attributes), field));
+    }
+
+    let fieldsIsArray = Array.isArray(fieldsToReturn);
+
+    // If they tried to specify fields, but none of them exist on this resource,
+    // then we return an error response.
+    if (fieldsIsArray && fieldsToReturn.length === 0) {
+      res.status(serverErrors.noValidFields.code);
+      sendJson(res, {
+        errors: [serverErrors.noValidFields.body(this.resource.plural_form)]
+      });
+      res.end();
+      return;
+    }
+
+    if (fieldsIsArray) {
+      // We always need the ID, as well as the meta attributes. `fields`
+      // only refers to relationships and attributes.
+      fieldsToReturn = fieldsToReturn.concat('id', Object.keys(this.resource.meta));
+    }
+
     // Only paginate if this is a readMany, and if the resource has specified
     // pagination.
     const enablePagination = !isSingular && pagination.enabled;
@@ -150,7 +188,7 @@ Object.assign(Controller.prototype, {
     const query = baseSql.read({
       tableName: this.tableName,
       db: this.db,
-      fields: '*',
+      fields: fieldsToReturn,
       pageSize,
       pageNumber,
       enablePagination,
