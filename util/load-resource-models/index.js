@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const yaml = require('js-yaml');
-const normalizeModel = require('../normalize-model');
 
 // This function reads and parses the resource from the disk, and returns it.
 // At the moment, only YAML files are supported, although it'd be simple to add
@@ -27,6 +26,5 @@ module.exports = function(resourcesDir) {
   // Loop through all files in the directory
   return fs.readdirSync(resourcesDir)
     // Open them up and parse them as JSON
-    .map(r => loadResource(r, resourcesDir))
-    .map(normalizeModel);
+    .map(r => loadResource(r, resourcesDir));
 };

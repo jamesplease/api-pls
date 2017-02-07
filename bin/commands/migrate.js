@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
@@ -7,6 +8,8 @@ const chalk = require('chalk');
 const loadResourceModels = require('../../util/load-resource-models');
 const buildMigrations = require('../../util/build-migrations');
 const depGraph = require('../../util/resource-dependency-graph');
+const validateResourceModel = require('../../util/validate-resource-model');
+const normalizeModel = require('../../util/normalize-model');
 const log = require('../util/log');
 
 module.exports = function(options) {
@@ -60,8 +63,24 @@ module.exports = function(options) {
         return;
       }
 
+      // Attempt to catch errors early on by validating the model that the
+      // user has input.
+      const invalidResources = _.reject(resources, validateResourceModel);
+      if (invalidResources.length) {
+        log(
+          chalk.red('At least one resource model was invalid.'),
+          options,
+          chalk.red('Invalid resource models:', invalidResources.map(r => r.name).join(', '))
+        );
+        return;
+      }
+
+      // If everything checks out, then we can normalize our resource
+      // to get it into a common format.
+      const normalizedResources = resources.map(normalizeModel);
+
       // Sort the resources based on their relationships.
-      const migrationOrder = depGraph(resources);
+      const migrationOrder = depGraph(normalizedResources);
 
       // This is our function migration, which is common to all DBs
       const fnMigration = fs.readFileSync(path.join(migrationsDir, 'functions.sql'), {encoding: 'utf8'});
