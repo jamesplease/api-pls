@@ -41,8 +41,8 @@ module.exports = function({version, resource, controller}) {
     routes: {
       post: {'/': postMiddleware},
       get: {
-        '/': getOneMiddleware,
-        '/:id': getManyMiddleware
+        '/': getManyMiddleware,
+        '/:id': getOneMiddleware
       },
       patch: {'/:id': patchMiddleware},
       delete: {'/:id': deleteMiddleware}
