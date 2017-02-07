@@ -5,7 +5,9 @@ const normalizeFields = require('./util/normalize-fields');
 const normalizeRelations = require('./util/normalize-relations');
 const normalizeBuiltInMeta = require('./util/normalize-built-in-meta');
 
-const resourceProps = ['name', 'plural_form', 'attributes', 'meta', 'relations'];
+const resourceProps = [
+  'name', 'plural_form', 'attributes', 'meta', 'relations', 'actions'
+];
 
 // Resource Models written by hand are allowed to be incomplete; for instance,
 // if you're OK with accepting a default value.
@@ -19,6 +21,13 @@ module.exports = function(resourceModel) {
       attributes: {},
       meta: {},
       relations: {},
+      actions: {
+        create: true,
+        readOne: true,
+        readMany: true,
+        update: true,
+        delete: true
+      },
       // Set the default built-in-meta
       built_in_meta_attributes: {
         created_at: true,

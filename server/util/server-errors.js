@@ -11,6 +11,16 @@ module.exports = {
     }
   },
 
+  notAllowed: {
+    code: 405,
+    body() {
+      return {
+        title: 'Method Not Allowed',
+        detail: 'This method is not permitted on this resource.'
+      };
+    }
+  },
+
   contentTypeHasParams: {
     code: 415,
     body() {

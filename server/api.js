@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
@@ -48,10 +49,15 @@ module.exports = function(options) {
 
   const links = {};
   resources.forEach(r => {
+    const allowedMethods = _.chain(r.resource.actions)
+      .pickBy()
+      .map((bool, name) => name)
+      .value();
+
     links[r.resource.name] = {
       link: r.location,
       meta: {
-        methods: Object.keys(r.routes)
+        methods: allowedMethods
       }
     };
   });
