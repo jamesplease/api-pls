@@ -13,23 +13,37 @@ exports.create = function({tableName, attrs, db}) {
 // ['first_name', 'last_name'],
 // or an asterisk to get everything: '*'.
 // By default, the asterisk is used.
-exports.read = function({tableName, fields, db, id}) {
+exports.read = function({tableName, fields, db, id, pageSize, pageNumber, enablePagination}) {
   const pgp = db.$config.pgp;
 
   // Default fields to an asterisk
   fields = fields ? fields : '*';
   var columns = pgp.as.name(fields);
 
-  const baseQuery = pgp.as.format(`SELECT ${columns} FROM $[tableName~]`, {
+  let totalCountQuery = '';
+  if (enablePagination) {
+    totalCountQuery = pgp.as.format(', COUNT(*) OVER () AS total_count', {
+    });
+  }
+
+  const baseQuery = pgp.as.format(`SELECT ${columns} ${totalCountQuery} FROM $[tableName~]`, {
     tableName
   });
 
-  let endQuery;
-  if (id) {
-    endQuery = pgp.as.format('WHERE id = $[id]', {id});
+  let paginationQuery = '';
+  if (enablePagination) {
+    paginationQuery = pgp.as.format('LIMIT $[limit] OFFSET $[offset]', {
+      limit: pageSize,
+      offset: pageNumber * pageSize
+    });
   }
 
-  return `${baseQuery} ${endQuery}`;
+  let endQuery = '';
+  if (id) {
+    endQuery = pgp.as.format('WHERE id=$[id]', {id});
+  }
+
+  return `${baseQuery} ${paginationQuery} ${endQuery}`;
 };
 
 exports.update = function({tableName, attrs, id, db}) {
