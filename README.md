@@ -118,14 +118,14 @@ This project only partially supports JSON API. Features currently supported are:
 - [x] Attributes
 - [x] Meta
 - [x] Consistent errors
-- [ ] Sparse fieldsets
+- [x] Sparse fieldsets
 - [ ] Sorting
 - [ ] Pagination
-- [ ] Filtering
+- [x] Filtering
 - [ ] Links
 - [ ] Relations
   - [ ] One-to-one
-  - [ ] Many-to-one
+  - [x] Many-to-one (limited supported)
   - [ ] Many-to-many
   - [ ] Relationship endpoints (`/v1/:resource/relationships/:related`)
   - [ ] Related endpoints (`/v1/:resource/:related`)
