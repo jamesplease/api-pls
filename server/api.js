@@ -46,16 +46,29 @@ module.exports = function(options) {
 
   router.get('/', (req, res) => res.redirect(`/v${apiVersion}`));
 
+  const links = {};
+  resources.forEach(r => {
+    links[r.resource.name] = {
+      link: r.location,
+      meta: {
+        methods: Object.keys(r.routes)
+      }
+    };
+  });
+
   // Set up the root route that describes the available endpoints.
   router.get(`/v${apiVersion}`, (req, res) => {
     sendJson(res, {
-      version: `v${apiVersion}`,
-      endpoints: resources.map(resource => {
-        return {
-          route: resource.location,
-          methods: Object.keys(resource.routes)
-        };
-      })
+      jsonapi: {
+        version: '1.0',
+        meta: {
+          extensions: []
+        }
+      },
+      meta: {
+        api_version: `${apiVersion}`,
+      },
+      links
     });
   });
 
