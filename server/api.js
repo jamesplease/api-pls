@@ -6,6 +6,7 @@ const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const loadResourceModels = require('../util/load-resource-models');
+const normalizeModel = require('../util/normalize-model');
 const buildJsonSchema = require('../util/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
@@ -23,8 +24,9 @@ module.exports = function(options) {
 
   var definitions = loadResourceModels(options.resourcesDirectory)
     .map(resourceModel => {
-      return Object.assign(resourceModel, {
-        validations: buildJsonSchema(resourceModel)
+      const normalized = normalizeModel(resourceModel);
+      return Object.assign(normalized, {
+        validations: buildJsonSchema(normalized)
       });
     });
 
