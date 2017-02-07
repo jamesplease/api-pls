@@ -9,7 +9,9 @@ module.exports = function({version, resource, controller}) {
 
   const notAllowedMiddleware = [(req, res) => {
     res.status(serverErrors.notAllowed.code);
-    sendJson(res, serverErrors.notAllowed.body());
+    sendJson(res, {
+      errors: [serverErrors.notAllowed.body()]
+    });
   }];
 
   const postMiddleware = !actions.create ? notAllowedMiddleware : [

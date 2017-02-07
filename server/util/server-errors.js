@@ -21,6 +21,16 @@ module.exports = {
     }
   },
 
+  noValidFields: {
+    code: 400,
+    body(resourceName) {
+      return {
+        title: 'No Valid Fields',
+        detail: `No valid fields were specified for resource '${resourceName}'.`
+      };
+    }
+  },
+
   contentTypeHasParams: {
     code: 415,
     body() {
