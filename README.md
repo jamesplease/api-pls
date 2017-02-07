@@ -120,8 +120,8 @@ This project only partially supports JSON API. Features currently supported are:
 - [x] Consistent errors
 - [x] Sparse fieldsets
 - [ ] Sorting
-- [ ] Pagination
-- [x] Filtering
+- [x] Pagination
+- [ ] Filtering
 - [ ] Links
 - [ ] Relations
   - [ ] One-to-one
