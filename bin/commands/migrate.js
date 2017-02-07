@@ -6,6 +6,7 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 const loadResourceModels = require('../../util/load-resource-models');
 const buildMigrations = require('../../util/build-migrations');
+const depGraph = require('../../util/resource-dependency-graph');
 const log = require('../util/log');
 
 module.exports = function(options) {
@@ -29,15 +30,22 @@ module.exports = function(options) {
         chalk.grey(`Loading resources from "${path.resolve(resourcesDir)}"`)
       );
 
+      // Load our resources. This will sort them based on their file name,
+      // which won't work when we run migrations. This is because relationships
+      // require that the migrations be run in the correct order.
       const resources = loadResourceModels(resourcesDir);
 
+      // Sort the resources based on their relationships.
+      const migrationOrder = depGraph(resources);
+
+      // This is our function migration, which is common to all DBs
       const fnMigration = fs.readFileSync(path.join(migrationsDir, 'functions.sql'), {encoding: 'utf8'});
 
       // Create our up migrations. We assume that the resource has never
       // existed. Eventually, we will need to first diff the resource
       // against the previous version, then pass that diff into a method
       // to get the migration!
-      const migrations = resources.map(resource => buildMigrations(resource));
+      const migrations = migrationOrder.map(resource => buildMigrations(resource));
 
       // Ensure that the function migration is added
       migrations.unshift(fnMigration);

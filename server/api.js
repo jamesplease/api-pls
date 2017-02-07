@@ -9,6 +9,7 @@ const buildJsonSchema = require('../util/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
 const createDb = require('../database');
+const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 
 module.exports = function(options) {
   const router = express.Router();
@@ -25,6 +26,8 @@ module.exports = function(options) {
         validations: buildJsonSchema(resourceModel)
       });
     });
+
+  adjustResourceQuantity.setResources(definitions);
 
   var resources = definitions.map(resource => new Resource({
     version: apiVersion,

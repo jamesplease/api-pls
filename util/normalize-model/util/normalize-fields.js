@@ -7,9 +7,7 @@ function normalizeField(field, fieldName) {
 
   // This handles the short-hand syntax:
   //
-  // fields: {
-  //   description: 'VARCHAR(30)'
-  // }
+  // fields: 'VARCHAR(30)'
   //
   if (_.isString(field)) {
     attr.type = field;
