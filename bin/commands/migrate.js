@@ -72,6 +72,14 @@ module.exports = function(options) {
           options,
           chalk.red('Invalid resource models:', invalidResources.map(r => r.name).join(', '))
         );
+
+        if (!options.verbose) {
+          log(
+            chalk.red('Run this command with --verbose to see more information about this error.'),
+            options
+          );
+        }
+
         return;
       }
 
