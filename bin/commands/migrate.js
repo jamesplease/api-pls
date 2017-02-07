@@ -30,10 +30,35 @@ module.exports = function(options) {
         chalk.grey(`Loading resources from "${path.resolve(resourcesDir)}"`)
       );
 
+      if (!fs.existsSync(resourcesDir)) {
+        log(
+          chalk.red('The resource directory specified does not exist.'),
+          options,
+          chalk.red(`Looked for resources in: "${path.resolve(resourcesDir)}"`)
+        );
+
+        if (!options.verbose) {
+          log(
+            chalk.red('Run this command with --verbose to see more information about this error.'),
+            options
+          );
+        }
+
+        return;
+      }
+
       // Load our resources. This will sort them based on their file name,
       // which won't work when we run migrations. This is because relationships
       // require that the migrations be run in the correct order.
       const resources = loadResourceModels(resourcesDir);
+
+      if (!resources.length) {
+        log(
+          chalk.grey('No resources found. Nothing to do.'),
+          options
+        );
+        return;
+      }
 
       // Sort the resources based on their relationships.
       const migrationOrder = depGraph(resources);
@@ -74,7 +99,7 @@ module.exports = function(options) {
 
           if (!options.verbose) {
             log(
-              chalk.red('Re-run this command with --verbose to see more information about this problem.'),
+              chalk.red('Run this command with --verbose to see more information about this error.'),
               options
             );
           }
