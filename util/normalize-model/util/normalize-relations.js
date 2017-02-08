@@ -22,17 +22,7 @@ function normalizeRelations(relation, relatedName) {
   // }
   //
   else {
-    // Types must be strings.
-    if (!_.isString(relation.resource)) {
-      throw new Error(`Invalid type for relation "${relatedName}". A String is required.`);
-    }
     related.resource = relation.resource;
-
-    // Relationships must be strings.
-    if (!_.isString(relation.relationship)) {
-      throw new Error(`Invalid relationship for relation "${relatedName}". A String is required.`);
-    }
-
     related.relationship = relation.relationship;
   }
 

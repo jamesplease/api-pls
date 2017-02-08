@@ -3,6 +3,7 @@
 'use strict';
 
 const _ = require('lodash');
+const fs = require('fs');
 const rc = require('rc');
 const path = require('path');
 const program = require('commander');
@@ -12,6 +13,10 @@ const start = require('./commands/start');
 
 const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
 require('dotenv').config({path: envPath});
+
+const packageJsonPath = path.join(__dirname, '..', 'package.json');
+const packageJsonString = fs.readFileSync(packageJsonPath, {encoding: 'utf-8'});
+const packageJson = JSON.parse(packageJsonString);
 
 // Load up our configuration, passing the defaults in.
 let options = rc('pls', {
@@ -27,7 +32,7 @@ options = Object.assign(options, {
   migrationsDirectory: path.join(__dirname, '..', 'migrations')
 });
 
-program.version('0.8.0', '-v, --version');
+program.version(packageJson.version, '-v, --version');
 
 // Not all of the CLI option names line up with the value from plsrc. This
 // makes sure that they do line up.

@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 
-function normalizeField(field, fieldName) {
+function normalizeField(field) {
   const attr = {};
 
   // This handles the short-hand syntax:
@@ -25,10 +25,6 @@ function normalizeField(field, fieldName) {
   // }
   //
   else {
-    // Types must be strings.
-    if (!_.isString(field.type)) {
-      throw new Error(`Invalid type for field "${fieldName}". A String is required.`);
-    }
     attr.type = field.type;
 
     // Ensure nullable is a Boolean, defaulting to `true`.
