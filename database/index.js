@@ -14,5 +14,7 @@ module.exports = function(options) {
     return db;
   }
 
-  return pgp(dbConfig(options));
+  db = pgp(dbConfig(options));
+
+  return db;
 };

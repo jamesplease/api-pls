@@ -22,7 +22,12 @@ function lint() {
 }
 
 function _mocha() {
-  return gulp.src(['./test/setup.js', './test/unit/**/*.js'], {read: false})
+  return gulp.src([
+    './test/setup.js',
+    './test/unit/**/*.js',
+    './test/integration/setup.js',
+    './test/integration/**/*.js'
+  ], {read: false})
     .pipe($.mocha({
       reporter: 'dot',
       globals: Object.keys(mochaGlobals.globals),

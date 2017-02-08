@@ -56,7 +56,7 @@ module.exports = function(options) {
       .map((bool, name) => name)
       .value();
 
-    links[r.resource.name] = {
+    links[r.resource.plural_form] = {
       link: r.location,
       meta: {
         methods: allowedMethods
