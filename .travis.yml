@@ -1,6 +1,8 @@
 language: node_js
 node_js:
   - "7.5.0"
+services:
+  - postgresql
 script: "npm run test"
 notifications:
   email: false
