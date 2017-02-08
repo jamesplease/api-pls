@@ -21,3 +21,8 @@ afterEach(() => {
   delete global.spy;
   global.sandbox.restore();
 });
+
+process.on('unhandledRejection', (reason) => {
+  console.log('There was an unhandled Promise rejection', reason);
+  process.exit(1);
+});

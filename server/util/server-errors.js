@@ -1,6 +1,9 @@
 'use strict';
 
 module.exports = {
+  // Returned anytime a request is made against a nonexistent resource.
+  // For instance, if the user typos the URL, or if the resource has been
+  // deleted.
   notFound: {
     code: 404,
     body() {
@@ -11,6 +14,8 @@ module.exports = {
     }
   },
 
+  // Returned if the resource does not permit this operation. For instance,
+  // trying to DELETE a resource that is read-only.
   notAllowed: {
     code: 405,
     body() {
@@ -21,16 +26,20 @@ module.exports = {
     }
   },
 
+  // Returned if a sparse fieldset is requested, in which none of the fields
+  // are valid.
   noValidFields: {
     code: 400,
     body(resourceName) {
       return {
-        title: 'No Valid Fields',
-        detail: `No valid fields were specified for resource '${resourceName}'.`
+        title: 'Bad Request',
+        detail: `No valid fields were specified for resource "${resourceName}".`
       };
     }
   },
 
+  // Returned when the client specifies an invalid Content-Type header. For
+  // more, see: http://jsonapi.org/format/#content-negotiation-servers
   contentTypeHasParams: {
     code: 415,
     body() {
@@ -41,6 +50,8 @@ module.exports = {
     }
   },
 
+  // Returned when the client specifies an invalid Accepts header. For more, see:
+  // http://jsonapi.org/format/#content-negotiation-servers
   acceptsHasParams: {
     code: 406,
     body() {
@@ -51,6 +62,7 @@ module.exports = {
     }
   },
 
+  // A catch-all for server errors that aren't handled more gracefully.
   generic: {
     code: 500,
     body() {

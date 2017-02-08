@@ -76,7 +76,7 @@ Object.assign(Controller.prototype, {
     const pickedMeta = _.pick(t, meta);
 
     const response = {
-      id: t.id,
+      id: String(t.id),
       type: this.resource.plural_form,
     };
 
@@ -114,6 +114,14 @@ Object.assign(Controller.prototype, {
     }, {});
 
     const columns = Object.assign(attrs, meta, relData);
+
+    if (!_.size(columns)) {
+      res.status(serverErrors.noValidFields.code);
+      sendJson(res, {
+        errors: [serverErrors.noValidFields.body(this.resource.plural_form)]
+      });
+      return;
+    }
 
     const query = baseSql.create({
       tableName: this.tableName,

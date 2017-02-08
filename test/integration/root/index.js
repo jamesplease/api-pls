@@ -4,6 +4,7 @@ const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
 const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
+const applyMigrations = require('../../helpers/apply-migrations');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
@@ -26,11 +27,14 @@ describe('The root endpoint', function() {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
       };
 
-      request(app(options))
-        .get('/')
-        .expect('Location', '/v1')
-        .expect(302)
-        .end(done);
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .get('/')
+            .expect('Location', '/v1')
+            .expect(302)
+            .end(done);
+        });
     });
 
     it('should return 406 if the invalid Accepts is specified', (done) => {
@@ -43,13 +47,16 @@ describe('The root endpoint', function() {
         detail: 'No instances of the JSON API media type in the Accepts header were specified without media type parameters.'
       }];
 
-      request(app(options))
-        .get('/v1')
-        .set('Accept', 'sandwiches')
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(406)
-        .end(done);
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .get('/v1')
+            .set('Accept', 'sandwiches')
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(406)
+            .end(done);
+        });
     });
 
     it('should return 200, with the proper response, when there are no resources', (done) => {
@@ -70,14 +77,17 @@ describe('The root endpoint', function() {
 
       const links = {};
 
-      request(app(options))
-        .get('/v1')
-        .expect('Content-Type', 'application/json')
-        .expect(validators.assertJsonapi(jsonapi))
-        .expect(validators.assertMeta(meta))
-        .expect(validators.assertLinks(links))
-        .expect(200)
-        .end(done);
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .get('/v1')
+            .expect('Content-Type', 'application/json')
+            .expect(validators.assertJsonapi(jsonapi))
+            .expect(validators.assertMeta(meta))
+            .expect(validators.assertLinks(links))
+            .expect(200)
+            .end(done);
+        });
     });
 
     it('should return 200, with the proper response, when there is one resource', (done) => {
@@ -109,14 +119,17 @@ describe('The root endpoint', function() {
         }
       };
 
-      request(app(options))
-        .get('/v1')
-        .expect('Content-Type', 'application/json')
-        .expect(validators.assertJsonapi(jsonapi))
-        .expect(validators.assertMeta(meta))
-        .expect(validators.assertLinks(links))
-        .expect(200)
-        .end(done);
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .get('/v1')
+            .expect('Content-Type', 'application/json')
+            .expect(validators.assertJsonapi(jsonapi))
+            .expect(validators.assertMeta(meta))
+            .expect(validators.assertLinks(links))
+            .expect(200)
+            .end(done);
+        });
     });
   });
 });
