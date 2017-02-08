@@ -1,8 +1,8 @@
 'use strict';
 
-const path = require('path');
 const chalk = require('chalk');
 const log = require('../util/log');
+const startServer = require('../../util/start-server');
 
 module.exports = function(options) {
   log(
@@ -10,7 +10,5 @@ module.exports = function(options) {
     options
   );
 
-  const serverPath = path.join(__dirname, '..', '..', 'index.js');
-  const server = require(serverPath);
-  server(options);
+  startServer(options);
 };
