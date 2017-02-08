@@ -4,9 +4,10 @@
   "description": "Effortless JSON API-compliant APIs",
   "main": "index.js",
   "scripts": {
+    "lint": "gulp lint",
     "pretest": "dropdb api_pls_test_db -U postgres || true && createdb api_pls_test_db -U postgres",
     "test": "gulp",
-    "lint": "gulp lint",
+    "precoverage": "dropdb api_pls_test_db -U postgres || true && createdb api_pls_test_db -U postgres",
     "coverage": "gulp coverage"
   },
   "bin": {
