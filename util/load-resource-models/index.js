@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 const yaml = require('js-yaml');
 
 // This function reads and parses the resource from the disk, and returns it.
@@ -10,7 +9,6 @@ const yaml = require('js-yaml');
 // in support for JSON.
 function loadResource(filename, resourcesDir) {
   const filePath = path.join(resourcesDir, filename);
-
   const fileContents = fs.readFileSync(filePath, 'utf8');
 
   // Empty files are simply ignored.
@@ -18,17 +16,11 @@ function loadResource(filename, resourcesDir) {
     return null;
   }
 
-  let doc;
-  try {
-    doc = yaml.safeLoad(fileContents);
-  } catch (e) {
-    console.log(chalk.red(`There was an error while parsing the "${filename}" resource file.`));
-    process.exit(1);
-  }
-
-  return doc;
+  return yaml.safeLoad(fileContents);
 }
 
+// Attempts to read the resource models in `resourcesDir`. This will throw an
+// Error if any of them are invalid YAML.
 module.exports = function(resourcesDir) {
   // Loop through all files in the directory
   return fs.readdirSync(resourcesDir)
