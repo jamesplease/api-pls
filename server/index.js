@@ -1,7 +1,7 @@
 'use strict';
 
-const app = require('./server/app');
-const log = require('./server/util/log');
+const app = require('./app');
+const log = require('./util/log');
 
 module.exports = function(options) {
   app(options);
