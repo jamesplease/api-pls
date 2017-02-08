@@ -10,7 +10,7 @@ const normalizeModel = require('../lib/normalize-model');
 const buildJsonSchema = require('../lib/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
-const createDb = require('../database');
+const createDb = require('../lib/database');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 
 module.exports = function(options) {

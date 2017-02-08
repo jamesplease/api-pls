@@ -6,7 +6,7 @@ const log = require('../util/log');
 const wipeDatabase = require('../../lib/wipe-database');
 
 function performWipe(options) {
-  const db = require('../../database')(options);
+  const db = require('../../lib/database')(options);
 
   log(
     chalk.grey('Resetting the database...'),
