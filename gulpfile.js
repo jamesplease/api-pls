@@ -10,7 +10,7 @@ const mochaGlobals = require('./test/globals');
 // Load all of our Gulp plugins
 const $ = loadPlugins();
 
-const allJsFiles = '**/*.js';
+const allJsFiles = '{database,server,util}/*.js';
 const ignoreNodeModules = '!node_modules/**/*';
 
 // Lint a set of files
