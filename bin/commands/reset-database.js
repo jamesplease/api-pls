@@ -3,6 +3,7 @@
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const log = require('../util/log');
+const wipeDatabase = require('../../util/wipe-database');
 
 function performWipe(options) {
   const db = require('../../database')(options);
@@ -16,11 +17,7 @@ function performWipe(options) {
     }
   );
 
-  db.query(`DROP SCHEMA public CASCADE;
-  CREATE SCHEMA public;
-  GRANT ALL ON SCHEMA public TO postgres;
-  GRANT ALL ON SCHEMA public TO public;
-  COMMENT ON SCHEMA public IS 'standard public schema';`)
+  wipeDatabase(db)
     .then(() => {
       log(chalk.green('✔ The database has been reset.'), options);
       process.exit();
