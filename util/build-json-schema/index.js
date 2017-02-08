@@ -43,14 +43,19 @@ function generateCreateOrUpdateValidation(pluralResourceName, attributes, isCrea
         // JSON API requires that at least "type" be present.
         required: true,
         properties: {
-          type: {
-            required: true,
-            type: 'string',
-            pattern: `^${pluralResourceName}$`
-          },
-          // Attributes are optional.
-          attributes: {
-            properties: _.mapValues(attributes, attr => generateCreateOrUpdateForAttribute(attr, isCreate))
+          data: {
+            type: 'object',
+            properties: {
+              type: {
+                required: true,
+                type: 'string',
+                pattern: `^${pluralResourceName}$`
+              },
+              // Attributes are optional.
+              attributes: {
+                properties: _.mapValues(attributes, attr => generateCreateOrUpdateForAttribute(attr, isCreate))
+              }
+            }
           }
         }
       }

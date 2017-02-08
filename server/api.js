@@ -81,7 +81,7 @@ module.exports = function(options) {
   });
 
   // All other requests get a default 404 error.
-  router.get('*', (req, res) => {
+  router.use('*', (req, res) => {
     res.status(404);
     sendJson(res, {
       errors: [serverErrors.notFound.body()]

@@ -1,0 +1,9 @@
+name: 'nope'
+
+pagination: false
+
+attributes:
+  label:
+    type: 'VARCHAR(30)'
+    nullable: false
+  size: 'VARCHAR(30)'
