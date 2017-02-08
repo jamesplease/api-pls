@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const getDb = require('../../database');
+const getDb = require('../../lib/database');
 const migrations = require('../../lib/migrations');
 const log = require('../util/log');
 
