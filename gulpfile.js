@@ -13,7 +13,7 @@ const $ = loadPlugins();
 // Opt in to these files so that `bin`, `node_modules`, and so on, aren't
 // picked up.
 const entry = './index.js';
-const allJsFiles = '{database,server,util}/**/*.js';
+const allJsFiles = '{database,server,lib}/**/*.js';
 const ignoreNodeModules = '!node_modules/**/*';
 
 // Lint a set of files
