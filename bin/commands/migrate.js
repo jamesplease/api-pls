@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const buildMigrations = require('../../lib/build-migrations');
-const applyMigrations = require('../../lib/apply-migrations');
+const getDb = require('../../database');
+const migrations = require('../../lib/migrations');
 const log = require('../util/log');
 
 module.exports = function(options) {
@@ -47,17 +47,18 @@ module.exports = function(options) {
       }
 
       // TODO: handle errors here.
-      const migrations = buildMigrations(resourcesDir);
+      const migrationStrings = migrations.build(resourcesDir);
 
       log(
         chalk.green('✔ Migrations successfully built.'),
         options,
-        chalk.grey(`Migrations: ${migrations.join('\n\n')}`)
+        chalk.grey(`Migrations: ${migrationStrings.join('\n\n')}`)
       );
 
       log(chalk.grey('Running migrations...'), options);
 
-      applyMigrations(migrations, options)
+      const db = getDb(options);
+      migrations.apply(db, migrationStrings)
         .then(() => {
           log(chalk.green('✔ Migrations successfully run. The database is up to date.'), options);
           process.exit();
