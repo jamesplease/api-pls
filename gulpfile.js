@@ -12,12 +12,13 @@ const $ = loadPlugins();
 
 // Opt in to these files so that `bin`, `node_modules`, and so on, aren't
 // picked up.
+const entry = './index.js';
 const allJsFiles = '{database,server,util}/**/*.js';
 const ignoreNodeModules = '!node_modules/**/*';
 
 // Lint a set of files
 function lint() {
-  return gulp.src([allJsFiles, ignoreNodeModules])
+  return gulp.src([entry, allJsFiles, ignoreNodeModules])
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());
@@ -42,7 +43,7 @@ function test() {
 }
 
 function coverage(done) {
-  gulp.src(allJsFiles)
+  gulp.src([entry, allJsFiles])
     .pipe($.istanbul({
       instrumenter: Instrumenter,
       includeUntested: true
@@ -55,7 +56,7 @@ function coverage(done) {
     });
 }
 
-const watchFiles = [allJsFiles, 'package.json', '**/.eslintrc', ignoreNodeModules];
+const watchFiles = [entry, allJsFiles, 'package.json', '**/.eslintrc', ignoreNodeModules];
 
 // Run the headless unit tests as you make changes.
 function watch() {
