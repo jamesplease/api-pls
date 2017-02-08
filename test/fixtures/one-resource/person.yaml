@@ -9,12 +9,10 @@ attributes:
   first_name: 'VARCHAR(30)'
   last_name: 'VARCHAR(30)'
 
-# We can adjust some pagination settings in here
 pagination:
   defaultPageSize: 5
   defaultPageNumber: 0
 
 built_in_meta_attributes:
-  # this is only here for documentation purposes. It is the default.
   created_at: false
   updated_at: true

@@ -26,12 +26,6 @@ let options = rc('pls', {
   port: 5000
 });
 
-options = Object.assign(options, {
-  // We set the migrations direction in here, as well. This is so that the
-  // program can find the base migrations common to all api-pls DBs.
-  migrationsDirectory: path.join(__dirname, '..', 'migrations')
-});
-
 program.version(packageJson.version, '-v, --version');
 
 // Not all of the CLI option names line up with the value from plsrc. This

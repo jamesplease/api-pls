@@ -2,13 +2,13 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../database');
-const wipeDb = require('../../helpers/wipe-db');
+const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
 
-describe('Integration test placeholder', function() {
+describe('The root endpoint', function() {
   // Ensure that the DB connection drops immediately after each test
   afterEach(() => {
     db.$config.pgp.end();
@@ -17,7 +17,7 @@ describe('Integration test placeholder', function() {
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
   beforeEach(done => {
-    wipeDb(db).then(() => done());
+    wipeDatabase(db).then(() => done());
   });
 
   describe('Root route', () => {

@@ -1,4 +1,4 @@
-const validate = require('../../../util/validate-resource-model');
+const validate = require('../../../lib/validate-resource-model');
 
 describe('validateResourceModel', function() {
   it('should return false for empty models', () => {

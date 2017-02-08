@@ -94,9 +94,10 @@ Object.assign(Controller.prototype, {
   },
 
   create(req, res) {
-    const rawAttrs = _.get(req, 'body.attributes', {});
-    const rawMeta = _.get(req, 'body.meta', {});
-    const rawRelations = _.get(req, 'body.relationships', {});
+    const data = _.get(req, 'body.data', {});
+    const rawAttrs = data.attributes;
+    const rawMeta = data.meta;
+    const rawRelations = data.relationships;
 
     const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
     // At the moment, this allows users to modify the built-in-meta, which is
