@@ -2,7 +2,7 @@
 
 const chalk = require('chalk');
 const log = require('../util/log');
-const startServer = require('../../util/start-server');
+const startServer = require('../../lib/start-server');
 
 module.exports = function(options) {
   log(

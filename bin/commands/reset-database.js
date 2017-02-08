@@ -3,7 +3,7 @@
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const log = require('../util/log');
-const wipeDatabase = require('../../util/wipe-database');
+const wipeDatabase = require('../../lib/wipe-database');
 
 function performWipe(options) {
   const db = require('../../database')(options);

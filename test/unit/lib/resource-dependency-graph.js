@@ -1,4 +1,4 @@
-const depGraph = require('../../../util/resource-dependency-graph');
+const depGraph = require('../../../lib/resource-dependency-graph');
 
 describe('resourceDependencyGraph', function() {
   it('should return an empty array when passed an empty array', () => {

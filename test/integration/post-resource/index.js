@@ -2,7 +2,7 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../database');
-const wipeDatabase = require('../../../util/wipe-database');
+const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 
 const db = getDb();

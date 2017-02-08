@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const buildMigrations = require('../../util/build-migrations');
-const applyMigrations = require('../../util/apply-migrations');
+const buildMigrations = require('../../lib/build-migrations');
+const applyMigrations = require('../../lib/apply-migrations');
 const log = require('../util/log');
 
 module.exports = function(options) {
