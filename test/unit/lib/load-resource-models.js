@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const loadResourceModels = require('../../../lib/load-resource-models');
 
