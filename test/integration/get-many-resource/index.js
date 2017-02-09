@@ -263,4 +263,105 @@ describe('Resource GET (many)', function() {
         .end(done);
     });
   });
+
+  describe('when the request succeeds with default pagination', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [
+        {first_name: 'james', last_name: 'please'},
+        {first_name: 'shilpa', last_name: 'please'},
+        {first_name: 'tim', last_name: 'please'},
+        {first_name: 'stephen', last_name: 'please'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = [
+        {
+          type: 'paginates',
+          id: '1',
+          attributes: {
+            first_name: 'james',
+            last_name: 'please'
+          }
+        },
+        {
+          type: 'paginates',
+          id: '2',
+          attributes: {
+            first_name: 'shilpa',
+            last_name: 'please'
+          }
+        }
+      ];
+
+      const expectedMeta = {
+        page_number: 0,
+        page_size: 2,
+        total_count: 4
+      };
+
+      request(app(this.options))
+        .get('/v1/paginates')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertMeta(expectedMeta))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds with a custom page and size requested', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [
+        {first_name: 'james', last_name: 'please'},
+        {first_name: 'shilpa', last_name: 'please'},
+        {first_name: 'tim', last_name: 'please'},
+        {first_name: 'stephen', last_name: 'please'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = [
+        {
+          type: 'paginates',
+          id: '4',
+          attributes: {
+            first_name: 'stephen',
+            last_name: 'please'
+          }
+        }
+      ];
+
+      const expectedMeta = {
+        page_number: 1,
+        page_size: 3,
+        total_count: 4
+      };
+
+      request(app(this.options))
+        .get('/v1/paginates')
+        .query('page[number]=1&page[size]=3')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertMeta(expectedMeta))
+        .expect(200)
+        .end(done);
+    });
+  });
 });
