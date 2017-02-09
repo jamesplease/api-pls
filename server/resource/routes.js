@@ -41,13 +41,22 @@ module.exports = function({version, resource, controller}) {
 
     // Four routes for the four CRUD ops
     routes: {
-      post: {'/': postMiddleware},
+      post: {
+        '/': postMiddleware,
+        '/:id': notAllowedMiddleware
+      },
       get: {
         '/': getManyMiddleware,
         '/:id': getOneMiddleware
       },
-      patch: {'/:id': patchMiddleware},
-      delete: {'/:id': deleteMiddleware}
+      patch: {
+        '/': notAllowedMiddleware,
+        '/:id': patchMiddleware
+      },
+      delete: {
+        '/': notAllowedMiddleware,
+        '/:id': deleteMiddleware
+      }
     }
   };
 };

@@ -43,4 +43,27 @@ describe('Resource PATCH', function() {
         });
     });
   });
+
+  describe('attempting to PATCH an entire list of resources', () => {
+    it('should return a Method Not Allowed error response', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const expectedErrors = [{
+        title: 'Method Not Allowed',
+        detail: 'This method is not permitted on this resource.'
+      }];
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .patch('/v1/nopes')
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(405)
+            .end(done);
+        });
+    });
+  });
 });
