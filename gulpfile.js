@@ -14,11 +14,12 @@ const $ = loadPlugins();
 // picked up.
 const entry = './index.js';
 const allJsFiles = '{database,server,lib}/**/*.js';
+const testFiles = 'test/**/*.js';
 const ignoreNodeModules = '!node_modules/**/*';
 
 // Lint a set of files
 function lint() {
-  return gulp.src([entry, allJsFiles, ignoreNodeModules])
+  return gulp.src([entry, allJsFiles, testFiles, ignoreNodeModules])
     .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());

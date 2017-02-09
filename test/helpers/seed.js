@@ -11,4 +11,4 @@ module.exports = function(resource, seeds) {
   const columns = Object.keys(seeds[0]);
   const query = insert(seeds, columns, resource);
   return db.query(query);
-}
+};
