@@ -5,6 +5,7 @@ const getDb = require('../../../lib/database');
 const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
+const seed = require('../../helpers/seed');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
@@ -64,6 +65,142 @@ describe('Resource PATCH', function() {
             .expect(405)
             .end(done);
         });
+    });
+  });
+
+  describe('when the request succeeds, and data is manipulated', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('no_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = {
+        type: 'no_metas',
+        id: '1',
+        attributes: {
+          first_name: 'eric',
+          last_name: 'please'
+        }
+      };
+
+      request(app(this.options))
+        .patch('/v1/no_metas/1')
+        .send({
+          data: {
+            type: 'no_metas',
+            id: '1',
+            attributes: {
+              first_name: 'eric',
+              last_name: 'please'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds, and meta is manipulated', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('has_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = {
+        type: 'has_metas',
+        id: '1',
+        attributes: {
+          first_name: 'james',
+          last_name: 'please'
+        },
+        meta: {
+          copyright: 'ISC'
+        }
+      };
+
+      request(app(this.options))
+        .patch('/v1/has_metas/1')
+        .send({
+          data: {
+            type: 'has_metas',
+            id: '1',
+            meta: {
+              copyright: 'ISC'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds, but nothing is manipulated', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('no_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = {
+        type: 'no_metas',
+        id: '1',
+        attributes: {
+          first_name: 'james',
+          last_name: 'please'
+        }
+      };
+
+      request(app(this.options))
+        .patch('/v1/no_metas/1')
+        .send({
+          data: {
+            type: 'no_metas',
+            id: '1',
+            attributes: {
+              what: 'sandwiches'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(200)
+        .end(done);
     });
   });
 });
