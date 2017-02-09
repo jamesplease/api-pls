@@ -1,39 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
-const pgp = require('pg-promise');
 const log = require('../util/log');
 const baseSql = require('../util/base-sql');
 const serverErrors = require('../util/server-errors');
-const mapPgError = require('../util/map-pg-error');
 const sendJson = require('../util/send-json');
-const adjustResourceQuantity = require('../util/adjust-resource-quantity');
-
-// This is the function called when a query fails.
-function handleQueryError({err, req, res, resource, crudAction, query}) {
-  var serverError;
-
-  // First, check to see if it's a pgp QueryResultError. If it
-  // is, we generate the appropriate server error.
-  if (err instanceof pgp.errors.QueryResultError) {
-    serverError = mapPgError(err.code);
-  }
-
-  // If it's not a pgp QueryResultError, we send over tbe generic server error.
-  else {
-    serverError = serverErrors.generic;
-  }
-
-  log.warn({
-    resourceName: resource.name,
-    reqId: req.id,
-    err, crudAction, query
-  }, 'There was a query error with a CRUD request.');
-  res.status(serverError.code);
-  sendJson(res, {
-    errors: [serverError.body()]
-  });
-}
+const handleQueryError = require('../util/handle-query-error');
+const buildResponseRelationships = require('../util/build-response-relationships');
 
 // The Controller interfaces with the database. It performs our CRUD operations.
 // Access to the controller occurs through the routes.
@@ -43,23 +16,6 @@ function Controller(resource, db) {
   this.db = db;
 
   _.bindAll(this, ['create', 'read', 'update', 'delete', 'formatTransaction']);
-}
-
-function buildResponseRelationships(result, resource) {
-  const response = {};
-  _.forEach(resource.relations, (relation, columnBase) => {
-    const columnName = `${columnBase}_id`;
-    const id = result[columnName];
-
-    if (id) {
-      response[columnBase] = {
-        type: adjustResourceQuantity.getPluralName(relation.resource),
-        id
-      };
-    }
-  });
-
-  return response;
 }
 
 Object.assign(Controller.prototype, {
