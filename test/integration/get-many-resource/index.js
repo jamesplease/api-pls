@@ -364,4 +364,42 @@ describe('Resource GET (many)', function() {
         .end(done);
     });
   });
+
+  describe('when the request succeeds with no results', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [
+        {first_name: 'james', last_name: 'please'},
+        {first_name: 'shilpa', last_name: 'please'},
+        {first_name: 'tim', last_name: 'please'},
+        {first_name: 'stephen', last_name: 'please'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response, but with 0 total_count', (done) => {
+      const expectedData = [];
+
+      const expectedMeta = {
+        page_number: 100,
+        page_size: 10,
+        total_count: 0
+      };
+
+      request(app(this.options))
+        .get('/v1/paginates')
+        .query('page[number]=100&page[size]=10')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertMeta(expectedMeta))
+        .expect(200)
+        .end(done);
+    });
+  });
 });
