@@ -59,6 +59,28 @@ describe('The root endpoint', function() {
         });
     });
 
+    it('should return 415 if an invalid Content-Type header is specified', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+      };
+
+      const expectedErrors = [{
+        title: 'Invalid Content-Type Header',
+        detail: 'The header "Content-Type: application/vnd.api+json" cannot have media type parameters.'
+      }];
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .get('/v1')
+            .set('Content-Type', 'application/vnd.api+json; sandwiches=true')
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(415)
+            .end(done);
+        });
+    });
+
     it('should return 200, with the proper response, when there are no resources', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
