@@ -1,0 +1,14 @@
+name: 'relation'
+
+relations:
+  owner:
+    resource: 'paginate'
+    relationship: 'many-to-one'
+
+attributes:
+  name: 'VARCHAR(30)'
+  size: 'NUMERIC(9, 2)'
+
+built_in_meta_attributes:
+  created_at: false
+  updated_at: false

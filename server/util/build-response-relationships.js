@@ -7,12 +7,14 @@ module.exports = function(result, resource) {
   const response = {};
   _.forEach(resource.relations, (relation, columnBase) => {
     const columnName = `${columnBase}_id`;
-    const id = result[columnName];
+    const id = String(result[columnName]);
 
     if (id) {
       response[columnBase] = {
-        type: adjustResourceQuantity.getPluralName(relation.resource),
-        id
+        data: {
+          type: adjustResourceQuantity.getPluralName(relation.resource),
+          id
+        }
       };
     }
   });
