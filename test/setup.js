@@ -1,5 +1,10 @@
 'use strict';
 
+const log = require('../server/util/log');
+
+// Disable logging for testing.
+log.level = 'silent';
+
 global.TESTING = true;
 global.assert = require('assert');
 global.sinon = require('sinon');
