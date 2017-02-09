@@ -44,6 +44,29 @@ describe('Resource POST', function() {
     });
   });
 
+  describe('attempting to POST a single resource', () => {
+    it('should return a Method Not Allowed error response', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const expectedErrors = [{
+        title: 'Method Not Allowed',
+        detail: 'This method is not permitted on this resource.'
+      }];
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .post('/v1/nopes/1')
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(405)
+            .end(done);
+        });
+    });
+  });
+
   describe('when the resource does not permit POST', () => {
     it('should return a Not Allowed error response', (done) => {
       const options = {
