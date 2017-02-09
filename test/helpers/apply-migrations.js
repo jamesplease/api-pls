@@ -1,7 +1,6 @@
 'use strict';
 
 const getDb = require('../../lib/database');
-const app = require('../../server/app');
 const migrations = require('../../lib/migrations');
 
 const db = getDb();

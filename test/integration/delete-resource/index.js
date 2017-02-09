@@ -2,6 +2,7 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
+const seed = require('../../helpers/seed');
 const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
@@ -64,6 +65,31 @@ describe('Resource DELETE', function() {
             .expect(405)
             .end(done);
         });
+    });
+  });
+
+  describe('when the request succeeds', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [{
+        label: 'sandwiches',
+        size: 'M'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('nope', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 204 response', (done) => {
+      request(app(this.options))
+        .delete('/v1/nopes/1')
+        .expect(validators.assertEmptyBody)
+        .expect(204)
+        .end(done);
     });
   });
 });

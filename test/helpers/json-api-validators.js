@@ -21,6 +21,12 @@ module.exports = {
     }
   },
 
+  assertEmptyBody(res) {
+    if (_.size(res.body)) {
+      throw new Error(`Expected empty body, but got: ${inspect(res.body)}`);
+    }
+  },
+
   // Assert the value of `body.errors`
   assertErrors(expected) {
     return function(res) {
