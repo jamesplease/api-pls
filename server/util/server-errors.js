@@ -26,8 +26,11 @@ module.exports = {
     }
   },
 
-  // Returned if a sparse fieldset is requested, in which none of the fields
-  // are valid.
+  // Returned in several situations involving bad formatting, typos, or
+  // other mistakes from the requestor:
+  // - sparse fieldset is requested, in which none of the fields
+  //   are valid.
+  // - the user forgets to nest their data under "data"
   noValidFields: {
     code: 400,
     body(resourceName) {
