@@ -7,3 +7,6 @@ attributes:
     type: 'VARCHAR(30)'
     nullable: false
   size: 'VARCHAR(30)'
+
+built_in_meta_attributes:
+  created_at: false

@@ -17,7 +17,7 @@ module.exports = {
   // for the sake of flexibility."
   basicValidation(res) {
     if (!validator(res.body)) {
-      throw new Error('The response body does not adhere to JSON API.');
+      throw new Error(`The response body does not adhere to JSON API. ${inspect(res.body)}. Errors: ${inspect(validator.errors)}`);
     }
   },
 

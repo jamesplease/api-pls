@@ -1,5 +1,10 @@
 'use strict';
 
+const log = require('../server/util/log');
+
+// Disable logging for testing.
+log.level = 'silent';
+
 global.TESTING = true;
 global.assert = require('assert');
 global.sinon = require('sinon');
@@ -20,4 +25,9 @@ afterEach(() => {
   delete global.stub;
   delete global.spy;
   global.sandbox.restore();
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.log('There was an unhandled Promise rejection', reason);
+  process.exit(1);
 });
