@@ -182,4 +182,51 @@ describe('Resource GET (one)', function() {
         .end(done);
     });
   });
+
+  describe('when the request succeeds, with a relationship', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const paginateSeeds = [
+        {first_name: 'sandwiches'},
+        {first_name: 'what'},
+        {first_name: 'pls'}
+      ];
+
+      const relationSeeds = [
+        {name: 'james', owner_id: '1'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('relation', relationSeeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 OK, with the resource', (done) => {
+      request(app(this.options))
+        .get('/v1/relations/1')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData({
+          type: 'relations',
+          id: '1',
+          attributes: {
+            name: 'james',
+            size: null
+          },
+          relationships: {
+            owner: {
+              data: {
+                id: '1',
+                type: 'paginates'
+              }
+            }
+          }
+        }))
+        .expect(200)
+        .end(done);
+    });
+  });
 });
