@@ -34,7 +34,7 @@ module.exports = function({version, resource, controller}) {
   ];
   const deleteMiddleware = !actions.delete ? notAllowedMiddleware : [
     validator(validations.delete),
-    controller.delete
+    controller.del
   ];
 
   return {
