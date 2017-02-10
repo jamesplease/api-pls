@@ -2,12 +2,11 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Resource Model Schema",
   "description": "This is the schema for resource models for api-pls. For more, see https://github.com/jmeas/api-pls",
-  "required": true,
   "type": "object",
   "additionalProperties": false,
+  "required": ["name"],
   "properties": {
     "name": {
-      "required": true,
       "type": "string"
     },
     "plural_form": {

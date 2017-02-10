@@ -11,10 +11,10 @@ const kapowAttrs = ['message', 'title', 'httpStatus'];
 
 function createTitle(originalError) {
   originalError = originalError ? originalError : {};
-  return `"${originalError.field.slice(5)}" ${originalError.message}`;
+  return `"${originalError.dataPath.slice(1)}" ${originalError.message}`;
 }
 
-// Maps an error from `is-my-json-valid` to a message for `Kapow`
+// Maps an error from `ajv` to a message for `Kapow`
 function mapErrors(originalErrors) {
   return originalErrors.map(e => createTitle(e));
 }

@@ -122,14 +122,14 @@ describe('Resource POST', function() {
   });
 
   describe('when non-nullable fields are not included', () => {
-    it('should return a No Valid Fields error response', (done) => {
+    it('should return a Bad Request error response', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
       };
 
       const expectedErrors = [{
         title: 'Bad Request',
-        detail: '"body.data.attributes.label" is required'
+        detail: '"body.data.attributes" should have required property \'label\''
       }];
 
       applyMigrations(options)

@@ -16,13 +16,13 @@ describe('requestErrorMap', function() {
   describe('when passing a single is-my-json-valid error', () => {
     it('should return an empty Array', () => {
       var input = [{
-        field: 'data.hello',
+        dataPath: '.data.hello',
         message: 'is required'
       }];
 
       var expected = [{
         title: 'Bad Request',
-        detail: '"hello" is required'
+        detail: '"data.hello" is required'
       }];
 
       assert.deepEqual(requestErrorMap(input), expected);
@@ -32,19 +32,19 @@ describe('requestErrorMap', function() {
   describe('when passing multiple is-my-json-valid errors', () => {
     it('should return an empty Array', () => {
       var input = [{
-        field: 'data.hello',
+        dataPath: '.data.hello',
         message: 'is required'
       }, {
-        field: 'data.id',
+        dataPath: '.data.id',
         message: 'is the wrong type'
       }];
 
       var expected = [{
         title: 'Bad Request',
-        detail: '"hello" is required'
+        detail: '"data.hello" is required'
       }, {
         title: 'Bad Request',
-        detail: '"id" is the wrong type'
+        detail: '"data.id" is the wrong type'
       }];
 
       assert.deepEqual(requestErrorMap(input), expected);
