@@ -72,6 +72,7 @@ Object.assign(Controller.prototype, {
     const columns = Object.assign(attrs, meta, relData);
 
     if (!_.size(columns)) {
+      log.info({req, res}, 'A create request had no columns to update');
       res.status(serverErrors.noValidFields.code);
       sendJson(res, {
         errors: [serverErrors.noValidFields.body(this.resource.plural_form)]
@@ -130,6 +131,7 @@ Object.assign(Controller.prototype, {
     // If they tried to specify fields, but none of them exist on this resource,
     // then we return an error response.
     if (fieldsIsArray && fieldsToReturn.length === 0) {
+      log.info({req, res}, 'A read request specified sparse fields, but provided no valid fields.');
       res.status(serverErrors.noValidFields.code);
       sendJson(res, {
         errors: [serverErrors.noValidFields.body(this.resource.plural_form)]
@@ -173,7 +175,6 @@ Object.assign(Controller.prototype, {
           totalCount = result.length ? result[0].total_count : 0;
           formattedResult = _.map(result, this.formatTransaction);
         }
-        log.info({query, resourceName: this.resource.name, reqId: req.id}, 'Read a resource');
 
         const dataToSend = {
           data: formattedResult,
@@ -187,6 +188,7 @@ Object.assign(Controller.prototype, {
           };
         }
 
+        log.info({query, resourceName: this.resource.name, reqId: req.id}, 'Read a resource');
         sendJson(res, dataToSend);
       })
       .catch(err => {

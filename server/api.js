@@ -12,6 +12,7 @@ const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
 const createDb = require('../lib/database');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
+const log = require('./util/log');
 
 module.exports = function(options) {
   const router = express.Router();
@@ -22,6 +23,9 @@ module.exports = function(options) {
   // This version needs to be made external
   var apiVersion = 1;
 
+  log.info({
+    resourcesDirectory: options.resourcesDirectory
+  }, 'Loading resources from the resources directory.');
   var definitions = loadResourceModels(options.resourcesDirectory)
     .map(resourceModel => {
       const normalized = normalizeModel(resourceModel);
@@ -29,6 +33,9 @@ module.exports = function(options) {
         validations: buildJsonSchema(normalized)
       });
     });
+  log.info({
+    resourcesDirectory: options.resourcesDirectory
+  }, 'Successfully loaded resources from the resources directory.');
 
   adjustResourceQuantity.setResources(definitions);
 
@@ -47,7 +54,10 @@ module.exports = function(options) {
     ))
   );
 
-  router.get('/', (req, res) => res.redirect(`/v${apiVersion}`));
+  router.get('/', (req, res) => {
+    log.info({req, res}, 'A route to the root is being redirected.');
+    res.redirect(`/v${apiVersion}`);
+  });
 
   const links = {};
   resources.forEach(r => {
@@ -66,6 +76,7 @@ module.exports = function(options) {
 
   // Set up the root route that describes the available endpoints.
   router.get(`/v${apiVersion}`, (req, res) => {
+    log.info({req, res}, 'A request was made to the versioned root.');
     sendJson(res, {
       jsonapi: {
         version: '1.0',
@@ -82,6 +93,7 @@ module.exports = function(options) {
 
   // All other requests get a default 404 error.
   router.use('*', (req, res) => {
+    log.info({req, res}, 'A 404 route was handled.');
     res.status(404);
     sendJson(res, {
       errors: [serverErrors.notFound.body()]

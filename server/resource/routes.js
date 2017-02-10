@@ -3,11 +3,13 @@
 const validator = require('../util/validator');
 const serverErrors = require('../util/server-errors');
 const sendJson = require('../util/send-json');
+const log = require('../util/log');
 
 module.exports = function({version, resource, controller}) {
   const {validations, plural_form, actions} = resource;
 
   const notAllowedMiddleware = [(req, res) => {
+    log.info({req, res}, 'An action that is not allowed was attempted at an endpoint.');
     res.status(serverErrors.notAllowed.code);
     sendJson(res, {
       errors: [serverErrors.notAllowed.body()]
