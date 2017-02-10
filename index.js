@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const database = require('./lib/database');
 const startServer = require('./lib/start-server');
-const migrations = require('./lib/migrations');
+const sync = require('./lib/sync');
 const normalizeModel = require('./lib/normalize-model');
 const buildJsonSchema = require('./lib/build-json-schema');
 const loadResourceModels = require('./lib/load-resource-models');
@@ -34,13 +34,13 @@ ApiPls.prototype.start = function() {
   startServer(this.options);
 };
 
-// Load resources, build migrations, apply them.
+// Load resources, build SQL statements from them, run them.
 // Returns a Promise that resolves if the operation is a success, or rejects
 // if the operation fails.
-ApiPls.prototype.migrate = function() {
+ApiPls.prototype.sync = function() {
   const resourcesDir = this.options.resourcesDirectory;
-  const migrationStrings = migrations.build(resourcesDir);
-  return migrations.apply(this.db, migrationStrings);
+  const migrationStrings = sync.build(resourcesDir);
+  return sync.apply(this.db, migrationStrings);
 };
 
 // Clear the database.

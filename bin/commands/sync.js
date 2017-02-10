@@ -6,14 +6,14 @@ const path = require('path');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const getDb = require('../../lib/database');
-const migrations = require('../../lib/migrations');
+const sync = require('../../lib/sync');
 const log = require('../util/log');
 
 module.exports = function(options) {
   inquirer.prompt([{
     type: 'confirm',
     name: 'confirmation',
-    message: 'Would you like to build and run migrations? This cannot be undone',
+    message: 'Are you sure you wish to sync your database? This cannot be undone.',
     default: false
   }])
     .then((answers) => {
@@ -24,7 +24,7 @@ module.exports = function(options) {
       const resourcesDir = options.resourcesDirectory;
 
       log(
-        chalk.grey('Building migrations...'),
+        chalk.grey('Building migrations from Resource Models...'),
         options,
         chalk.grey(`Loading resources from "${path.resolve(resourcesDir)}"`)
       );
@@ -47,20 +47,20 @@ module.exports = function(options) {
       }
 
       // TODO: handle errors here.
-      const migrationStrings = migrations.build(resourcesDir);
+      const migrationStrings = sync.build(resourcesDir);
 
       log(
         chalk.green('✔ Migrations successfully built.'),
         options,
-        chalk.grey(`Migrations: ${migrationStrings.join('\n\n')}`)
+        chalk.grey(`SQL statements: ${migrationStrings.join('\n\n')}`)
       );
 
       log(chalk.grey('Running migrations...'), options);
 
       const db = getDb(options);
-      migrations.apply(db, migrationStrings)
+      sync.apply(db, migrationStrings)
         .then(() => {
-          log(chalk.green('✔ Migrations successfully run. The database is up to date.'), options);
+          log(chalk.green('✔ Migrations successfully run. The database is synchronized.'), options);
           process.exit();
         })
         .catch((e) => {
