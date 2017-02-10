@@ -40,46 +40,93 @@ api-pls in action.
 
 ### Installation
 
-api-pls is a CLI tool. Install it into your project using
-[npm](https://www.npmjs.com/).
+Install api-pls into your project using [npm](https://www.npmjs.com/).
 
 ```
 npm install api-pls --save
 ```
+
+This package comes with a programmatic interface as well as a command line tool.
+
+#### Programmatic API
+
+The module exports a constructor, `ApiPls`.
+
+##### `ApiPls( options )`
+
+Returns an instance of ApiPls. Valid options are:
+
+| Option | Description |
+|--------|-------------|
+|**resourcesDirectory**| A string that is the location of your resource models.|
+|**databaseUrl**| The URL of the database to connect to.|
+|**connectWithSsl**| Whether or not to use SSL to connect to the database.|
+|**port**| The port to start the webserver on.|
+
+##### `apiPls.migrate()`
+
+Builds the migrations from the resource models in `resourcesDirectory`, and then
+runs the migrations on the database.
+
+##### `apiPls.start()`
+
+Starts the web server. Typically you'll want to run the migrations before doing
+this to make sure that the database is up-to-date.
+
+##### `apiPls.dangerouslyResetDatabase()`
+
+Removes all tables, and therefore, all of the data, from the database. This can
+be useful for testing. Be careful out there.
+
+#### Static Methods
+
+These are methods that are attached to the `ApiPls` constructor. If you're
+writing libraries, plugins, or extensions to api-pls, then you might find these
+useful. Otherwise, you may never use them.
+
+##### `ApiPls.loadResourceModels( resourcesDirectory )`
+
+Loads all of the resource models from `resourcesDirectory`, which is a string
+that is the directory to load from.
+
+##### `ApiPls.normalizeModel( resourceModel )`
+
+Accepts a `resourceModel`, such as one returned from
+`ApiPls.loadResourceModels()`, and formats it into a normalized tree. If you're
+writing custom code to work with resource models, then this can make that
+easier for you.
+
+##### `ApiPls.validateResourceModel( resourceModel )`
+
+Accepts a `resourceModel`, and determines if it is valid or not. If you're
+writing custom logic around resource models, then this can be useful to catch
+errors in user-input resource models early on.
+
+#### Example Programmatic Usage
+
+```js
+import ApiPls from 'api-pls';
+
+const apiPls = new ApiPls({
+  resourcesDirectory: './path/to/resources',
+  DATABASE_URL: process.ENV.DATABASE_URL,
+  ssl: false,
+  port: 7500
+})
+
+// Run our migrations, then starts our server.
+apiPls.migrate()
+  .then(() => apiPls.start());
+```
+
+#### CLI API
 
 The name of the CLI program is `pls`. The rest of this guide assumes that
 `pls` is on your path. If you've installed it locally into a project, then
 you will need to call it from within an
 [npm script](https://docs.npmjs.com/misc/scripts#path).
 
-### Basic Usage
-
-Create a file in the root of your project called `.env`. Add the following
-line to the file, replacing the database URL with your own:
-
-```sh
-DATABASE_URL='postgres://user@example.com:5432/example'
-```
-
-Next, you'll need to create resource models. These are the definitions that
-describe what tables and endpoints are created for you. Place your resource
-models in the directory `./resources`.
-
-More complete documentation for the resource model files is coming soon; for
-now, refer to the [example project](https://github.com/jmeas/api-pls-example).
-
-Once you've defined your resources, run `pls migrate`. This will generate
-database migrations from your resource models, and then run those migrations.
-
-You're now ready to start an API webserver. Run `pls start` to start the server.
-
-You can access the API webserver at `localhost:5000`.
-
-Anytime you make changes to your resource models, be sure to run
-`pls reset-database` to clear out all of the previous models. Presently,
-only the initial migrations are supported.
-
-### CLI
+#### Commands
 
 | Command          | Description                                   |
 |----------------- |---------------------------------------------  |
@@ -87,9 +134,11 @@ only the initial migrations are supported.
 | migrate          |  Builds, then applies, migrations             |
 | start            |  Starts up the API webserver.                 |
 
-### CLI Flags
+#### CLI Flags
 
-All of the options may also be specified in `.plsrc`, if you would prefer.
+All of the options may also be specified in `.plsrc`, if you would prefer. You
+may also specify the `DATABASE_URL` in a `.env` file in the directory that you
+call this command from.
 
 | Flags            | Default     | Description                                 |
 |----------------- |-------------|---------------------------------------------|
@@ -99,10 +148,10 @@ All of the options may also be specified in `.plsrc`, if you would prefer.
 | -p, --port       | 5000        | Configure the port of the webserver         |
 | -r, --resources  | ./resources | Set the directory of your resources         |
 | -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
-| --silent         |             | Disable logging                             |
-| --verbose        |             | Enable verbose logging                      |
+| --silent         | N/A         | Disable logging                             |
+| --verbose        | N/A         | Enable verbose logging                      |
 
-### Example CLI Usage
+#### Example CLI Usage
 
 The following example turns off SSL, sets the port to be 6000, and sets the
 resource directory.
