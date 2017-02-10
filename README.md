@@ -26,17 +26,23 @@ api-pls will:
 This project is a work in progress. Resource migrations beyond the initial
 set up are currently unsupported.
 
+### Table of Contents
+
+[Technologies Used](#technologies-used)  
+[Installation](#installation)  
+[Programmatic API](#programmatic-api)  
+[CLI API](#cli-api)  
+[JSON API Feature Support](#json-api-feature-support)  
+[Acknowledgements](#acknowledgements)  
+[Resource Model Definition ⇗](https://github.com/jmeas/api-pls/wiki/Resource-Model)  
+[Examples ⇗](https://github.com/jmeas/api-pls/wiki/Example-Projects)  
+
 ### Technologies Used
 
 Currently, the only supported database is
 [PostgreSQL](https://www.postgresql.org/). The webserver is written
 in [Node.js](https://nodejs.org/en/) using
 [Express](https://github.com/expressjs/express).
-
-### Getting Started
-
-Try out [the example project](https://github.com/jmeas/api-pls-example) to see
-api-pls in action.
 
 ### Installation
 
