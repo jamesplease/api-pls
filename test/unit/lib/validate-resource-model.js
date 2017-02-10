@@ -90,8 +90,8 @@ describe('validateResourceModel', function() {
         name: 'person',
         actions: {
           create: true,
-          readOne: false,
-          readMany: false,
+          read_one: false,
+          read_many: false,
           update: false,
           delete: true
         }

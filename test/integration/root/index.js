@@ -133,8 +133,8 @@ describe('The root endpoint', function() {
           link: '/v1/people',
           meta: {
             methods: [
-              'readOne',
-              'readMany',
+              'read_one',
+              'read_many',
               'delete'
             ]
           }

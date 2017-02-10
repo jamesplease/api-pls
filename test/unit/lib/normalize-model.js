@@ -19,8 +19,8 @@ const baseModel = {
   relations: {},
   actions: {
     create: true,
-    readOne: true,
-    readMany: true,
+    read_one: true,
+    read_many: true,
     update: true,
     delete: true
   },
@@ -102,14 +102,14 @@ describe('normalizeModel', function() {
     const input = {
       name: 'cat',
       actions: {
-        readMany: false
+        read_many: false
       }
     };
     const expected = _.merge({}, baseModel, {
       name: 'cat',
       plural_form: 'cats',
       actions: {
-        readMany: false
+        read_many: false
       }
     });
     assert.deepEqual(normalizeModel(input), expected);

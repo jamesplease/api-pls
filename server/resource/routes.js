@@ -20,11 +20,11 @@ module.exports = function({version, resource, controller}) {
     validator(validations.create),
     controller.create
   ];
-  const getManyMiddleware = !actions.readMany ? notAllowedMiddleware : [
+  const getManyMiddleware = !actions.read_many ? notAllowedMiddleware : [
     validator(validations.readMany),
     controller.read
   ];
-  const getOneMiddleware = !actions.readOne ? notAllowedMiddleware : [
+  const getOneMiddleware = !actions.read_one ? notAllowedMiddleware : [
     validator(validations.readOne),
     controller.read
   ];

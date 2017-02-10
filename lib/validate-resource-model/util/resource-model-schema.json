@@ -20,10 +20,10 @@
         "create": {
           "type": "boolean"
         },
-        "readOne": {
+        "read_one": {
           "type": "boolean"
         },
-        "readMany": {
+        "read_many": {
           "type": "boolean"
         },
         "update": {
