@@ -30,6 +30,7 @@ set up are currently unsupported.
 
 [Technologies Used](#technologies-used)  
 [Installation](#installation)  
+[Getting Started](#getting-started)  
 [Programmatic API](#programmatic-api)  
 [CLI API](#cli-api)  
 [JSON API Feature Support](#json-api-feature-support)  
@@ -53,6 +54,25 @@ npm install api-pls --save
 ```
 
 This package comes with a programmatic interface as well as a command line tool.
+
+### Getting Started
+
+api-pls is a system that reads configuration files that you write, called
+Resource Models, and uses those to run migrations on your database. It also
+has the ability to start an API based on your Resource Models.
+
+The intent of api-pls is for you to replace database and backend API code in
+your web application with these declarative definitions.
+
+For complete documentation on Resource Models, refer to the:
+
+[**Resource Model documentation**](https://github.com/jmeas/api-pls/wiki/Resource-Model).
+
+After your Resource Models are created, you are ready to start using api-pls.
+
+> Note: you technically don't _need_ Resource Models to use any of the commands
+  in api-pls, but nothing interesting happens unless you have at least one
+  Resource Model.
 
 #### Programmatic API
 
