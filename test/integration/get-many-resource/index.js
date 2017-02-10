@@ -402,4 +402,97 @@ describe('Resource GET (many)', function() {
         .end(done);
     });
   });
+
+  describe('when the request succeeds, with a relationship', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const paginateSeeds = [
+        {first_name: 'sandwiches'},
+        {first_name: 'what'},
+        {first_name: 'pls'}
+      ];
+
+      const relationSeeds = [
+        {name: 'james', size: 's', owner_id: '1'},
+        {name: 'pragya', size: null, owner_id: '1'},
+        {name: 'tim', size: null, owner_id: '2'},
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('relation', relationSeeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 OK, with the resource', (done) => {
+      const expectedData = [
+        {
+          type: 'relations',
+          id: '1',
+          attributes: {
+            name: 'james',
+            size: 's'
+          },
+          relationships: {
+            owner: {
+              data: {
+                id: '1',
+                type: 'paginates'
+              }
+            }
+          }
+        },
+        {
+          type: 'relations',
+          id: '2',
+          attributes: {
+            name: 'pragya',
+            size: null
+          },
+          relationships: {
+            owner: {
+              data: {
+                id: '1',
+                type: 'paginates'
+              }
+            }
+          }
+        },
+        {
+          type: 'relations',
+          id: '3',
+          attributes: {
+            name: 'tim',
+            size: null
+          },
+          relationships: {
+            owner: {
+              data: {
+                id: '2',
+                type: 'paginates'
+              }
+            }
+          }
+        }
+      ];
+
+      const expectedMeta = {
+        page_number: 0,
+        page_size: 10,
+        total_count: 3
+      };
+
+      request(app(this.options))
+        .get('/v1/relations')
+        .query('page[size]=10')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertMeta(expectedMeta))
+        .expect(200)
+        .end(done);
+    });
+  });
 });
