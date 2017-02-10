@@ -57,8 +57,8 @@ describe('validateResourceModel', function() {
         name: 'person',
         pagination: {
           enabled: true,
-          defaultPageSize: 10,
-          defaultPageNumber: 3
+          default_page_size: 10,
+          default_page_number: 3
         }
       }), true);
 
@@ -66,7 +66,7 @@ describe('validateResourceModel', function() {
         name: 'person',
         pagination: {
           enabled: true,
-          defaultPageNumber: 3
+          default_page_number: 3
         }
       }), true);
     });
@@ -76,8 +76,8 @@ describe('validateResourceModel', function() {
         name: 'person',
         pagination: {
           enabled: true,
-          defaultPageSize: 10,
-          defaultPageNumber: 3,
+          default_page_size: 10,
+          default_page_number: 3,
           hungry: true
         }
       }), false);
@@ -90,8 +90,8 @@ describe('validateResourceModel', function() {
         name: 'person',
         actions: {
           create: true,
-          readOne: false,
-          readMany: false,
+          read_one: false,
+          read_many: false,
           update: false,
           delete: true
         }

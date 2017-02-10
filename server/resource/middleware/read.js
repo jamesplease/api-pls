@@ -13,8 +13,8 @@ module.exports = function(req, res) {
   const isSingular = Boolean(id);
 
   const pagination = this.resource.pagination;
-  const pageNumber = Number(_.get(req.query, 'page.number', pagination.defaultPageNumber));
-  const pageSize = Number(_.get(req.query, 'page.size', pagination.defaultPageSize));
+  const pageNumber = Number(_.get(req.query, 'page.number', pagination.default_page_number));
+  const pageSize = Number(_.get(req.query, 'page.size', pagination.default_page_size));
 
   // Find the fields to return
   let fieldsToReturn = _.get(req.query, `fields.${this.resource.plural_form}`, '*');

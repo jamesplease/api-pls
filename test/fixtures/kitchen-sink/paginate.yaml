@@ -1,7 +1,7 @@
 name: 'paginate'
 
 pagination:
-  defaultPageSize: 2
+  default_page_size: 2
 
 attributes:
   first_name:
