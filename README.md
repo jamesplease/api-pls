@@ -69,14 +69,17 @@ Returns an instance of ApiPls. Valid options are:
 |**connectWithSsl**| true | Whether or not to use SSL to connect to the database.|
 |**port**| 5000 | The port to start the webserver on.|
 
-##### `apiPls.migrate()`
+##### `apiPls.sync()`
 
-Builds the migrations from the resource models in `resourcesDirectory`, and then
-runs the migrations on the database.
+Synchronizes your data with the Resource Models in `resourcesDirectory`. Any
+data in dropped columns will be discarded.
+
+To transform data in your database, such as moving it between columns or
+updating all of the data in a single column, see Migrations (coming soon!).
 
 ##### `apiPls.start()`
 
-Starts the web server. Typically you'll want to run the migrations before doing
+Starts the web server. Typically you'll want to run `sync` before doing
 this to make sure that the database is up-to-date.
 
 ##### `apiPls.dangerouslyResetDatabase()`
@@ -117,8 +120,8 @@ const apiPls = new ApiPls({
   DATABASE_URL: process.ENV.DATABASE_URL,
 })
 
-// Run our migrations, then starts our server.
-apiPls.migrate()
+// Sync the database, then start the server.
+apiPls.sync()
   .then(() => apiPls.start());
 ```
 
@@ -134,7 +137,7 @@ you will need to call it from within an
 | Command          | Description                                   |
 |----------------- |---------------------------------------------  |
 | reset-database   |  Removes all tables from the database         |
-| migrate          |  Builds, then applies, migrations             |
+| sync             |  Synchronize the DB with your Resource Models |
 | start            |  Starts up the API webserver.                 |
 
 #### CLI Flags

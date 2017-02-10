@@ -7,7 +7,7 @@ const fs = require('fs');
 const rc = require('rc');
 const path = require('path');
 const program = require('commander');
-const migrate = require('./commands/migrate');
+const sync = require('./commands/sync');
 const resetDatabase = require('./commands/reset-database');
 const start = require('./commands/start');
 
@@ -37,11 +37,11 @@ function transformProgramOptions(program) {
 }
 
 program
-  .command('migrate')
-  .description('Build and run resource migrations')
+  .command('sync')
+  .description('Synchronize the database with Resource Model definitions')
   .action(() => {
     options = _.defaults(transformProgramOptions(program), options);
-    migrate(options);
+    sync(options);
   });
 
 program

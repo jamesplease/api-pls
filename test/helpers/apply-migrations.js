@@ -1,7 +1,7 @@
 'use strict';
 
 const getDb = require('../../lib/database');
-const migrations = require('../../lib/migrations');
+const sync = require('../../lib/sync');
 
 const db = getDb();
 
@@ -9,11 +9,11 @@ const db = getDb();
 // Returns a Promise that resolves when the migrations are run.
 module.exports = function(options) {
   const resourcesDirectory = options.resourcesDirectory;
-  const migrationStrings = migrations.build(resourcesDirectory);
+  const migrationStrings = sync.build(resourcesDirectory);
 
   // Only apply the migrations if we have some to prevent errors.
   if (migrationStrings.length) {
-    return migrations.apply(db, migrationStrings);
+    return sync.apply(db, migrationStrings);
   }
 
   // If there are no migrations, then we just resolve to the app.
