@@ -242,7 +242,7 @@ describe('Resource POST', function() {
         .then(() => done());
     });
 
-    it.only('should return a 200 OK, with the created resource', (done) => {
+    it('should return a 200 OK, with the created resource', (done) => {
       request(app(this.options))
         .post('/v1/relations')
         .send({
