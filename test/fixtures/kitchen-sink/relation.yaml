@@ -7,7 +7,7 @@ relations:
 
 attributes:
   name: 'VARCHAR(30)'
-  size: 'NUMERIC(9, 2)'
+  size: 'VARCHAR(30)'
 
 built_in_meta_attributes:
   created_at: false
