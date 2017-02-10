@@ -1,6 +1,7 @@
 # api-pls
 
 [![Travis build status](http://img.shields.io/travis/jmeas/api-pls.svg?style=flat)](https://travis-ci.org/jmeas/api-pls)
+[![Test Coverage](https://codeclimate.com/github/jmeas/api-pls/badges/coverage.svg)](https://codeclimate.com/github/jmeas/api-pls)
 
 api-pls enables you to effortlessly create
 [JSON API](http://jsonapi.org/)-compliant APIs.
