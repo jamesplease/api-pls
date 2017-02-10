@@ -28,15 +28,15 @@ set up are currently unsupported.
 
 ### Table of Contents
 
-[Technologies Used](#technologies-used)  
-[Installation](#installation)  
-[Getting Started](#getting-started)  
-[Programmatic API](#programmatic-api)  
-[CLI API](#cli-api)  
-[JSON API Feature Support](#json-api-feature-support)  
-[Acknowledgements](#acknowledgements)  
-[Resource Model Definition ⇗](https://github.com/jmeas/api-pls/wiki/Resource-Model)  
-[Examples ⇗](https://github.com/jmeas/api-pls/wiki/Example-Projects)  
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Programmatic API](#programmatic-api)
+- [CLI API](#cli-api)
+- [JSON API Feature Support](#json-api-feature-support)
+- [Acknowledgements](#acknowledgements)
+- [Resource Model Definition ⇗](https://github.com/jmeas/api-pls/wiki/Resource-Model)
+- [Examples ⇗](https://github.com/jmeas/api-pls/wiki/Example-Projects)
 
 ### Technologies Used
 
