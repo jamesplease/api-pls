@@ -1,0 +1,10 @@
+{
+  "name": "no-crud",
+  "actions": {
+    "create": false,
+    "readOne": false,
+    "readMany": false,
+    "update": false,
+    "delete": false
+  }
+}
