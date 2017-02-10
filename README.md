@@ -56,12 +56,12 @@ The module exports a constructor, `ApiPls`.
 
 Returns an instance of ApiPls. Valid options are:
 
-| Option | Description |
-|--------|-------------|
-|**resourcesDirectory**| A string that is the location of your resource models.|
-|**databaseUrl**| The URL of the database to connect to.|
-|**connectWithSsl**| Whether or not to use SSL to connect to the database.|
-|**port**| The port to start the webserver on.|
+| Option | Default | Description |
+|--------|---------|-------------|
+|**resourcesDirectory**| ./resources |A string that is the location of your resource models.|
+|**databaseUrl**|      |The URL of the database to connect to.|
+|**connectWithSsl**| true | Whether or not to use SSL to connect to the database.|
+|**port**| 5000 | The port to start the webserver on.|
 
 ##### `apiPls.migrate()`
 
@@ -108,10 +108,7 @@ errors in user-input resource models early on.
 import ApiPls from 'api-pls';
 
 const apiPls = new ApiPls({
-  resourcesDirectory: './path/to/resources',
   DATABASE_URL: process.ENV.DATABASE_URL,
-  ssl: false,
-  port: 7500
 })
 
 // Run our migrations, then starts our server.

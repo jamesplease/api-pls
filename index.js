@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const database = require('./lib/database');
 const startServer = require('./lib/start-server');
 const migrations = require('./lib/migrations');
@@ -12,6 +13,12 @@ const wipeDatabase = require('./lib/wipe-database');
 // Options are all of the valid options for api-pls. Refer to the documentation
 // for the full list.
 function ApiPls(options) {
+  options = _.defaults(options, {
+    connectWithSsl: true,
+    resourcesDirectory: './resources',
+    port: 5000
+  });
+
   this.options = {
     ssl: options.connectWithSsl,
     DATABASE_URL: options.databaseUrl,
