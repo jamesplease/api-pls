@@ -40,11 +40,11 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "defaultPageSize": {
+            "default_page_size": {
               "type": "integer",
               "minimum": 1
             },
-            "defaultPageNumber": {
+            "default_page_number": {
               "type": "integer",
               "minimum": 0
             },

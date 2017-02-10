@@ -10,8 +10,8 @@ attributes:
   last_name: 'VARCHAR(30)'
 
 pagination:
-  defaultPageSize: 5
-  defaultPageNumber: 0
+  default_page_size: 5
+  default_page_number: 0
 
 built_in_meta_attributes:
   created_at: false

@@ -25,8 +25,8 @@ const baseModel = {
     delete: true
   },
   pagination: {
-    defaultPageNumber: 0,
-    defaultPageSize: 10,
+    default_page_number: 0,
+    default_page_size: 10,
     enabled: true
   }
 };
@@ -70,14 +70,14 @@ describe('normalizeModel', function() {
     const input = {
       name: 'cat',
       pagination: {
-        defaultPageNumber: 5
+        default_page_number: 5
       }
     };
     const expected = _.merge({}, baseModel, {
       name: 'cat',
       plural_form: 'cats',
       pagination: {
-        defaultPageNumber: 5
+        default_page_number: 5
       }
     });
     assert.deepEqual(normalizeModel(input), expected);
