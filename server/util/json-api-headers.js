@@ -6,6 +6,7 @@ const contentType = require('content-type');
 const sendJson = require('./send-json');
 const serverErrors = require('./server-errors');
 const jsonApiMediaType = require('./json-api-media-type');
+const log = require('./log');
 
 //
 // This module does three things with headers:
@@ -38,6 +39,7 @@ module.exports = function(req, res, next) {
   const hasParameters = _.size(contentTypeObj.parameters);
 
   if (hasJsonApiType && hasParameters) {
+    log.info({contentTypeObj}, 'Content Type has JSON API content type headers with params.');
     res.status(serverErrors.contentTypeHasParams.code);
     return sendJson(res, {
       errors: [serverErrors.contentTypeHasParams.body()]
@@ -47,6 +49,7 @@ module.exports = function(req, res, next) {
   const acceptsJsonApi = accepts(req).types([jsonApiMediaType]);
 
   if (!acceptsJsonApi) {
+    log.info({res}, 'Request specifies content type, but does not accept the JSON API media type.');
     res.status(serverErrors.acceptsHasParams.code);
     return sendJson(res, {
       errors: [serverErrors.acceptsHasParams.body()]
