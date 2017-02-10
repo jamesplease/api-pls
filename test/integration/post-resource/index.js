@@ -5,6 +5,7 @@ const getDb = require('../../../lib/database');
 const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
+const seed = require('../../helpers/seed');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
@@ -223,6 +224,62 @@ describe('Resource POST', function() {
             .expect(201)
             .end(done);
         });
+    });
+  });
+
+  describe('when the request is valid, with a relationship', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const paginateSeeds = [{
+        first_name: 'sandwiches'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', paginateSeeds))
+        .then(() => done());
+    });
+
+    it.only('should return a 200 OK, with the created resource', (done) => {
+      request(app(this.options))
+        .post('/v1/relations')
+        .send({
+          data: {
+            type: 'relations',
+            attributes: {
+              name: 'please'
+            },
+            relationships: {
+              owner: {
+                data: {
+                  id: '1',
+                  type: 'paginates'
+                }
+              }
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData({
+          type: 'relations',
+          id: '1',
+          attributes: {
+            name: 'please',
+            size: null
+          },
+          relationships: {
+            owner: {
+              data: {
+                id: '1',
+                type: 'paginates'
+              }
+            }
+          }
+        }))
+        .expect(201)
+        .end(done);
     });
   });
 });
