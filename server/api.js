@@ -59,7 +59,7 @@ module.exports = function(options) {
 
   const links = {};
   resources.forEach(r => {
-    const allowedMethods = _.chain(r.resource.actions)
+    const supportedActions = _.chain(r.resource.actions)
       .pickBy()
       .map((bool, name) => name)
       .value();
@@ -67,7 +67,7 @@ module.exports = function(options) {
     links[r.resource.plural_form] = {
       href: r.location,
       meta: {
-        methods: allowedMethods
+        supported_actions: supportedActions
       }
     };
   });
