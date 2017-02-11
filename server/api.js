@@ -67,7 +67,7 @@ module.exports = function(options) {
       .value();
 
     links[r.resource.plural_form] = {
-      link: r.location,
+      href: r.location,
       meta: {
         methods: allowedMethods
       }
