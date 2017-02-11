@@ -200,6 +200,7 @@ This project only partially supports JSON API. Features currently supported are:
 - [ ] Sorting
 - [x] Pagination
 - [ ] Filtering
+- [ ] Compound documents
 - [x] Links
 - [ ] Relations
   - [ ] One-to-one
