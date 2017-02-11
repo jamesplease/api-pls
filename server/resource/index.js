@@ -4,7 +4,7 @@ const Controller = require('./controller');
 const Routes = require('./routes');
 
 module.exports = function({resource, version, db}) {
-  var controller = new Controller(resource, db);
+  var controller = new Controller({resource, version, db});
 
   var routes = new Routes({
     resource,

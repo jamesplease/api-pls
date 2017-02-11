@@ -243,6 +243,10 @@ describe('Resource GET (one)', function() {
             data: {
               id: '1',
               type: 'paginates'
+            },
+            links: {
+              related: '/v1/relations/1/owner',
+              self: '/v1/paginates/1'
             }
           }
         }

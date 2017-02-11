@@ -25,7 +25,13 @@ module.exports = function(req, res) {
   // A chain().mapValue().mapKeys() could probably do this in a cleaner
   // manner.
   const relData = _.reduce(Object.keys(relations), (result, field) => {
-    result[`${field}_id`] = _.get(relations[field], 'data.id');
+    // Determine if the user has specified a value for this relationship
+    const possibleRelation = _.get(relations[field], 'data.id');
+    // If they have, then we will add it to the object that will be used to
+    // build our query
+    if (possibleRelation) {
+      result[`${field}_id`] = possibleRelation;
+    }
     return result;
   }, {});
 
@@ -56,7 +62,7 @@ module.exports = function(req, res) {
       log.info({query, resource: this.resource, reqId: req.id}, 'Resource created.');
       res.status(201);
       sendJson(res, {
-        data: formatTransaction(result, this.resource),
+        data: formatTransaction(result, this.resource, this.version),
         links: {
           self: `${selfLinkBase}/${result.id}`
         }

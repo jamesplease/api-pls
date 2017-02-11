@@ -294,6 +294,10 @@ describe('Resource POST', function() {
             data: {
               id: '1',
               type: 'paginates'
+            },
+            links: {
+              self: '/v1/paginates/1',
+              related: '/v1/relations/1/owner'
             }
           }
         }
