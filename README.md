@@ -31,8 +31,8 @@ set up are currently unsupported.
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
-- [Programmatic API](#programmatic-api)
 - [CLI API](#cli-api)
+- [Programmatic API](#programmatic-api)
 - [JSON API Feature Support](#json-api-feature-support)
 - [Acknowledgements](#acknowledgements)
 - [Resource Model Definition ⇗](https://github.com/jmeas/api-pls/wiki/Resource-Model)
@@ -73,6 +73,47 @@ After your Resource Models are created, you are ready to start using api-pls.
 > Note: you technically don't _need_ Resource Models to use any of the commands
   in api-pls, but nothing interesting happens unless you have at least one
   Resource Model.
+
+#### CLI API
+
+The name of the CLI program is `pls`. The rest of this guide assumes that
+`pls` is on your path. If you've installed it locally into a project, then
+you will need to call it from within an
+[npm script](https://docs.npmjs.com/misc/scripts#path).
+
+#### Commands
+
+| Command          | Description                                   |
+|----------------- |---------------------------------------------  |
+| reset-database   |  Removes all tables from the database         |
+| sync             |  Synchronize the DB with your Resource Models |
+| start            |  Starts up the API webserver.                 |
+
+#### CLI Flags
+
+All of the options may also be specified in `.plsrc`, if you would prefer. You
+may also specify the `DATABASE_URL` in a `.env` file in the directory that you
+call this command from.
+
+| Flags            | Default     | Description                                 |
+|----------------- |-------------|---------------------------------------------|
+| -h, --help       | N/A         | View all the commands from the command line |
+| -v, --version    | N/A         | Display the version of api-pls              |
+| -d, --database   |             | Specify the database URL                    |
+| -p, --port       | 5000        | Configure the port of the webserver         |
+| -r, --resources  | ./resources | Set the directory of your resources         |
+| -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
+| --silent         | N/A         | Disable logging                             |
+| --verbose        | N/A         | Enable verbose logging                      |
+
+#### Example CLI Usage
+
+The following example turns off SSL, sets the port to be 6000, and sets the
+resource directory.
+
+```sh
+pls start -p 6000 -s false -r ./my-resources
+```
 
 #### Programmatic API
 
@@ -143,47 +184,6 @@ const apiPls = new ApiPls({
 // Sync the database, then start the server.
 apiPls.sync()
   .then(() => apiPls.start());
-```
-
-#### CLI API
-
-The name of the CLI program is `pls`. The rest of this guide assumes that
-`pls` is on your path. If you've installed it locally into a project, then
-you will need to call it from within an
-[npm script](https://docs.npmjs.com/misc/scripts#path).
-
-#### Commands
-
-| Command          | Description                                   |
-|----------------- |---------------------------------------------  |
-| reset-database   |  Removes all tables from the database         |
-| sync             |  Synchronize the DB with your Resource Models |
-| start            |  Starts up the API webserver.                 |
-
-#### CLI Flags
-
-All of the options may also be specified in `.plsrc`, if you would prefer. You
-may also specify the `DATABASE_URL` in a `.env` file in the directory that you
-call this command from.
-
-| Flags            | Default     | Description                                 |
-|----------------- |-------------|---------------------------------------------|
-| -h, --help       | N/A         | View all the commands from the command line |
-| -v, --version    | N/A         | Display the version of api-pls              |
-| -d, --database   |             | Specify the database URL                    |
-| -p, --port       | 5000        | Configure the port of the webserver         |
-| -r, --resources  | ./resources | Set the directory of your resources         |
-| -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
-| --silent         | N/A         | Disable logging                             |
-| --verbose        | N/A         | Enable verbose logging                      |
-
-#### Example CLI Usage
-
-The following example turns off SSL, sets the port to be 6000, and sets the
-resource directory.
-
-```sh
-pls start -p 6000 -s false -r ./my-resources
 ```
 
 ### JSON API Feature Support
