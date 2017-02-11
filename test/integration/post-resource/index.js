@@ -25,7 +25,8 @@ describe('Resource POST', function() {
   describe('when the resource does not exist', () => {
     it('should return a Not Found error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 2
       };
 
       const expectedErrors = [{
@@ -34,13 +35,13 @@ describe('Resource POST', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/pastas'
+        self: '/v2/pastas'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .post('/v1/pastas')
+            .post('/v2/pastas')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(validators.assertLinks(expectedLinks))
@@ -53,7 +54,8 @@ describe('Resource POST', function() {
   describe('attempting to POST a single resource', () => {
     it('should return a Method Not Allowed error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 3
       };
 
       const expectedErrors = [{
@@ -62,13 +64,13 @@ describe('Resource POST', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/nopes/1'
+        self: '/v3/nopes/1'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .post('/v1/nopes/1')
+            .post('/v3/nopes/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(validators.assertLinks(expectedLinks))
@@ -81,7 +83,8 @@ describe('Resource POST', function() {
   describe('when the resource does not permit POST', () => {
     it('should return a Not Allowed error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 4
       };
 
       const expectedErrors = [{
@@ -90,13 +93,13 @@ describe('Resource POST', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/no-cruds'
+        self: '/v4/no-cruds'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .post('/v1/no-cruds')
+            .post('/v4/no-cruds')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(validators.assertLinks(expectedLinks))
@@ -109,7 +112,8 @@ describe('Resource POST', function() {
   describe('when the request does not adhere to JSON API', () => {
     it('should return a No Valid Fields error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
       };
 
       const expectedErrors = [{
@@ -144,7 +148,8 @@ describe('Resource POST', function() {
   describe('when non-nullable fields are not included', () => {
     it('should return a Bad Request error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
       };
 
       const expectedErrors = [{
@@ -153,13 +158,13 @@ describe('Resource POST', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/nopes'
+        self: '/v5/nopes'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .post('/v1/nopes')
+            .post('/v5/nopes')
             .send({
               data: {
                 type: 'nopes',
@@ -180,7 +185,8 @@ describe('Resource POST', function() {
   describe('when the request is valid', () => {
     it('should return a 200 OK, with the created resource', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 2
       };
 
       const expectedData = {
@@ -196,13 +202,13 @@ describe('Resource POST', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/nopes/1'
+        self: '/v2/nopes/1'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .post('/v1/nopes')
+            .post('/v2/nopes')
             .send({
               data: {
                 type: 'nopes',
@@ -224,7 +230,8 @@ describe('Resource POST', function() {
   describe('when the request is valid, but has extraneous fields', () => {
     it('should return a 200 OK, with the created resource', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 50
       };
 
       const expectedData = {
@@ -240,13 +247,13 @@ describe('Resource POST', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/nopes/1'
+        self: '/v50/nopes/1'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .post('/v1/nopes')
+            .post('/v50/nopes')
             .send({
               data: {
                 type: 'nopes',
@@ -269,7 +276,8 @@ describe('Resource POST', function() {
   describe('when the request is valid, with a relationship', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
       };
 
       const paginateSeeds = [{
@@ -296,19 +304,19 @@ describe('Resource POST', function() {
               type: 'paginates'
             },
             links: {
-              self: '/v1/paginates/1',
-              related: '/v1/relations/1/owner'
+              self: '/v10/paginates/1',
+              related: '/v10/relations/1/owner'
             }
           }
         }
       };
 
       const expectedLinks = {
-        self: '/v1/relations/1'
+        self: '/v10/relations/1'
       };
 
       request(app(this.options))
-        .post('/v1/relations')
+        .post('/v10/relations')
         .send({
           data: {
             type: 'relations',

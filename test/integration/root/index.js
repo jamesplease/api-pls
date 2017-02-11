@@ -24,14 +24,15 @@ describe('The root endpoint', function() {
   describe('Root route', () => {
     it('should forward you to the version, if a version is not specified', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 5
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .get('/')
-            .expect('Location', '/v1')
+            .expect('Location', '/v5')
             .expect(302)
             .end(done);
         });
@@ -39,7 +40,8 @@ describe('The root endpoint', function() {
 
     it('should return 406 if the invalid Accepts is specified', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 1
       };
 
       const expectedErrors = [{
@@ -61,7 +63,8 @@ describe('The root endpoint', function() {
 
     it('should return 415 if an invalid Content-Type header is specified', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 10
       };
 
       const expectedErrors = [{
@@ -72,7 +75,7 @@ describe('The root endpoint', function() {
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .get('/v1')
+            .get('/v10')
             .set('Content-Type', 'application/vnd.api+json; sandwiches=true')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
@@ -83,7 +86,8 @@ describe('The root endpoint', function() {
 
     it('should return 200, with the proper response, when there are no resources', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 500
       };
 
       const jsonapi = {
@@ -94,7 +98,7 @@ describe('The root endpoint', function() {
       };
 
       const meta = {
-        api_version: '1'
+        api_version: '500'
       };
 
       const links = {};
@@ -102,7 +106,7 @@ describe('The root endpoint', function() {
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .get('/v1')
+            .get('/v500')
             .expect('Content-Type', 'application/json')
             .expect(validators.assertJsonapi(jsonapi))
             .expect(validators.assertMeta(meta))
@@ -114,7 +118,8 @@ describe('The root endpoint', function() {
 
     it('should return 200, with the proper response, when there is one resource', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'one-resource')
+        resourcesDirectory: path.join(fixturesDirectory, 'one-resource'),
+        apiVersion: 2
       };
 
       const jsonapi = {
@@ -125,12 +130,12 @@ describe('The root endpoint', function() {
       };
 
       const meta = {
-        api_version: '1'
+        api_version: '2'
       };
 
       const links = {
         people: {
-          href: '/v1/people',
+          href: '/v2/people',
           meta: {
             methods: [
               'read_one',
@@ -144,7 +149,7 @@ describe('The root endpoint', function() {
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .get('/v1')
+            .get('/v2')
             .expect('Content-Type', 'application/json')
             .expect(validators.assertJsonapi(jsonapi))
             .expect(validators.assertMeta(meta))

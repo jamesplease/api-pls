@@ -16,14 +16,16 @@ function ApiPls(options) {
   options = _.defaults(options, {
     connectWithSsl: true,
     resourcesDirectory: './resources',
-    port: 5000
+    port: 5000,
+    apiVersion: 1
   });
 
   this.options = {
     ssl: options.connectWithSsl,
     DATABASE_URL: options.databaseUrl,
     resourcesDirectory: options.resourcesDirectory,
-    port: options.port
+    port: options.port,
+    apiVersion: options.apiVersion
   };
 
   this.db = database(this.options);
