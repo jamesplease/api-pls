@@ -19,9 +19,7 @@ module.exports = function(options) {
   router.use(jsonApiHeaders);
 
   const db = createDb(options);
-
-  // This version needs to be made external
-  var apiVersion = 1;
+  const apiVersion = options.apiVersion;
 
   log.info({
     resourcesDirectory: options.resourcesDirectory

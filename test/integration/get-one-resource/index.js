@@ -25,7 +25,8 @@ describe('Resource GET (one)', function() {
   describe('when the resource does not exist', () => {
     it('should return a Not Found error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 3
       };
 
       const expectedErrors = [{
@@ -34,13 +35,13 @@ describe('Resource GET (one)', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/pastas/1'
+        self: '/v3/pastas/1'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .get('/v1/pastas/1')
+            .get('/v3/pastas/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(validators.assertLinks(expectedLinks))
@@ -53,7 +54,8 @@ describe('Resource GET (one)', function() {
   describe('when the request succeeds', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
       };
 
       const seeds = [{
@@ -77,11 +79,11 @@ describe('Resource GET (one)', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/no_metas/1'
+        self: '/v10/no_metas/1'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas/1')
+        .get('/v10/no_metas/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
@@ -93,7 +95,8 @@ describe('Resource GET (one)', function() {
   describe('when no valid fields are requested via sparse fields', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 4
       };
 
       const seeds = [{
@@ -113,11 +116,11 @@ describe('Resource GET (one)', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/no_metas/1'
+        self: '/v4/no_metas/1'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas/1')
+        .get('/v4/no_metas/1')
         .query('fields[no_metas]=sandwiches')
         .expect(validators.basicValidation)
         .expect(validators.assertErrors(expectedErrors))
@@ -130,7 +133,8 @@ describe('Resource GET (one)', function() {
   describe('when an empty sparse fieldsets param is specified', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 16
       };
 
       const seeds = [{
@@ -154,11 +158,11 @@ describe('Resource GET (one)', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/no_metas/1'
+        self: '/v16/no_metas/1'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas/1')
+        .get('/v16/no_metas/1')
         .query('fields[no_metas]')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
@@ -171,7 +175,8 @@ describe('Resource GET (one)', function() {
   describe('when the request succeeds with sparse fieldsets', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
       };
 
       const seeds = [{
@@ -211,7 +216,8 @@ describe('Resource GET (one)', function() {
   describe('when the request succeeds, with a relationship', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 2
       };
 
       const paginateSeeds = [
@@ -245,19 +251,19 @@ describe('Resource GET (one)', function() {
               type: 'paginates'
             },
             links: {
-              related: '/v1/relations/1/owner',
-              self: '/v1/paginates/1'
+              related: '/v2/relations/1/owner',
+              self: '/v2/paginates/1'
             }
           }
         }
       };
 
       const expectedLinks = {
-        self: '/v1/relations/1'
+        self: '/v2/relations/1'
       };
 
       request(app(this.options))
-        .get('/v1/relations/1')
+        .get('/v2/relations/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))

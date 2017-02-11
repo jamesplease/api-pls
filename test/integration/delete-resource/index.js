@@ -25,7 +25,8 @@ describe('Resource DELETE', function() {
   describe('when the resource does not exist', () => {
     it('should return a Not Found error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 2
       };
 
       const expectedErrors = [{
@@ -36,7 +37,7 @@ describe('Resource DELETE', function() {
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .delete('/v1/pastas/1')
+            .delete('/v2/pastas/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(404)
@@ -48,7 +49,8 @@ describe('Resource DELETE', function() {
   describe('attempting to DELETE an entire list of resources', () => {
     it('should return a Method Not Allowed error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
       };
 
       const expectedErrors = [{
@@ -71,7 +73,8 @@ describe('Resource DELETE', function() {
   describe('when the request succeeds', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
       };
 
       const seeds = [{
@@ -86,7 +89,7 @@ describe('Resource DELETE', function() {
 
     it('should return a 204 response', (done) => {
       request(app(this.options))
-        .delete('/v1/nopes/1')
+        .delete('/v10/nopes/1')
         .expect(validators.assertEmptyBody)
         .expect(204)
         .end(done);

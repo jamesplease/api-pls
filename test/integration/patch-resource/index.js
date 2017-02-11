@@ -25,7 +25,8 @@ describe('Resource PATCH', function() {
   describe('when the resource does not exist', () => {
     it('should return a Not Found error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 2
       };
 
       const expectedErrors = [{
@@ -34,13 +35,13 @@ describe('Resource PATCH', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/pastas/1'
+        self: '/v2/pastas/1'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .patch('/v1/pastas/1')
+            .patch('/v2/pastas/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(validators.assertLinks(expectedLinks))
@@ -53,7 +54,8 @@ describe('Resource PATCH', function() {
   describe('attempting to PATCH an entire list of resources', () => {
     it('should return a Method Not Allowed error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: '1.5'
       };
 
       const expectedErrors = [{
@@ -62,13 +64,13 @@ describe('Resource PATCH', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/nopes'
+        self: '/v1.5/nopes'
       };
 
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .patch('/v1/nopes')
+            .patch('/v1.5/nopes')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
             .expect(validators.assertLinks(expectedLinks))
@@ -81,7 +83,8 @@ describe('Resource PATCH', function() {
   describe('when the request succeeds, and data is manipulated', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
       };
 
       const seeds = [{
@@ -105,11 +108,11 @@ describe('Resource PATCH', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/no_metas/1'
+        self: '/v5/no_metas/1'
       };
 
       request(app(this.options))
-        .patch('/v1/no_metas/1')
+        .patch('/v5/no_metas/1')
         .send({
           data: {
             type: 'no_metas',
@@ -131,7 +134,8 @@ describe('Resource PATCH', function() {
   describe('when the ID in the body does not match the url', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
       };
 
       const seeds = [{
@@ -177,7 +181,8 @@ describe('Resource PATCH', function() {
   describe('when the request succeeds, and meta is manipulated', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
       };
 
       const seeds = [{
@@ -204,11 +209,11 @@ describe('Resource PATCH', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/has_metas/1'
+        self: '/v5/has_metas/1'
       };
 
       request(app(this.options))
-        .patch('/v1/has_metas/1')
+        .patch('/v5/has_metas/1')
         .send({
           data: {
             type: 'has_metas',
@@ -229,7 +234,8 @@ describe('Resource PATCH', function() {
   describe('when the request succeeds, but nothing is manipulated', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 33
       };
 
       const seeds = [{
@@ -253,11 +259,11 @@ describe('Resource PATCH', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/no_metas/1'
+        self: '/v33/no_metas/1'
       };
 
       request(app(this.options))
-        .patch('/v1/no_metas/1')
+        .patch('/v33/no_metas/1')
         .send({
           data: {
             type: 'no_metas',
@@ -278,7 +284,8 @@ describe('Resource PATCH', function() {
   describe('when the request is valid, with a relationship', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 24
       };
 
       const paginateSeeds = [
@@ -312,19 +319,19 @@ describe('Resource PATCH', function() {
               type: 'paginates'
             },
             links: {
-              self: '/v1/paginates/3',
-              related: '/v1/relations/1/owner'
+              self: '/v24/paginates/3',
+              related: '/v24/relations/1/owner'
             }
           }
         }
       };
 
       const expectedLinks = {
-        self: '/v1/relations/1'
+        self: '/v24/relations/1'
       };
 
       request(app(this.options))
-        .patch('/v1/relations/1')
+        .patch('/v24/relations/1')
         .send({
           data: {
             id: '1',

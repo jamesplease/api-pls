@@ -23,7 +23,8 @@ let options = rc('pls', {
   resourcesDirectory: './resources',
   ssl: true,
   DATABASE_URL: process.env.DATABASE_URL,
-  port: 5000
+  port: 5000,
+  apiVersion: 1
 });
 
 program.version(packageJson.version, '-v, --version');
@@ -73,6 +74,7 @@ program
   .option('-p, --port <n>', 'set the webserver port', parseInt)
   .option('-r, --resources <path>', 'the directory where your resource models exist')
   .option('-s, --ssl <boolean>', 'whether or not to connect to the DB with SSL', parseBoolean)
+  .option('-a --api-version <n>', 'set the API version', parseInt)
   .option('--silent', 'disable logging')
   .option('--verbose', 'enable verbose logging');
 

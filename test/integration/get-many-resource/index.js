@@ -25,7 +25,8 @@ describe('Resource GET (many)', function() {
   describe('when the resource does not exist', () => {
     it('should return a Not Found error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources')
+        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        apiVersion: 1
       };
 
       const expectedErrors = [{
@@ -53,7 +54,8 @@ describe('Resource GET (many)', function() {
   describe('when the request succeeds', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1000
       };
 
       const seeds = [
@@ -105,11 +107,11 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedLinks = {
-        self: '/v1/no_metas'
+        self: '/v1000/no_metas'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas')
+        .get('/v1000/no_metas')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
@@ -121,7 +123,8 @@ describe('Resource GET (many)', function() {
   describe('when no valid fields are requested via sparse fields', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 3
       };
 
       const seeds = [{
@@ -141,11 +144,11 @@ describe('Resource GET (many)', function() {
       }];
 
       const expectedLinks = {
-        self: '/v1/no_metas'
+        self: '/v3/no_metas'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas')
+        .get('/v3/no_metas')
         .query('fields[no_metas]=sandwiches')
         .expect(validators.basicValidation)
         .expect(validators.assertErrors(expectedErrors))
@@ -158,7 +161,8 @@ describe('Resource GET (many)', function() {
   describe('when an empty sparse fieldsets is specified', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
       };
 
       const seeds = [
@@ -210,11 +214,11 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedLinks = {
-        self: '/v1/no_metas'
+        self: '/v5/no_metas'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas')
+        .get('/v5/no_metas')
         .query('fields[no_metas]')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
@@ -227,7 +231,8 @@ describe('Resource GET (many)', function() {
   describe('when the request succeeds with sparse fieldsets', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 15
       };
 
       const seeds = [
@@ -275,11 +280,11 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedLinks = {
-        self: '/v1/no_metas'
+        self: '/v15/no_metas'
       };
 
       request(app(this.options))
-        .get('/v1/no_metas')
+        .get('/v15/no_metas')
         .query('fields[no_metas]=first_name')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
@@ -292,7 +297,8 @@ describe('Resource GET (many)', function() {
   describe('when the request succeeds with default pagination', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
       };
 
       const seeds = [
@@ -351,7 +357,8 @@ describe('Resource GET (many)', function() {
   describe('when the request succeeds with a custom page and size requested', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
       };
 
       const seeds = [
@@ -385,11 +392,11 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/paginates'
+        self: '/v10/paginates'
       };
 
       request(app(this.options))
-        .get('/v1/paginates')
+        .get('/v10/paginates')
         .query('page[number]=1&page[size]=3')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
@@ -403,7 +410,8 @@ describe('Resource GET (many)', function() {
   describe('when the request succeeds with no results', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 2
       };
 
       const seeds = [
@@ -428,11 +436,11 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/paginates'
+        self: '/v2/paginates'
       };
 
       request(app(this.options))
-        .get('/v1/paginates')
+        .get('/v2/paginates')
         .query('page[number]=100&page[size]=10')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
@@ -446,7 +454,8 @@ describe('Resource GET (many)', function() {
   describe('when the request succeeds, with a relationship', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
       };
 
       const paginateSeeds = [
@@ -483,8 +492,8 @@ describe('Resource GET (many)', function() {
                 type: 'paginates'
               },
               links: {
-                self: '/v1/paginates/1',
-                related: '/v1/relations/1/owner'
+                self: '/v5/paginates/1',
+                related: '/v5/relations/1/owner'
               }
             }
           }
@@ -503,8 +512,8 @@ describe('Resource GET (many)', function() {
                 type: 'paginates'
               },
               links: {
-                self: '/v1/paginates/3',
-                related: '/v1/relations/2/owner'
+                self: '/v5/paginates/3',
+                related: '/v5/relations/2/owner'
               }
             }
           }
@@ -519,7 +528,7 @@ describe('Resource GET (many)', function() {
           relationships: {
             owner: {
               links: {
-                related: '/v1/relations/3/owner'
+                related: '/v5/relations/3/owner'
               }
             }
           }
@@ -533,11 +542,11 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/relations'
+        self: '/v5/relations'
       };
 
       request(app(this.options))
-        .get('/v1/relations')
+        .get('/v5/relations')
         .query('page[size]=10')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))

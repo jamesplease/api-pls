@@ -103,6 +103,7 @@ call this command from.
 | -p, --port       | 5000        | Configure the port of the webserver         |
 | -r, --resources  | ./resources | Set the directory of your resources         |
 | -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
+| -a, --api-version| 1           | The API version. It appears in the API URLs |
 | --silent         | N/A         | Disable logging                             |
 | --verbose        | N/A         | Enable verbose logging                      |
 
@@ -129,6 +130,7 @@ Returns an instance of ApiPls. Valid options are:
 |**databaseUrl**|      |The URL of the database to connect to.|
 |**connectWithSsl**| true | Whether or not to use SSL to connect to the database.|
 |**port**| 5000 | The port to start the webserver on.|
+|**apiVersion**| 1 | The version of the API. Appears in API URLs.|
 
 ##### `apiPls.sync()`
 
