@@ -8,9 +8,10 @@ const del = require('./middleware/delete');
 
 // The Controller interfaces with the database. It performs our CRUD operations.
 // Access to the controller occurs through the routes.
-function Controller(resource, db) {
+function Controller({resource, version, db}) {
   this.resource = resource;
   this.db = db;
+  this.version = version;
   _.bindAll(this, ['create', 'read', 'update', 'del']);
 }
 

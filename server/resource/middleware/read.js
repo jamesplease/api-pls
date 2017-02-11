@@ -83,10 +83,10 @@ module.exports = function(req, res) {
       let formattedResult;
       let totalCount;
       if (!Array.isArray(result)) {
-        formattedResult = formatTransaction(result, this.resource);
+        formattedResult = formatTransaction(result, this.resource, this.version);
       } else {
         totalCount = result.length ? result[0].total_count : 0;
-        formattedResult = _.map(result, t => formatTransaction(t, this.resource));
+        formattedResult = _.map(result, t => formatTransaction(t, this.resource, this.version));
       }
 
       const dataToSend = {

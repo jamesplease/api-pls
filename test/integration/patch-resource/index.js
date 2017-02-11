@@ -310,6 +310,10 @@ describe('Resource PATCH', function() {
             data: {
               id: '3',
               type: 'paginates'
+            },
+            links: {
+              self: '/v1/paginates/3',
+              related: '/v1/relations/1/owner'
             }
           }
         }

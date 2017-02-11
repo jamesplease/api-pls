@@ -58,7 +58,7 @@ module.exports = function(req, res) {
     .then(result => {
       log.info({query, resource: this.resource, reqId: req.id}, 'Updated a resource');
       sendJson(res, {
-        data: formatTransaction(result, this.resource),
+        data: formatTransaction(result, this.resource, this.version),
         links: {
           self: selfLink
         }

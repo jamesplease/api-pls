@@ -457,8 +457,8 @@ describe('Resource GET (many)', function() {
 
       const relationSeeds = [
         {name: 'james', size: 's', owner_id: '1'},
-        {name: 'pragya', size: null, owner_id: '1'},
-        {name: 'tim', size: null, owner_id: '2'},
+        {name: 'pragya', size: null, owner_id: '3'},
+        {name: 'tim', size: null, owner_id: null},
       ];
 
       applyMigrations(this.options)
@@ -481,6 +481,10 @@ describe('Resource GET (many)', function() {
               data: {
                 id: '1',
                 type: 'paginates'
+              },
+              links: {
+                self: '/v1/paginates/1',
+                related: '/v1/relations/1/owner'
               }
             }
           }
@@ -495,8 +499,12 @@ describe('Resource GET (many)', function() {
           relationships: {
             owner: {
               data: {
-                id: '1',
+                id: '3',
                 type: 'paginates'
+              },
+              links: {
+                self: '/v1/paginates/3',
+                related: '/v1/relations/2/owner'
               }
             }
           }
@@ -510,9 +518,8 @@ describe('Resource GET (many)', function() {
           },
           relationships: {
             owner: {
-              data: {
-                id: '2',
-                type: 'paginates'
+              links: {
+                related: '/v1/relations/3/owner'
               }
             }
           }

@@ -192,7 +192,8 @@ describe('normalizeModel', function() {
         owner: 'many-to-one',
         nicknames: {
           relationship: 'many-to-many',
-          resource: 'nickname'
+          resource: 'nickname',
+          nullable: false
         }
       }
     };
@@ -202,11 +203,13 @@ describe('normalizeModel', function() {
       relations: {
         owner: {
           resource: 'owner',
-          relationship: 'many-to-one'
+          relationship: 'many-to-one',
+          nullable: true
         },
         nicknames: {
           relationship: 'many-to-many',
-          resource: 'nickname'
+          resource: 'nickname',
+          nullable: false
         }
       }
     });
