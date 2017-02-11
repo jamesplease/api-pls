@@ -113,6 +113,47 @@ describe('Resource PATCH', function() {
     });
   });
 
+  describe('when the ID in the body does not match the url', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('no_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a Bad Request response', (done) => {
+      const expectedErrors = [{
+        title: 'Bad Request',
+        detail: '"params.id" should be equal to constant'
+      }];
+
+      request(app(this.options))
+        .patch('/v1/no_metas/1')
+        .send({
+          data: {
+            type: 'no_metas',
+            id: '3',
+            attributes: {
+              first_name: 'eric',
+              last_name: 'please'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(400)
+        .end(done);
+    });
+  });
+
   describe('when the request succeeds, and meta is manipulated', () => {
     beforeEach((done) => {
       this.options = {

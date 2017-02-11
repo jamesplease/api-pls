@@ -1,16 +1,18 @@
 'use strict';
 
-const validator = require('is-my-json-valid');
+const Ajv = require('ajv');
 const requestErrorMap = require('./bad-request-map');
 const sendJson = require('./send-json');
 const log = require('./log');
 
+const ajv = new Ajv({allErrors: true, v5: true});
+
 // This determines if a user's HTTP request to a particular endpoint is valid.
 // It works by passing a `schema` from a Resource's validations through
-// `is-my-json-valid`.
+// `ajv`.
 module.exports = function(schema) {
+  const validate = ajv.compile(schema);
   return function(req, res, next) {
-    const validate = validator(schema, {greedy: true});
     if (validate(req)) {
       next();
     } else {

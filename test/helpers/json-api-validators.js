@@ -1,11 +1,13 @@
 const util = require('util');
 const _ = require('lodash');
-const isMyJsonValid = require('is-my-json-valid');
+const Ajv = require('ajv');
 const jsonApiSchema = require('./json-api-schema');
 const error = require('./diff-error');
 
+const ajv = new Ajv({allErrors: true, v5: true});
+
 const inspect = util.inspect;
-const validator = isMyJsonValid(jsonApiSchema);
+const validator = ajv.compile(jsonApiSchema);
 
 // These are handy methods that can be composed as "middleware" to validate
 // responses.
