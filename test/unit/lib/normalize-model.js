@@ -16,7 +16,7 @@ const baseModel = {
       default: null
     }
   },
-  relations: {},
+  relationships: {},
   actions: {
     create: true,
     read_one: true,
@@ -50,10 +50,10 @@ describe('normalizeModel', function() {
     assert.deepEqual(normalizeModel(input), expected);
   });
 
-  it('should normalize a model with custom built_in_meta_attributes', () => {
+  it('should normalize a model with custom built_in_meta', () => {
     const input = {
       name: 'cat',
-      built_in_meta_attributes: {
+      built_in_meta: {
         created_at: false,
         updated_at: false
       }
@@ -188,7 +188,7 @@ describe('normalizeModel', function() {
   it('should normalize a model with relations', () => {
     const input = {
       name: 'cat',
-      relations: {
+      relationships: {
         owner: 'many-to-one',
         nicknames: {
           relationship: 'many-to-many',
@@ -200,7 +200,7 @@ describe('normalizeModel', function() {
     const expected = _.merge({}, baseModel, {
       name: 'cat',
       plural_form: 'cats',
-      relations: {
+      relationships: {
         owner: {
           resource: 'owner',
           relationship: 'many-to-one',

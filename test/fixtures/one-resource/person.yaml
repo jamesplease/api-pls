@@ -13,6 +13,6 @@ pagination:
   default_page_size: 5
   default_page_number: 0
 
-built_in_meta_attributes:
+built_in_meta:
   created_at: false
   updated_at: true
