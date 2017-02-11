@@ -14,6 +14,7 @@ exports.create = function({tableName, attrs, db}) {
 // or an asterisk to get everything: '*'.
 // By default, the asterisk is used.
 exports.read = function({tableName, fields, db, id, pageSize, pageNumber, enablePagination}) {
+  const zeroIndexPageNumber = pageNumber - 1;
   const pgp = db.$config.pgp;
 
   // Default fields to an asterisk
@@ -34,7 +35,7 @@ exports.read = function({tableName, fields, db, id, pageSize, pageNumber, enable
   if (enablePagination) {
     paginationQuery = pgp.as.format('LIMIT $[limit] OFFSET $[offset]', {
       limit: pageSize,
-      offset: pageNumber * pageSize
+      offset: zeroIndexPageNumber * pageSize
     });
   }
 

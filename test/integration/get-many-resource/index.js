@@ -334,13 +334,17 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedMeta = {
-        page_number: 0,
+        page_number: 1,
         page_size: 2,
         total_count: 4
       };
 
       const expectedLinks = {
-        self: '/v1/paginates'
+        self: '/v1/paginates',
+        first: '/v1/paginates?page[number]=1',
+        last: '/v1/paginates?page[number]=2',
+        prev: null,
+        next: '/v1/paginates?page[number]=2'
       };
 
       request(app(this.options))
@@ -350,6 +354,94 @@ describe('Resource GET (many)', function() {
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request fails due to out of bounds page size', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
+      };
+
+      const seeds = [
+        {first_name: 'james', last_name: 'please'},
+        {first_name: 'shilpa', last_name: 'please'},
+        {first_name: 'tim', last_name: 'please'},
+        {first_name: 'stephen', last_name: 'please'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 400 response', (done) => {
+      const expectedErrors = [
+        {
+          title: 'Bad Request',
+          detail: 'Query parameter "page.size" must be greater than zero.'
+        }
+      ];
+
+      const expectedLinks = {
+        self: '/v10/paginates?page[number]=2&page[size]=0',
+      };
+
+      request(app(this.options))
+        .get('/v10/paginates')
+        .query('page[number]=2&page[size]=0')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .end(done);
+    });
+  });
+
+  describe('when the request fails due to out of bounds page size & number', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
+      };
+
+      const seeds = [
+        {first_name: 'james', last_name: 'please'},
+        {first_name: 'shilpa', last_name: 'please'},
+        {first_name: 'tim', last_name: 'please'},
+        {first_name: 'stephen', last_name: 'please'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 400 response', (done) => {
+      const expectedErrors = [
+        {
+          title: 'Bad Request',
+          detail: 'Query parameter "page.number" must be greater than zero.'
+        },
+        {
+          title: 'Bad Request',
+          detail: 'Query parameter "page.size" must be greater than zero.'
+        }
+      ];
+
+      const expectedLinks = {
+        self: '/v10/paginates?page[number]=-2&page[size]=0',
+      };
+
+      request(app(this.options))
+        .get('/v10/paginates')
+        .query('page[number]=-2&page[size]=0')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
         .end(done);
     });
   });
@@ -386,18 +478,22 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedMeta = {
-        page_number: 1,
+        page_number: 2,
         page_size: 3,
         total_count: 4
       };
 
       const expectedLinks = {
-        self: '/v10/paginates?page[number]=1&page[size]=3'
+        self: '/v10/paginates?page[number]=2&page[size]=3',
+        first: '/v10/paginates?page[number]=1&page[size]=3',
+        last: '/v10/paginates?page[number]=2&page[size]=3',
+        prev: '/v10/paginates?page[number]=1&page[size]=3',
+        next: null
       };
 
       request(app(this.options))
         .get('/v10/paginates')
-        .query('page[number]=1&page[size]=3')
+        .query('page[number]=2&page[size]=3')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
@@ -436,7 +532,13 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v2/paginates?page[number]=100&page[size]=10'
+        self: '/v2/paginates?page[number]=100&page[size]=10',
+        first: '/v2/paginates?page[number]=1&page[size]=10',
+        // This is a bug. For more, see:
+        // https://github.com/jmeas/api-pls/issues/94
+        last: '/v2/paginates?page[number]=0&page[size]=10',
+        prev: '/v2/paginates?page[number]=99&page[size]=10',
+        next: null
       };
 
       request(app(this.options))
@@ -536,18 +638,22 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedMeta = {
-        page_number: 0,
+        page_number: 1,
         page_size: 10,
         total_count: 3
       };
 
       const expectedLinks = {
-        self: '/v5/relations?page[size]=10'
+        self: '/v5/relations?page[size]=10&sandwiches=tasty',
+        first: '/v5/relations?page[size]=10&page[number]=1&sandwiches=tasty',
+        last: '/v5/relations?page[size]=10&page[number]=1&sandwiches=tasty',
+        prev: null,
+        next: null
       };
 
       request(app(this.options))
         .get('/v5/relations')
-        .query('page[size]=10')
+        .query('page[size]=10&sandwiches=tasty')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))

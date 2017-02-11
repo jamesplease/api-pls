@@ -25,7 +25,7 @@ const baseModel = {
     delete: true
   },
   pagination: {
-    default_page_number: 0,
+    default_page_number: 1,
     default_page_size: 10,
     enabled: true
   }
