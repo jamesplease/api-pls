@@ -198,13 +198,13 @@ This project only partially supports JSON API. Features currently supported are:
 - [ ] Sorting
 - [x] Pagination
 - [ ] Filtering
-- [ ] Links
+- [x] Links
 - [ ] Relations
   - [ ] One-to-one
   - [x] Many-to-one (limited supported)
   - [ ] Many-to-many
   - [ ] Relationship endpoints (`/v1/:resource/relationships/:related`)
-  - [ ] Related endpoints (`/v1/:resource/:related`)
+  - [ ] Related endpoints (`/v1/:resource/:id/:related`)
 
 ### Acknowledgements
 
