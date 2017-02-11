@@ -137,7 +137,7 @@ describe('The root endpoint', function() {
         people: {
           href: '/v2/people',
           meta: {
-            methods: [
+            supported_actions: [
               'read_one',
               'read_many',
               'delete'
