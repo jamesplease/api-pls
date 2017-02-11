@@ -19,7 +19,7 @@ module.exports = function(req, res) {
   // At the moment, this allows users to modify the built-in-meta, which is
   // no good.
   const meta = _.pick(rawMeta, Object.keys(this.resource.meta));
-  const relations = _.pick(rawRelations, Object.keys(this.resource.relations));
+  const relations = _.pick(rawRelations, Object.keys(this.resource.relationships));
 
   // This maps the name that the user passes in to the ID that they pass in.
   // A chain().mapValue().mapKeys() could probably do this in a cleaner

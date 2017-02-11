@@ -11,6 +11,6 @@ attributes:
 meta:
   copyright: 'VARCHAR(30)'
 
-built_in_meta_attributes:
+built_in_meta:
   created_at: false
   updated_at: false

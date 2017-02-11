@@ -134,11 +134,11 @@ describe('validateResourceModel', function() {
     });
   });
 
-  describe('built_in_meta_attributes', () => {
+  describe('built_in_meta', () => {
     it('should return true when an object of the right form is passed', () => {
       assert.equal(validate({
         name: 'person',
-        built_in_meta_attributes: {
+        built_in_meta: {
           created_at: true,
           updated_at: false
         }
@@ -146,7 +146,7 @@ describe('validateResourceModel', function() {
 
       assert.equal(validate({
         name: 'person',
-        built_in_meta_attributes: {
+        built_in_meta: {
           created_at: true
         }
       }), true);
@@ -155,7 +155,7 @@ describe('validateResourceModel', function() {
     it('should return false when unrecognized properties exist', () => {
       assert.equal(validate({
         name: 'person',
-        built_in_meta_attributes: {
+        built_in_meta: {
           created_at: true,
           sandwiches: true
         }
@@ -165,17 +165,17 @@ describe('validateResourceModel', function() {
     it('should return false when not an object', () => {
       assert.equal(validate({
         name: 'person',
-        built_in_meta_attributes: true
+        built_in_meta: true
       }), false);
 
       assert.equal(validate({
         name: 'person',
-        built_in_meta_attributes: 'asdf'
+        built_in_meta: 'asdf'
       }), false);
 
       assert.equal(validate({
         name: 'person',
-        built_in_meta_attributes: 234
+        built_in_meta: 234
       }), false);
     });
   });
@@ -294,11 +294,11 @@ describe('validateResourceModel', function() {
     });
   });
 
-  describe('relations', () => {
+  describe('relationships', () => {
     it('should accept a string shorthand form', () => {
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           club: 'many-to-one',
           secret_heirloom: 'one-to-one',
           clothes: 'many-to-many'
@@ -309,7 +309,7 @@ describe('validateResourceModel', function() {
     it('should accept an object form for meta', () => {
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           club: {
             resource: 'clubs',
             relationship: 'one-to-one'
@@ -322,7 +322,7 @@ describe('validateResourceModel', function() {
     it('should fail if there are unrecognized properties', () => {
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           club: {
             resource: 'clubs',
             relationship: 'one-to-one',
@@ -336,14 +336,14 @@ describe('validateResourceModel', function() {
     it('should fail if shorthand is not a string', () => {
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           license: true
         }
       }), false);
 
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           license: 234
         }
       }), false);
@@ -352,21 +352,21 @@ describe('validateResourceModel', function() {
     it('should fail if shorthand is not a valid relationship type', () => {
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           license: 'one-to-many'
         }
       }), false);
 
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           license: 'what'
         }
       }), false);
 
       assert.equal(validate({
         name: 'person',
-        relations: {
+        relationships: {
           club: {
             resource: 'clubs',
             relationship: 'ok'

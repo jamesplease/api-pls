@@ -5,7 +5,7 @@ const adjustResourceQuantity = require('./adjust-resource-quantity');
 
 module.exports = function(result, resource, version) {
   const response = {};
-  _.forEach(resource.relations, (relation, columnBase) => {
+  _.forEach(resource.relationships, (relation, columnBase) => {
     const columnName = `${columnBase}_id`;
     const value = result[columnName];
     const id = value ? String(value) : null;

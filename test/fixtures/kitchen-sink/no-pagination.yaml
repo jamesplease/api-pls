@@ -8,5 +8,5 @@ attributes:
     nullable: false
   size: 'VARCHAR(30)'
 
-built_in_meta_attributes:
+built_in_meta:
   created_at: false

@@ -7,17 +7,17 @@ describe('resourceDependencyGraph', function() {
 
   it('should return the resources in the same order when there are no relationships', () => {
     const resources = [
-      {name: 'a', relations: {}},
-      {name: 'b', relations: {}},
-      {name: 'c', relations: {}},
-      {name: 'd', relations: {}},
+      {name: 'a', relationships: {}},
+      {name: 'b', relationships: {}},
+      {name: 'c', relationships: {}},
+      {name: 'd', relationships: {}},
     ];
 
     const expected = [
-      {name: 'a', relations: {}},
-      {name: 'b', relations: {}},
-      {name: 'c', relations: {}},
-      {name: 'd', relations: {}},
+      {name: 'a', relationships: {}},
+      {name: 'b', relationships: {}},
+      {name: 'c', relationships: {}},
+      {name: 'd', relationships: {}},
     ];
 
     assert.deepEqual(depGraph(resources), expected);
@@ -26,21 +26,21 @@ describe('resourceDependencyGraph', function() {
   it('should rearrange them correctly based on their relationships', () => {
     const resources = [
       {
-        name: 'a', relations: {}
+        name: 'a', relationships: {}
       },
       {
-        name: 'b', relations: {
+        name: 'b', relationships: {
           one: {resource: 'a'}
         }
       },
       {
-        name: 'c', relations: {
+        name: 'c', relationships: {
           one: {resource: 'b'},
           two: {resource: 'a'}
         }
       },
       {
-        name: 'd', relations: {
+        name: 'd', relationships: {
           one: {resource: 'a'},
           two: {resource: 'c'}
         }
@@ -49,21 +49,21 @@ describe('resourceDependencyGraph', function() {
 
     const expected = [
       {
-        name: 'a', relations: {}
+        name: 'a', relationships: {}
       },
       {
-        name: 'b', relations: {
+        name: 'b', relationships: {
           one: {resource: 'a'}
         }
       },
       {
-        name: 'c', relations: {
+        name: 'c', relationships: {
           one: {resource: 'b'},
           two: {resource: 'a'}
         }
       },
       {
-        name: 'd', relations: {
+        name: 'd', relationships: {
           one: {resource: 'a'},
           two: {resource: 'c'}
         }
@@ -76,12 +76,12 @@ describe('resourceDependencyGraph', function() {
   it('should throw for circular dependencies', () => {
     const resources = [
       {
-        name: 'a', relations: {
+        name: 'a', relationships: {
           one: {resource: 'b'}
         }
       },
       {
-        name: 'b', relations: {
+        name: 'b', relationships: {
           one: {resource: 'a'}
         }
       }
