@@ -9,6 +9,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
+  const selfLinkBase = req.path;
   const data = _.get(req, 'body.data', {});
   const rawAttrs = data.attributes;
   const rawMeta = data.meta;
@@ -34,7 +35,10 @@ module.exports = function(req, res) {
     log.info({req, res}, 'A create request had no columns to update');
     res.status(serverErrors.noValidFields.code);
     sendJson(res, {
-      errors: [serverErrors.noValidFields.body(this.resource.plural_form)]
+      errors: [serverErrors.noValidFields.body(this.resource.plural_form)],
+      links: {
+        self: selfLinkBase
+      }
     });
     return;
   }
@@ -52,8 +56,16 @@ module.exports = function(req, res) {
       log.info({query, resource: this.resource, reqId: req.id}, 'Resource created.');
       res.status(201);
       sendJson(res, {
-        data: formatTransaction(result, this.resource)
+        data: formatTransaction(result, this.resource),
+        links: {
+          self: `${selfLinkBase}/${result.id}`
+        }
       });
     })
-    .catch(err => handleQueryError({err, req, res, resource: this.resource, crudAction: 'create', query}));
+    .catch(err => handleQueryError({
+      resource: this.resource,
+      selfLink: selfLinkBase,
+      crudAction: 'create',
+      err, req, res, query
+    }));
 };

@@ -33,12 +33,17 @@ describe('Resource GET (one)', function() {
         detail: 'The requested resource does not exist.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/pastas/1'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .get('/v1/pastas/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(404)
             .end(done);
         });
@@ -71,10 +76,15 @@ describe('Resource GET (one)', function() {
         }
       };
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -102,11 +112,16 @@ describe('Resource GET (one)', function() {
         detail: 'No valid fields were specified for resource "no_metas".'
       }];
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas/1')
         .query('fields[no_metas]=sandwiches')
         .expect(validators.basicValidation)
         .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(400)
         .end(done);
     });
@@ -138,11 +153,16 @@ describe('Resource GET (one)', function() {
         }
       };
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas/1')
         .query('fields[no_metas]')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -173,11 +193,16 @@ describe('Resource GET (one)', function() {
         }
       };
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas/1')
         .query('fields[no_metas]=first_name')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -206,25 +231,32 @@ describe('Resource GET (one)', function() {
     });
 
     it('should return a 200 OK, with the resource', (done) => {
+      const expectedData = {
+        type: 'relations',
+        id: '1',
+        attributes: {
+          name: 'james',
+          size: null
+        },
+        relationships: {
+          owner: {
+            data: {
+              id: '1',
+              type: 'paginates'
+            }
+          }
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v1/relations/1'
+      };
+
       request(app(this.options))
         .get('/v1/relations/1')
         .expect(validators.basicValidation)
-        .expect(validators.assertData({
-          type: 'relations',
-          id: '1',
-          attributes: {
-            name: 'james',
-            size: null
-          },
-          relationships: {
-            owner: {
-              data: {
-                id: '1',
-                type: 'paginates'
-              }
-            }
-          }
-        }))
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });

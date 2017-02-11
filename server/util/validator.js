@@ -19,7 +19,10 @@ module.exports = function(schema) {
       log.info({req, res}, 'A request failed validation.');
       res.status(400);
       sendJson(res, {
-        errors: requestErrorMap(validate.errors)
+        errors: requestErrorMap(validate.errors),
+        links: {
+          self: req.path
+        }
       });
     }
   };

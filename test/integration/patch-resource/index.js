@@ -33,12 +33,17 @@ describe('Resource PATCH', function() {
         detail: 'The requested resource does not exist.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/pastas/1'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .patch('/v1/pastas/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(404)
             .end(done);
         });
@@ -56,12 +61,17 @@ describe('Resource PATCH', function() {
         detail: 'This method is not permitted on this resource.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/nopes'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .patch('/v1/nopes')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(405)
             .end(done);
         });
@@ -94,6 +104,10 @@ describe('Resource PATCH', function() {
         }
       };
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .patch('/v1/no_metas/1')
         .send({
@@ -108,6 +122,7 @@ describe('Resource PATCH', function() {
         })
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -135,6 +150,10 @@ describe('Resource PATCH', function() {
         detail: '"params.id" should be equal to constant'
       }];
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .patch('/v1/no_metas/1')
         .send({
@@ -149,6 +168,7 @@ describe('Resource PATCH', function() {
         })
         .expect(validators.basicValidation)
         .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(400)
         .end(done);
     });
@@ -183,6 +203,10 @@ describe('Resource PATCH', function() {
         }
       };
 
+      const expectedLinks = {
+        self: '/v1/has_metas/1'
+      };
+
       request(app(this.options))
         .patch('/v1/has_metas/1')
         .send({
@@ -196,6 +220,7 @@ describe('Resource PATCH', function() {
         })
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -227,6 +252,10 @@ describe('Resource PATCH', function() {
         }
       };
 
+      const expectedLinks = {
+        self: '/v1/no_metas/1'
+      };
+
       request(app(this.options))
         .patch('/v1/no_metas/1')
         .send({
@@ -240,6 +269,7 @@ describe('Resource PATCH', function() {
         })
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -268,6 +298,27 @@ describe('Resource PATCH', function() {
     });
 
     it('should return a 200 OK, with the updated resource', (done) => {
+      const expectedData = {
+        type: 'relations',
+        id: '1',
+        attributes: {
+          name: 'james',
+          size: null
+        },
+        relationships: {
+          owner: {
+            data: {
+              id: '3',
+              type: 'paginates'
+            }
+          }
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v1/relations/1'
+      };
+
       request(app(this.options))
         .patch('/v1/relations/1')
         .send({
@@ -285,22 +336,8 @@ describe('Resource PATCH', function() {
           }
         })
         .expect(validators.basicValidation)
-        .expect(validators.assertData({
-          type: 'relations',
-          id: '1',
-          attributes: {
-            name: 'james',
-            size: null
-          },
-          relationships: {
-            owner: {
-              data: {
-                id: '3',
-                type: 'paginates'
-              }
-            }
-          }
-        }))
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });

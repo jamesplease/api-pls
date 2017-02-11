@@ -8,6 +8,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
+  const selfLink = req.path;
   const id = req.params.id;
   const rawAttrs = _.get(req, 'body.data.attributes', {});
   const rawMeta = _.get(req, 'body.data.meta', {});
@@ -57,8 +58,11 @@ module.exports = function(req, res) {
     .then(result => {
       log.info({query, resource: this.resource, reqId: req.id}, 'Updated a resource');
       sendJson(res, {
-        data: formatTransaction(result, this.resource)
+        data: formatTransaction(result, this.resource),
+        links: {
+          self: selfLink
+        }
       });
     })
-    .catch(err => handleQueryError({err, req, res, resource: this.resource, crudAction: 'update', query}));
+    .catch(err => handleQueryError({err, req, res, resource: this.resource, crudAction: 'update', query, selfLink}));
 };

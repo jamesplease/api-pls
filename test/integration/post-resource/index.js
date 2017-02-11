@@ -33,12 +33,17 @@ describe('Resource POST', function() {
         detail: 'The requested resource does not exist.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/pastas'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .post('/v1/pastas')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(404)
             .end(done);
         });
@@ -56,12 +61,17 @@ describe('Resource POST', function() {
         detail: 'This method is not permitted on this resource.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/nopes/1'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .post('/v1/nopes/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(405)
             .end(done);
         });
@@ -79,12 +89,17 @@ describe('Resource POST', function() {
         detail: 'This method is not permitted on this resource.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/no-cruds'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .post('/v1/no-cruds')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(405)
             .end(done);
         });
@@ -102,6 +117,10 @@ describe('Resource POST', function() {
         detail: 'No valid fields were specified for resource "nopes".'
       }];
 
+      const expectedLinks = {
+        self: '/v1/nopes'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
@@ -115,6 +134,7 @@ describe('Resource POST', function() {
             })
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(400)
             .end(done);
         });
@@ -132,6 +152,10 @@ describe('Resource POST', function() {
         detail: '"body.data.attributes" should have required property \'label\''
       }];
 
+      const expectedLinks = {
+        self: '/v1/nopes'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
@@ -146,6 +170,7 @@ describe('Resource POST', function() {
             })
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(400)
             .end(done);
         });
@@ -156,6 +181,22 @@ describe('Resource POST', function() {
     it('should return a 200 OK, with the created resource', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const expectedData = {
+        type: 'nopes',
+        id: '1',
+        attributes: {
+          label: 'sandwiches',
+          size: 'M'
+        },
+        meta: {
+          updated_at: null
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v1/nopes/1'
       };
 
       applyMigrations(options)
@@ -172,17 +213,8 @@ describe('Resource POST', function() {
               }
             })
             .expect(validators.basicValidation)
-            .expect(validators.assertData({
-              type: 'nopes',
-              id: '1',
-              attributes: {
-                label: 'sandwiches',
-                size: 'M'
-              },
-              meta: {
-                updated_at: null
-              }
-            }))
+            .expect(validators.assertData(expectedData))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(201)
             .end(done);
         });
@@ -193,6 +225,22 @@ describe('Resource POST', function() {
     it('should return a 200 OK, with the created resource', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink')
+      };
+
+      const expectedData = {
+        type: 'nopes',
+        id: '1',
+        attributes: {
+          label: 'sandwiches',
+          size: 'M'
+        },
+        meta: {
+          updated_at: null
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v1/nopes/1'
       };
 
       applyMigrations(options)
@@ -210,17 +258,8 @@ describe('Resource POST', function() {
               }
             })
             .expect(validators.basicValidation)
-            .expect(validators.assertData({
-              type: 'nopes',
-              id: '1',
-              attributes: {
-                label: 'sandwiches',
-                size: 'M'
-              },
-              meta: {
-                updated_at: null
-              }
-            }))
+            .expect(validators.assertData(expectedData))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(201)
             .end(done);
         });
@@ -243,6 +282,27 @@ describe('Resource POST', function() {
     });
 
     it('should return a 200 OK, with the created resource', (done) => {
+      const expectedData = {
+        type: 'relations',
+        id: '1',
+        attributes: {
+          name: 'please',
+          size: null
+        },
+        relationships: {
+          owner: {
+            data: {
+              id: '1',
+              type: 'paginates'
+            }
+          }
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v1/relations/1'
+      };
+
       request(app(this.options))
         .post('/v1/relations')
         .send({
@@ -262,22 +322,8 @@ describe('Resource POST', function() {
           }
         })
         .expect(validators.basicValidation)
-        .expect(validators.assertData({
-          type: 'relations',
-          id: '1',
-          attributes: {
-            name: 'please',
-            size: null
-          },
-          relationships: {
-            owner: {
-              data: {
-                id: '1',
-                type: 'paginates'
-              }
-            }
-          }
-        }))
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(201)
         .end(done);
     });
