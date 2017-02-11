@@ -12,7 +12,10 @@ module.exports = function({version, resource, controller}) {
     log.info({req, res}, 'An action that is not allowed was attempted at an endpoint.');
     res.status(serverErrors.notAllowed.code);
     sendJson(res, {
-      errors: [serverErrors.notAllowed.body()]
+      errors: [serverErrors.notAllowed.body()],
+      links: {
+        self: req.path
+      }
     });
   }];
 

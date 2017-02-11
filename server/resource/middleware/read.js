@@ -9,6 +9,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
+  const selfLink = req.path;
   const id = req.params.id;
   const isSingular = Boolean(id);
 
@@ -43,7 +44,10 @@ module.exports = function(req, res) {
     log.info({req, res}, 'A read request specified sparse fields, but provided no valid fields.');
     res.status(serverErrors.noValidFields.code);
     sendJson(res, {
-      errors: [serverErrors.noValidFields.body(this.resource.plural_form)]
+      errors: [serverErrors.noValidFields.body(this.resource.plural_form)],
+      links: {
+        self: selfLink
+      }
     });
     res.end();
     return;
@@ -87,6 +91,9 @@ module.exports = function(req, res) {
 
       const dataToSend = {
         data: formattedResult,
+        links: {
+          self: selfLink
+        }
       };
 
       if (enablePagination) {
@@ -102,6 +109,6 @@ module.exports = function(req, res) {
     })
     .catch(err => {
       const crudAction = isSingular ? 'readOne' : 'readMany';
-      handleQueryError({err, req, res, resource: this.resource, crudAction, query});
+      handleQueryError({err, req, res, resource: this.resource, crudAction, query, selfLink});
     });
 };

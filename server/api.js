@@ -96,7 +96,10 @@ module.exports = function(options) {
     log.info({req, res}, 'A 404 route was handled.');
     res.status(404);
     sendJson(res, {
-      errors: [serverErrors.notFound.body()]
+      errors: [serverErrors.notFound.body()],
+      links: {
+        self: req.baseUrl
+      }
     });
   });
 

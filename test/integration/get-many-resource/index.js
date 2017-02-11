@@ -33,12 +33,17 @@ describe('Resource GET (many)', function() {
         detail: 'The requested resource does not exist.'
       }];
 
+      const expectedLinks = {
+        self: '/v1/pastas'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
             .get('/v1/pastas')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(404)
             .end(done);
         });
@@ -99,10 +104,15 @@ describe('Resource GET (many)', function() {
         },
       ];
 
+      const expectedLinks = {
+        self: '/v1/no_metas'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -130,11 +140,16 @@ describe('Resource GET (many)', function() {
         detail: 'No valid fields were specified for resource "no_metas".'
       }];
 
+      const expectedLinks = {
+        self: '/v1/no_metas'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas')
         .query('fields[no_metas]=sandwiches')
         .expect(validators.basicValidation)
         .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(400)
         .end(done);
     });
@@ -194,11 +209,16 @@ describe('Resource GET (many)', function() {
         },
       ];
 
+      const expectedLinks = {
+        self: '/v1/no_metas'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas')
         .query('fields[no_metas]')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -254,11 +274,16 @@ describe('Resource GET (many)', function() {
         },
       ];
 
+      const expectedLinks = {
+        self: '/v1/no_metas'
+      };
+
       request(app(this.options))
         .get('/v1/no_metas')
         .query('fields[no_metas]=first_name')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -308,11 +333,16 @@ describe('Resource GET (many)', function() {
         total_count: 4
       };
 
+      const expectedLinks = {
+        self: '/v1/paginates'
+      };
+
       request(app(this.options))
         .get('/v1/paginates')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -354,12 +384,17 @@ describe('Resource GET (many)', function() {
         total_count: 4
       };
 
+      const expectedLinks = {
+        self: '/v1/paginates'
+      };
+
       request(app(this.options))
         .get('/v1/paginates')
         .query('page[number]=1&page[size]=3')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -392,12 +427,17 @@ describe('Resource GET (many)', function() {
         total_count: 0
       };
 
+      const expectedLinks = {
+        self: '/v1/paginates'
+      };
+
       request(app(this.options))
         .get('/v1/paginates')
         .query('page[number]=100&page[size]=10')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
@@ -485,12 +525,17 @@ describe('Resource GET (many)', function() {
         total_count: 3
       };
 
+      const expectedLinks = {
+        self: '/v1/relations'
+      };
+
       request(app(this.options))
         .get('/v1/relations')
         .query('page[size]=10')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
+        .expect(validators.assertLinks(expectedLinks))
         .expect(200)
         .end(done);
     });
