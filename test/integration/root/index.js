@@ -130,7 +130,7 @@ describe('The root endpoint', function() {
 
       const links = {
         people: {
-          link: '/v1/people',
+          href: '/v1/people',
           meta: {
             methods: [
               'read_one',
