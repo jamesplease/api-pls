@@ -2,9 +2,6 @@
 
 const pino = require('pino');
 
-const pretty = pino.pretty();
-pretty.pipe(process.stdout);
-
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isDevEnv = NODE_ENV === 'development';
 
@@ -26,7 +23,8 @@ const log = pino({
     req: reqSerializer,
     resource: resourceSerializer
   }),
-  src: isDevEnv
-}, pretty);
+  src: isDevEnv,
+  prettyPrint: isDevEnv
+});
 
 module.exports = log;
