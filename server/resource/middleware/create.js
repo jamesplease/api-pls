@@ -9,6 +9,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
+  log.info({req, res}, 'A create request is being processed.');
   const selfLinkBase = req.path;
   const data = _.get(req, 'body.data', {});
   const rawAttrs = data.attributes;
@@ -38,7 +39,7 @@ module.exports = function(req, res) {
   const columns = Object.assign(attrs, meta, relData);
 
   if (!_.size(columns)) {
-    log.info({req, res}, 'A create request had no columns to update');
+    log.info({reqId: req.id}, 'A create request had no columns to update');
     res.status(serverErrors.noValidFields.code);
     sendJson(res, {
       errors: [serverErrors.noValidFields.body(this.resource.plural_form)],
@@ -59,7 +60,7 @@ module.exports = function(req, res) {
 
   this.db.one(query)
     .then(result => {
-      log.info({query, resource: this.resource, reqId: req.id}, 'Resource created.');
+      log.info({reqId: req.id}, 'Resource created.');
       res.status(201);
       sendJson(res, {
         data: formatTransaction(result, this.resource, this.version),

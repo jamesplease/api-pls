@@ -9,6 +9,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
+  log.info({req, res}, 'A read request is being processed.');
   const selfLink = req.path;
   const id = req.params.id;
   const isSingular = Boolean(id);
@@ -41,7 +42,7 @@ module.exports = function(req, res) {
   // If they tried to specify fields, but none of them exist on this resource,
   // then we return an error response.
   if (fieldsIsArray && fieldsToReturn.length === 0) {
-    log.info({req, res}, 'A read request specified sparse fields, but provided no valid fields.');
+    log.info({reqId: req.id}, 'A read request specified sparse fields, but provided no valid fields.');
     res.status(serverErrors.noValidFields.code);
     sendJson(res, {
       errors: [serverErrors.noValidFields.body(this.resource.plural_form)],
@@ -104,7 +105,7 @@ module.exports = function(req, res) {
         };
       }
 
-      log.info({query, resourceName: this.resource.name, reqId: req.id}, 'Read a resource');
+      log.info({reqId: req.id}, 'Read a resource');
       sendJson(res, dataToSend);
     })
     .catch(err => {

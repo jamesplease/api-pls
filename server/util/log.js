@@ -14,11 +14,18 @@ function resourceSerializer(resource) {
   };
 }
 
+function reqSerializer(req) {
+  return Object.assign(pino.stdSerializers.req(req), {
+    reqId: req.id
+  });
+}
+
 const log = pino({
   name: 'api-pls',
-  serializers: Object.assign({
+  serializers: Object.assign({}, pino.stdSerializers, {
+    req: reqSerializer,
     resource: resourceSerializer
-  }, pino.stdSerializers),
+  }),
   src: isDevEnv
 }, pretty);
 

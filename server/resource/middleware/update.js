@@ -8,6 +8,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
+  log.info({req, res}, 'An update request is being processed.');
   const selfLink = req.path;
   const id = req.params.id;
   const rawAttrs = _.get(req, 'body.data.attributes', {});
