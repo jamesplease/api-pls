@@ -10,6 +10,7 @@ const program = require('commander');
 const sync = require('./commands/sync');
 const resetDatabase = require('./commands/reset-database');
 const start = require('./commands/start');
+const log = require('./util/log');
 
 const envPath = global.ENV_PATH ? global.ENV_PATH : '.env';
 require('dotenv').config({path: envPath});
@@ -37,10 +38,19 @@ function transformProgramOptions(program) {
   return program;
 }
 
+function setLogLevel() {
+  if (program.silent) {
+    log.level = 'silent';
+  } else if (program.verbose) {
+    log.level = 'trace';
+  }
+}
+
 program
   .command('sync')
   .description('Synchronize the database with Resource Model definitions')
   .action(() => {
+    setLogLevel();
     options = _.defaults(transformProgramOptions(program), options);
     sync(options);
   });
@@ -49,6 +59,7 @@ program
   .command('reset-database')
   .description('Remove all data from the database')
   .action(() => {
+    setLogLevel();
     options = _.defaults(transformProgramOptions(program), options);
     resetDatabase(options);
   });
@@ -57,6 +68,7 @@ program
   .command('start')
   .description('Start the API')
   .action(() => {
+    setLogLevel();
     options = _.defaults(transformProgramOptions(program), options);
     start(options);
   });

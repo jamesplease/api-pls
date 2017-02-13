@@ -131,6 +131,8 @@ Returns an instance of ApiPls. Valid options are:
 |**connectWithSsl**| true | Whether or not to use SSL to connect to the database.|
 |**port**| 5000 | The port to start the webserver on.|
 |**apiVersion**| 1 | The version of the API. Appears in API URLs.|
+|**silent**| false | Disables all logging from the web server when `true`. |
+|**verbose**| false | Set to `true` to make the server to log more information.|
 
 ##### `apiPls.sync()`
 
