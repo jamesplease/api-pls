@@ -116,7 +116,7 @@ describe('Resource GET (one)', function() {
       }];
 
       const expectedLinks = {
-        self: '/v4/no_metas/1'
+        self: '/v4/no_metas/1?fields[no_metas]=sandwiches'
       };
 
       request(app(this.options))
@@ -158,7 +158,7 @@ describe('Resource GET (one)', function() {
       };
 
       const expectedLinks = {
-        self: '/v16/no_metas/1'
+        self: '/v16/no_metas/1?fields[no_metas]'
       };
 
       request(app(this.options))
@@ -199,7 +199,7 @@ describe('Resource GET (one)', function() {
       };
 
       const expectedLinks = {
-        self: '/v1/no_metas/1'
+        self: '/v1/no_metas/1?fields[no_metas]=first_name'
       };
 
       request(app(this.options))

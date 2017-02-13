@@ -144,7 +144,7 @@ describe('Resource GET (many)', function() {
       }];
 
       const expectedLinks = {
-        self: '/v3/no_metas'
+        self: '/v3/no_metas?fields[no_metas]=sandwiches'
       };
 
       request(app(this.options))
@@ -214,7 +214,7 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedLinks = {
-        self: '/v5/no_metas'
+        self: '/v5/no_metas?fields[no_metas]'
       };
 
       request(app(this.options))
@@ -280,7 +280,7 @@ describe('Resource GET (many)', function() {
       ];
 
       const expectedLinks = {
-        self: '/v15/no_metas'
+        self: '/v15/no_metas?fields[no_metas]=first_name'
       };
 
       request(app(this.options))
@@ -392,7 +392,7 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v10/paginates'
+        self: '/v10/paginates?page[number]=1&page[size]=3'
       };
 
       request(app(this.options))
@@ -436,7 +436,7 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v2/paginates'
+        self: '/v2/paginates?page[number]=100&page[size]=10'
       };
 
       request(app(this.options))
@@ -542,7 +542,7 @@ describe('Resource GET (many)', function() {
       };
 
       const expectedLinks = {
-        self: '/v5/relations'
+        self: '/v5/relations?page[size]=10'
       };
 
       request(app(this.options))

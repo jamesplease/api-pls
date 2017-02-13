@@ -10,7 +10,7 @@ const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
   log.info({req}, 'A read request is being processed.');
-  const selfLink = req.path;
+  const selfLink = req.originalUrl;
   const id = req.params.id;
   const isSingular = Boolean(id);
 
