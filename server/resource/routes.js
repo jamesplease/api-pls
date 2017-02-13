@@ -1,41 +1,28 @@
 'use strict';
 
 const validator = require('../util/validator');
-const serverErrors = require('../util/server-errors');
-const sendJson = require('../util/send-json');
-const log = require('../util/log');
+const notAllowed = require('./middleware/not-allowed');
 
 module.exports = function({version, resource, controller}) {
   const {validations, plural_form, actions} = resource;
 
-  const notAllowedMiddleware = [(req, res) => {
-    log.info({req, res}, 'An action that is not allowed was attempted at an endpoint.');
-    res.status(serverErrors.notAllowed.code);
-    sendJson(res, {
-      errors: [serverErrors.notAllowed.body()],
-      links: {
-        self: req.path
-      }
-    });
-  }];
-
-  const postMiddleware = !actions.create ? notAllowedMiddleware : [
+  const postMiddleware = !actions.create ? notAllowed : [
     validator(validations.create),
     controller.create
   ];
-  const getManyMiddleware = !actions.read_many ? notAllowedMiddleware : [
+  const getManyMiddleware = !actions.read_many ? notAllowed : [
     validator(validations.readMany),
     controller.read
   ];
-  const getOneMiddleware = !actions.read_one ? notAllowedMiddleware : [
+  const getOneMiddleware = !actions.read_one ? notAllowed : [
     validator(validations.readOne),
     controller.read
   ];
-  const patchMiddleware = !actions.update ? notAllowedMiddleware : [
+  const patchMiddleware = !actions.update ? notAllowed : [
     validator(validations.update),
     controller.update
   ];
-  const deleteMiddleware = !actions.delete ? notAllowedMiddleware : [
+  const deleteMiddleware = !actions.delete ? notAllowed : [
     validator(validations.delete),
     controller.del
   ];
@@ -48,18 +35,18 @@ module.exports = function({version, resource, controller}) {
     routes: {
       post: {
         '/': postMiddleware,
-        '/:id': notAllowedMiddleware
+        '/:id': notAllowed
       },
       get: {
         '/': getManyMiddleware,
         '/:id': getOneMiddleware
       },
       patch: {
-        '/': notAllowedMiddleware,
+        '/': notAllowed,
         '/:id': patchMiddleware
       },
       delete: {
-        '/': notAllowedMiddleware,
+        '/': notAllowed,
         '/:id': deleteMiddleware
       }
     }
