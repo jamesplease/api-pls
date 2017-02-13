@@ -63,7 +63,6 @@ module.exports = function(options) {
             log.error('This may be a bug in api-pls. Please file an issue at:');
             log.error('https://github.com/jmeas/api-pls/issues/new?title=Building+migrations:+my+resource+model+could+not+be+found');
           }
-
         } else {
           log.error('Building the migrations failed.');
         }
