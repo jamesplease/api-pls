@@ -4,7 +4,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
-const chalk = require('chalk');
 const getDb = require('../../lib/database');
 const sync = require('../../lib/sync');
 const log = require('../util/log');
@@ -22,59 +21,38 @@ module.exports = function(options) {
       }
 
       const resourcesDir = options.resourcesDirectory;
-
-      log(
-        chalk.grey('Building migrations from Resource Models...'),
-        options,
-        chalk.grey(`Loading resources from "${path.resolve(resourcesDir)}"`)
-      );
+      log.info('Building migrations from Resource Models...');
+      log.debug(`Loading resources from "${path.resolve(resourcesDir)}"`);
 
       if (!fs.existsSync(resourcesDir)) {
-        log(
-          chalk.red('The resource directory specified does not exist.'),
-          options,
-          chalk.red(`Looked for resources in: "${path.resolve(resourcesDir)}"`)
-        );
+        log.error('The resource directory specified does not exist.');
+        log.debug(`Searched for resources in: "${path.resolve(resourcesDir)}"`);
 
-        if (!options.verbose) {
-          log(
-            chalk.red('Run this command with --verbose to see more information about this error.'),
-            options
-          );
+        if (log.level !== 'trace') {
+          log.error('Run this command with --verbose to see more information about this error.');
         }
-
         return;
       }
 
       // TODO: handle errors here.
       const migrationStrings = sync.build(resourcesDir);
+      log.success('✔ Migrations successfully built.');
+      log.debug(`SQL statements: ${migrationStrings.join('\n\n')}`);
 
-      log(
-        chalk.green('✔ Migrations successfully built.'),
-        options,
-        chalk.grey(`SQL statements: ${migrationStrings.join('\n\n')}`)
-      );
-
-      log(chalk.grey('Running migrations...'), options);
+      log.info('Running migrations...');
 
       const db = getDb(options);
       sync.apply(db, migrationStrings)
         .then(() => {
-          log(chalk.green('✔ Migrations successfully run. The database is synchronized.'), options);
+          log.success('✔ Migrations successfully run. The database is synchronized.');
           process.exit();
         })
         .catch((e) => {
-          log(
-            chalk.red('There was an error while running the migrations.'),
-            options,
-            e
-          );
+          log.error('There was an error while running the migrations.');
+          log.debug(e);
 
-          if (!options.verbose) {
-            log(
-              chalk.red('Run this command with --verbose to see more information about this error.'),
-              options
-            );
+          if (log.level !== 'trace') {
+            log.error('Run this command with --verbose to see more information about this error.');
           }
 
           process.exit(1);

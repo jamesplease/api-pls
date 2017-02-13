@@ -17,7 +17,9 @@ function ApiPls(options) {
     connectWithSsl: true,
     resourcesDirectory: './resources',
     port: 5000,
-    apiVersion: 1
+    apiVersion: 1,
+    verbose: false,
+    silent: false
   });
 
   this.options = {
@@ -25,7 +27,9 @@ function ApiPls(options) {
     DATABASE_URL: options.databaseUrl,
     resourcesDirectory: options.resourcesDirectory,
     port: options.port,
-    apiVersion: options.apiVersion
+    apiVersion: options.apiVersion,
+    verbose: options.verbose,
+    silent: options.silent
   };
 
   this.db = database(this.options);

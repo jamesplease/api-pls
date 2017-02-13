@@ -4,6 +4,11 @@ const app = require('./app');
 const log = require('./util/log');
 
 module.exports = function(options) {
+  if (options.silent) {
+    log.level = 'silent';
+  } else if (options.verbose) {
+    log.level = 'trace';
+  }
   app(options);
 };
 
