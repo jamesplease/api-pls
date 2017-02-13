@@ -26,6 +26,16 @@ module.exports = {
     }
   },
 
+  outOfBoundsPagination: {
+    code: 400,
+    body(paramName) {
+      return {
+        title: 'Bad Request',
+        detail: `Query parameter "${paramName}" must be greater than zero.`
+      };
+    }
+  },
+
   // Returned in several situations involving bad formatting, typos, or
   // other mistakes from the requestor:
   // - sparse fieldset is requested, in which none of the fields

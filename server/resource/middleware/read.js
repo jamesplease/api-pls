@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const qs = require('qs');
 const log = require('../../util/log');
 const baseSql = require('../../util/base-sql');
 const serverErrors = require('../../util/server-errors');
@@ -15,8 +16,28 @@ module.exports = function(req, res) {
   const isSingular = Boolean(id);
 
   const pagination = this.resource.pagination;
+
   const pageNumber = Number(_.get(req.query, 'page.number', pagination.default_page_number));
   const pageSize = Number(_.get(req.query, 'page.size', pagination.default_page_size));
+
+  let paginationErrors = [];
+  if (pageNumber < 1) {
+    paginationErrors.push(serverErrors.outOfBoundsPagination.body('page.number'));
+  }
+  if (pageSize < 1) {
+    paginationErrors.push(serverErrors.outOfBoundsPagination.body('page.size'));
+  }
+
+  if (paginationErrors.length) {
+    res.status(serverErrors.outOfBoundsPagination.code);
+    sendJson(res, {
+      errors: paginationErrors,
+      links: {
+        self: selfLink
+      }
+    });
+    return;
+  }
 
   // Find the fields to return
   let fieldsToReturn = _.get(req.query, `fields.${this.resource.plural_form}`, '*');
@@ -98,10 +119,37 @@ module.exports = function(req, res) {
       };
 
       if (enablePagination) {
+        const basePath = req.path;
+        const numTotalCount = Number(totalCount);
+        const totalPages = Math.ceil(numTotalCount / pageSize);
+        const prevPage = pageNumber !== 1 ? pageNumber - 1 : null;
+        const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
+
+        const selfQuery = _.size(req.query) ? `?${qs.stringify(req.query, {encode: false})}` : '';
+        const firstPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: 1}}), {encode: false});
+        const lastPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: totalPages}}), {encode: false});
+        let prevPageLink = null;
+        if (prevPage) {
+          const prevPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: prevPage}}), {encode: false});
+          prevPageLink = `${basePath}?${prevPageQuery}`;
+        }
+
+        let nextPageLink = null;
+        if (nextPage) {
+          const nextPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: nextPage}}), {encode: false});
+          nextPageLink = `${basePath}?${nextPageQuery}`;
+        }
+
+        dataToSend.links.self = `${basePath}${selfQuery}`;
+        dataToSend.links.first = `${basePath}?${firstPageQuery}`;
+        dataToSend.links.last = `${basePath}?${lastPageQuery}`;
+        dataToSend.links.prev = prevPageLink;
+        dataToSend.links.next = nextPageLink;
+
         dataToSend.meta = {
           page_number: pageNumber,
           page_size: pageSize,
-          total_count: Number(totalCount)
+          total_count: numTotalCount
         };
       }
 
