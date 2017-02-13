@@ -14,9 +14,7 @@ module.exports = function(req, res) {
   const selfLink = req.originalUrl;
   const id = req.params.id;
   const isSingular = Boolean(id);
-
   const pagination = this.resource.pagination;
-
   const pageNumber = Number(_.get(req.query, 'page.number', pagination.default_page_number));
   const pageSize = Number(_.get(req.query, 'page.size', pagination.default_page_size));
 
@@ -101,13 +99,51 @@ module.exports = function(req, res) {
   log.info({query, resourceName: this.resource.name, reqId: req.id}, 'Reading a resource');
 
   this.db[method](query)
+    // This first section guarantees that we get an accurate total count when
+    // performing a read many. Our system for getting the total count with
+    // pagination only works when at least one result is returned. If no
+    // results are returned (which can happen if the user accesses a page
+    // beyond the last page), then we will not get a value. In those situations,
+    // we do one more read to get the total count before sending our response
+    // back.
     .then(result => {
+      // Singular results have no total count, so we don't do anything special.
+      if (isSingular) {
+        return {result};
+      }
+      // If we do get results, or pagination is disabled, then it's not possible
+      // that our total count is wrong.
+      else if (result.length || !enablePagination) {
+        return {
+          result,
+          totalCount: result[0].total_count
+        };
+      }
+      log.info({reqId: req.id}, 'No results returned on a paginated read many.');
+
+      const readOneAttempt = baseSql.read({
+        tableName: this.resource.name,
+        db: this.db,
+        pageSize: 1,
+        pageNumber: 1,
+        enablePagination
+      });
+
+      log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
+      return this.db.oneOrNone(readOneAttempt)
+        .then(result => {
+          log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
+          const totalCount = result ? result.total_count : 0;
+          return {result: [], totalCount};
+        });
+    })
+    .then(val => {
+      const result = val.result;
       let formattedResult;
-      let totalCount;
-      if (!Array.isArray(result)) {
+      let totalCount = val.totalCount;
+      if (isSingular) {
         formattedResult = formatTransaction(result, this.resource, this.version);
       } else {
-        totalCount = result.length ? result[0].total_count : 0;
         formattedResult = _.map(result, t => formatTransaction(t, this.resource, this.version));
       }
 
@@ -121,30 +157,54 @@ module.exports = function(req, res) {
       if (enablePagination) {
         const basePath = req.path;
         const numTotalCount = Number(totalCount);
-        const totalPages = Math.ceil(numTotalCount / pageSize);
-        const prevPage = pageNumber !== 1 ? pageNumber - 1 : null;
-        const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
-
+        const noResources = numTotalCount === 0;
         const selfQuery = _.size(req.query) ? `?${qs.stringify(req.query, {encode: false})}` : '';
-        const firstPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: 1}}), {encode: false});
-        const lastPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: totalPages}}), {encode: false});
-        let prevPageLink = null;
-        if (prevPage) {
-          const prevPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: prevPage}}), {encode: false});
-          prevPageLink = `${basePath}?${prevPageQuery}`;
-        }
-
-        let nextPageLink = null;
-        if (nextPage) {
-          const nextPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: nextPage}}), {encode: false});
-          nextPageLink = `${basePath}?${nextPageQuery}`;
-        }
-
         dataToSend.links.self = `${basePath}${selfQuery}`;
-        dataToSend.links.first = `${basePath}?${firstPageQuery}`;
-        dataToSend.links.last = `${basePath}?${lastPageQuery}`;
-        dataToSend.links.prev = prevPageLink;
-        dataToSend.links.next = nextPageLink;
+
+        // If we have no resources, then there are no pages of data, and all
+        // pagination links are null.
+        if (noResources) {
+          dataToSend.links.first = null;
+          dataToSend.links.last = null;
+          dataToSend.links.prev = null;
+          dataToSend.links.next = null;
+        }
+        // Otherwise, we do a bit of number crunching to get the different
+        // pagination links.
+        else {
+          const totalPages = Math.ceil(numTotalCount / pageSize);
+          const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
+          let prevPage;
+          // If the `pageNumber` is 1, then there is nowhere back to go.
+          // If there are no results, then no previous page has any results.
+          if (pageNumber === 1 || numTotalCount === 0) {
+            prevPage = null;
+          } else if (result.length === 0) {
+            prevPage = totalPages;
+          } else {
+            prevPage = pageNumber - 1;
+          }
+
+          const firstPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: 1}}), {encode: false});
+          const lastPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: totalPages}}), {encode: false});
+          let prevPageLink = null;
+          if (prevPage) {
+            const prevPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: prevPage}}), {encode: false});
+            prevPageLink = `${basePath}?${prevPageQuery}`;
+          }
+
+          let nextPageLink = null;
+          if (nextPage) {
+            const nextPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: nextPage}}), {encode: false});
+            nextPageLink = `${basePath}?${nextPageQuery}`;
+          }
+
+          dataToSend.links.self = `${basePath}${selfQuery}`;
+          dataToSend.links.first = `${basePath}?${firstPageQuery}`;
+          dataToSend.links.last = `${basePath}?${lastPageQuery}`;
+          dataToSend.links.prev = prevPageLink;
+          dataToSend.links.next = nextPageLink;
+        }
 
         dataToSend.meta = {
           page_number: pageNumber,

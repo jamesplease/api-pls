@@ -503,7 +503,46 @@ describe('Resource GET (many)', function() {
     });
   });
 
-  describe('when the request succeeds with no results', () => {
+  describe('when the request succeeds on an empty list', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 2
+      };
+
+      applyMigrations(this.options)
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = [];
+
+      const expectedMeta = {
+        page_number: 1,
+        page_size: 2,
+        total_count: 0
+      };
+
+      const expectedLinks = {
+        self: '/v2/paginates',
+        first: null,
+        last: null,
+        prev: null,
+        next: null
+      };
+
+      request(app(this.options))
+        .get('/v2/paginates')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertMeta(expectedMeta))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds on a page beyond the last page', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
@@ -522,28 +561,26 @@ describe('Resource GET (many)', function() {
         .then(() => done());
     });
 
-    it('should return a 200 response, but with 0 total_count', (done) => {
+    it('should return a 200 response', (done) => {
       const expectedData = [];
 
       const expectedMeta = {
         page_number: 100,
-        page_size: 10,
-        total_count: 0
+        page_size: 2,
+        total_count: 4
       };
 
       const expectedLinks = {
-        self: '/v2/paginates?page[number]=100&page[size]=10',
-        first: '/v2/paginates?page[number]=1&page[size]=10',
-        // This is a bug. For more, see:
-        // https://github.com/jmeas/api-pls/issues/94
-        last: '/v2/paginates?page[number]=0&page[size]=10',
-        prev: '/v2/paginates?page[number]=99&page[size]=10',
+        self: '/v2/paginates?page[number]=100&page[size]=2',
+        first: '/v2/paginates?page[number]=1&page[size]=2',
+        last: '/v2/paginates?page[number]=2&page[size]=2',
+        prev: '/v2/paginates?page[number]=2&page[size]=2',
         next: null
       };
 
       request(app(this.options))
         .get('/v2/paginates')
-        .query('page[number]=100&page[size]=10')
+        .query('page[number]=100&page[size]=2')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
