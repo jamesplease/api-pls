@@ -53,7 +53,7 @@ module.exports = function(options) {
   );
 
   router.get('/', (req, res) => {
-    log.info({req, res}, 'A route to the root is being redirected.');
+    log.info({req}, 'A route to the root is being redirected.');
     res.redirect(`/v${apiVersion}`);
   });
 
@@ -74,7 +74,7 @@ module.exports = function(options) {
 
   // Set up the root route that describes the available endpoints.
   router.get(`/v${apiVersion}`, (req, res) => {
-    log.info({req, res}, 'A request was made to the versioned root.');
+    log.info({req}, 'A request was made to the versioned root.');
     sendJson(res, {
       jsonapi: {
         version: '1.0',
@@ -91,7 +91,7 @@ module.exports = function(options) {
 
   // All other requests get a default 404 error.
   router.use('*', (req, res) => {
-    log.info({req, res}, 'A 404 route was handled.');
+    log.info({req}, 'A 404 route was handled.');
     res.status(404);
     sendJson(res, {
       errors: [serverErrors.notFound.body()],

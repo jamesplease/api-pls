@@ -49,7 +49,7 @@ module.exports = function(req, res, next) {
   const acceptsJsonApi = accepts(req).types([jsonApiMediaType]);
 
   if (!acceptsJsonApi) {
-    log.info({res}, 'Request specifies content type, but does not accept the JSON API media type.');
+    log.info({req}, 'Request specifies content type, but does not accept the JSON API media type.');
     res.status(serverErrors.acceptsHasParams.code);
     return sendJson(res, {
       errors: [serverErrors.acceptsHasParams.body()]

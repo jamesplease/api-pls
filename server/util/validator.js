@@ -16,7 +16,7 @@ module.exports = function(schema) {
     if (validate(req)) {
       next();
     } else {
-      log.info({req, res}, 'A request failed validation.');
+      log.info({req}, 'A request failed validation.');
       res.status(400);
       sendJson(res, {
         errors: requestErrorMap(validate.errors),

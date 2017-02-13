@@ -9,8 +9,8 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
-  log.info({req, res}, 'A read request is being processed.');
-  const selfLink = req.path;
+  log.info({req}, 'A read request is being processed.');
+  const selfLink = req.originalUrl;
   const id = req.params.id;
   const isSingular = Boolean(id);
 
