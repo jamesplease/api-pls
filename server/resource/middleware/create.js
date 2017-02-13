@@ -9,7 +9,7 @@ const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
 module.exports = function(req, res) {
-  log.info({req, res}, 'A create request is being processed.');
+  log.info({req}, 'A create request is being processed.');
   const selfLinkBase = req.path;
   const data = _.get(req, 'body.data', {});
   const rawAttrs = data.attributes;

@@ -5,7 +5,7 @@ const baseSql = require('../../util/base-sql');
 const handleQueryError = require('../../util/handle-query-error');
 
 module.exports = function(req, res) {
-  log.info({req, res}, 'A delete request is being processed.');
+  log.info({req}, 'A delete request is being processed.');
   const query = baseSql.delete({
     tableName: this.resource.name,
     db: this.db,
