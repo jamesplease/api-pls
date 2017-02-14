@@ -22,35 +22,6 @@ describe('Resource GET (many)', function() {
     wipeDatabase(db).then(() => done());
   });
 
-  describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', (done) => {
-      const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
-        apiVersion: 1
-      };
-
-      const expectedErrors = [{
-        title: 'Resource Not Found',
-        detail: 'The requested resource does not exist.'
-      }];
-
-      const expectedLinks = {
-        self: '/v1/pastas'
-      };
-
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v1/pastas')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(404)
-            .end(done);
-        });
-    });
-  });
-
   describe('when the request succeeds', () => {
     beforeEach((done) => {
       this.options = {
@@ -116,44 +87,6 @@ describe('Resource GET (many)', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
-    });
-  });
-
-  describe('when no valid fields are requested via sparse fields', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 3
-      };
-
-      const seeds = [{
-        first_name: 'james',
-        last_name: 'please'
-      }];
-
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a Bad Request error response', (done) => {
-      const expectedErrors = [{
-        title: 'Bad Request',
-        detail: 'No valid fields were specified for resource "no_metas".'
-      }];
-
-      const expectedLinks = {
-        self: '/v3/no_metas?fields[no_metas]=sandwiches'
-      };
-
-      request(app(this.options))
-        .get('/v3/no_metas')
-        .query('fields[no_metas]=sandwiches')
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(400)
         .end(done);
     });
   });
@@ -354,94 +287,6 @@ describe('Resource GET (many)', function() {
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
-    });
-  });
-
-  describe('when the request fails due to out of bounds page size', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 10
-      };
-
-      const seeds = [
-        {first_name: 'james', last_name: 'please'},
-        {first_name: 'shilpa', last_name: 'please'},
-        {first_name: 'tim', last_name: 'please'},
-        {first_name: 'stephen', last_name: 'please'}
-      ];
-
-      applyMigrations(this.options)
-        .then(() => seed('paginate', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 400 response', (done) => {
-      const expectedErrors = [
-        {
-          title: 'Bad Request',
-          detail: 'Query parameter "page.size" must be greater than zero.'
-        }
-      ];
-
-      const expectedLinks = {
-        self: '/v10/paginates?page[number]=2&page[size]=0',
-      };
-
-      request(app(this.options))
-        .get('/v10/paginates')
-        .query('page[number]=2&page[size]=0')
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(400)
-        .end(done);
-    });
-  });
-
-  describe('when the request fails due to out of bounds page size & number', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 10
-      };
-
-      const seeds = [
-        {first_name: 'james', last_name: 'please'},
-        {first_name: 'shilpa', last_name: 'please'},
-        {first_name: 'tim', last_name: 'please'},
-        {first_name: 'stephen', last_name: 'please'}
-      ];
-
-      applyMigrations(this.options)
-        .then(() => seed('paginate', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 400 response', (done) => {
-      const expectedErrors = [
-        {
-          title: 'Bad Request',
-          detail: 'Query parameter "page.number" must be greater than zero.'
-        },
-        {
-          title: 'Bad Request',
-          detail: 'Query parameter "page.size" must be greater than zero.'
-        }
-      ];
-
-      const expectedLinks = {
-        self: '/v10/paginates?page[number]=-2&page[size]=0',
-      };
-
-      request(app(this.options))
-        .get('/v10/paginates')
-        .query('page[number]=-2&page[size]=0')
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(400)
         .end(done);
     });
   });

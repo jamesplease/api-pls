@@ -2,15 +2,15 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
-const seed = require('../../helpers/seed');
 const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
+const seed = require('../../helpers/seed');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
 
-describe('Resource DELETE', function() {
+describe('Resource GET (one) failure', function() {
   // Ensure that the DB connection drops immediately after each test
   afterEach(() => {
     db.$config.pgp.end();
@@ -26,7 +26,7 @@ describe('Resource DELETE', function() {
     it('should return a Not Found error response', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
-        apiVersion: 2
+        apiVersion: 3
       };
 
       const expectedErrors = [{
@@ -34,64 +34,57 @@ describe('Resource DELETE', function() {
         detail: 'The requested resource does not exist.'
       }];
 
+      const expectedLinks = {
+        self: '/v3/pastas/1'
+      };
+
       applyMigrations(options)
         .then(() => {
           request(app(options))
-            .delete('/v2/pastas/1')
+            .get('/v3/pastas/1')
             .expect(validators.basicValidation)
             .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
             .expect(404)
             .end(done);
         });
     });
   });
 
-  describe('attempting to DELETE an entire list of resources', () => {
-    it('should return a Method Not Allowed error response', (done) => {
-      const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 1
-      };
-
-      const expectedErrors = [{
-        title: 'Method Not Allowed',
-        detail: 'This method is not permitted on this resource.'
-      }];
-
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .delete('/v1/nopes')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(405)
-            .end(done);
-        });
-    });
-  });
-
-  describe('when the request succeeds', () => {
+  describe('when no valid fields are requested via sparse fields', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 10
+        apiVersion: 4
       };
 
       const seeds = [{
-        label: 'sandwiches',
-        size: 'M'
+        first_name: 'james',
+        last_name: 'please'
       }];
 
       applyMigrations(this.options)
-        .then(() => seed('nope', seeds))
+        .then(() => seed('no_meta', seeds))
         .then(() => done());
     });
 
-    it('should return a 204 response', (done) => {
+    it('should return a Bad Request error response', (done) => {
+      const expectedErrors = [{
+        title: 'Bad Request',
+        detail: 'No valid fields were specified for resource "no_metas".'
+      }];
+
+      const expectedLinks = {
+        self: '/v4/no_metas/1?fields[no_metas]=sandwiches'
+      };
+
       request(app(this.options))
-        .delete('/v10/nopes/1')
-        .expect(validators.assertEmptyBody)
-        .expect(204)
+        .get('/v4/no_metas/1')
+        .query('fields[no_metas]=sandwiches')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
         .end(done);
     });
   });
