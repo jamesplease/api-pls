@@ -298,4 +298,51 @@ describe('Resource POST failure', function() {
         });
     });
   });
+
+  describe('when the request references a nonexistent related resource', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
+      };
+
+      applyMigrations(this.options)
+        .then(() => done());
+    });
+
+    it('should return a 500 response', (done) => {
+      const expectedLinks = {
+        self: '/v10/relations'
+      };
+
+      const expectedErrors = [{
+        title: 'Server Error',
+        detail: 'The server encounted an error while processing your request'
+      }];
+
+      request(app(this.options))
+        .post('/v10/relations')
+        .send({
+          data: {
+            type: 'relations',
+            attributes: {
+              name: 'please'
+            },
+            relationships: {
+              owner: {
+                data: {
+                  id: '1',
+                  type: 'paginates'
+                }
+              }
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(500)
+        .end(done);
+    });
+  });
 });

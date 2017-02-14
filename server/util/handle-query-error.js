@@ -4,7 +4,7 @@ const pgp = require('pg-promise');
 const log = require('./log');
 const serverErrors = require('./server-errors');
 // Using let for these due to rewiring the tests Is that ideal? No, it stinks.
-let mapPgError = require('./map-pg-error');
+let mapPgError = require('./map-pgp-error');
 let sendJson = require('./send-json');
 
 // Call this when a query fails, and the response will be properly handled.
