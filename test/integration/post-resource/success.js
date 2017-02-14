@@ -180,4 +180,52 @@ describe('Resource POST success', function() {
         .end(done);
     });
   });
+
+  describe('when non-nullable meta is included, and the request succeeds', () => {
+    it('should return a 201 Created response', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
+      };
+
+      const expectedLinks = {
+        self: '/v5/required_metas/1'
+      };
+
+      const expectedData = {
+        type: 'required_metas',
+        id: '1',
+        attributes: {
+          first_name: 'james',
+          last_name: 'please'
+        },
+        meta: {
+          copyright: 'sandwiches'
+        }
+      };
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .post('/v5/required_metas')
+            .send({
+              data: {
+                type: 'required_metas',
+                attributes: {
+                  first_name: 'james',
+                  last_name: 'please'
+                },
+                meta: {
+                  copyright: 'sandwiches'
+                }
+              }
+            })
+            .expect(validators.basicValidation)
+            .expect(validators.assertData(expectedData))
+            .expect(validators.assertLinks(expectedLinks))
+            .expect(201)
+            .end(done);
+        });
+    });
+  });
 });

@@ -1,0 +1,19 @@
+# This resource has required attributes _and_ meta
+name: 'required'
+
+pagination: false
+
+attributes:
+  first_name:
+    type: 'VARCHAR(30)'
+    nullable: false
+  last_name: 'VARCHAR(30)'
+
+meta:
+  copyright:
+    type: 'VARCHAR(30)'
+    nullable: false
+
+built_in_meta:
+  created_at: false
+  updated_at: false
