@@ -10,7 +10,7 @@ const seed = require('../../helpers/seed');
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
 
-describe('Resource GET (one)', function() {
+describe('Resource PATCH success', function() {
   // Ensure that the DB connection drops immediately after each test
   afterEach(() => {
     db.$config.pgp.end();
@@ -22,40 +22,115 @@ describe('Resource GET (one)', function() {
     wipeDatabase(db).then(() => done());
   });
 
-  describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', (done) => {
-      const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
-        apiVersion: 3
-      };
-
-      const expectedErrors = [{
-        title: 'Resource Not Found',
-        detail: 'The requested resource does not exist.'
-      }];
-
-      const expectedLinks = {
-        self: '/v3/pastas/1'
-      };
-
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v3/pastas/1')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(404)
-            .end(done);
-        });
-    });
-  });
-
-  describe('when the request succeeds', () => {
+  describe('when the request succeeds, and data is manipulated', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 10
+        apiVersion: 5
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('no_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = {
+        type: 'no_metas',
+        id: '1',
+        attributes: {
+          first_name: 'eric',
+          last_name: 'please'
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v5/no_metas/1'
+      };
+
+      request(app(this.options))
+        .patch('/v5/no_metas/1')
+        .send({
+          data: {
+            type: 'no_metas',
+            id: '1',
+            attributes: {
+              first_name: 'eric',
+              last_name: 'please'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds, and meta is manipulated', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('has_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedData = {
+        type: 'has_metas',
+        id: '1',
+        attributes: {
+          first_name: 'james',
+          last_name: 'please'
+        },
+        meta: {
+          copyright: 'ISC'
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v5/has_metas/1'
+      };
+
+      request(app(this.options))
+        .patch('/v5/has_metas/1')
+        .send({
+          data: {
+            type: 'has_metas',
+            id: '1',
+            meta: {
+              copyright: 'ISC'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds, but nothing is manipulated', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 33
       };
 
       const seeds = [{
@@ -79,11 +154,20 @@ describe('Resource GET (one)', function() {
       };
 
       const expectedLinks = {
-        self: '/v10/no_metas/1'
+        self: '/v33/no_metas/1'
       };
 
       request(app(this.options))
-        .get('/v10/no_metas/1')
+        .patch('/v33/no_metas/1')
+        .send({
+          data: {
+            type: 'no_metas',
+            id: '1',
+            attributes: {
+              what: 'sandwiches'
+            }
+          }
+        })
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
@@ -92,132 +176,11 @@ describe('Resource GET (one)', function() {
     });
   });
 
-  describe('when no valid fields are requested via sparse fields', () => {
+  describe('when the request is valid, with a relationship', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 4
-      };
-
-      const seeds = [{
-        first_name: 'james',
-        last_name: 'please'
-      }];
-
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a Bad Request error response', (done) => {
-      const expectedErrors = [{
-        title: 'Bad Request',
-        detail: 'No valid fields were specified for resource "no_metas".'
-      }];
-
-      const expectedLinks = {
-        self: '/v4/no_metas/1?fields[no_metas]=sandwiches'
-      };
-
-      request(app(this.options))
-        .get('/v4/no_metas/1')
-        .query('fields[no_metas]=sandwiches')
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(400)
-        .end(done);
-    });
-  });
-
-  describe('when an empty sparse fieldsets param is specified', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 16
-      };
-
-      const seeds = [{
-        first_name: 'james',
-        last_name: 'please'
-      }];
-
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response with all fields', (done) => {
-      const expectedData = {
-        type: 'no_metas',
-        id: '1',
-        attributes: {
-          first_name: 'james',
-          last_name: 'please'
-        }
-      };
-
-      const expectedLinks = {
-        self: '/v16/no_metas/1?fields[no_metas]'
-      };
-
-      request(app(this.options))
-        .get('/v16/no_metas/1')
-        .query('fields[no_metas]')
-        .expect(validators.basicValidation)
-        .expect(validators.assertData(expectedData))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(200)
-        .end(done);
-    });
-  });
-
-  describe('when the request succeeds with sparse fieldsets', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 1
-      };
-
-      const seeds = [{
-        first_name: 'james',
-        last_name: 'please'
-      }];
-
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
-      const expectedData = {
-        type: 'no_metas',
-        id: '1',
-        attributes: {
-          first_name: 'james',
-        }
-      };
-
-      const expectedLinks = {
-        self: '/v1/no_metas/1?fields[no_metas]=first_name'
-      };
-
-      request(app(this.options))
-        .get('/v1/no_metas/1')
-        .query('fields[no_metas]=first_name')
-        .expect(validators.basicValidation)
-        .expect(validators.assertData(expectedData))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(200)
-        .end(done);
-    });
-  });
-
-  describe('when the request succeeds, with a relationship', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 2
+        apiVersion: 24
       };
 
       const paginateSeeds = [
@@ -236,7 +199,7 @@ describe('Resource GET (one)', function() {
         .then(() => done());
     });
 
-    it('should return a 200 OK, with the resource', (done) => {
+    it('should return a 200 OK, with the updated resource', (done) => {
       const expectedData = {
         type: 'relations',
         id: '1',
@@ -247,23 +210,37 @@ describe('Resource GET (one)', function() {
         relationships: {
           owner: {
             data: {
-              id: '1',
+              id: '3',
               type: 'paginates'
             },
             links: {
-              related: '/v2/relations/1/owner',
-              self: '/v2/paginates/1'
+              self: '/v24/paginates/3',
+              related: '/v24/relations/1/owner'
             }
           }
         }
       };
 
       const expectedLinks = {
-        self: '/v2/relations/1'
+        self: '/v24/relations/1'
       };
 
       request(app(this.options))
-        .get('/v2/relations/1')
+        .patch('/v24/relations/1')
+        .send({
+          data: {
+            id: '1',
+            type: 'relations',
+            relationships: {
+              owner: {
+                data: {
+                  id: '3',
+                  type: 'paginates'
+                }
+              }
+            }
+          }
+        })
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
