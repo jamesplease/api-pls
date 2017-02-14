@@ -108,8 +108,8 @@ describe('Resource POST failure', function() {
     });
   });
 
-  describe('when the request does not adhere to JSON API', () => {
-    it('should return a No Valid Fields error response', (done) => {
+  describe('when the request does not have a "data" property', () => {
+    it('should return a Bad Request error response', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
@@ -117,7 +117,7 @@ describe('Resource POST failure', function() {
 
       const expectedErrors = [{
         title: 'Bad Request',
-        detail: 'No valid fields were specified for resource "nopes".'
+        detail: '"body" should have required property \'data\''
       }];
 
       const expectedLinks = {
@@ -144,7 +144,7 @@ describe('Resource POST failure', function() {
     });
   });
 
-  describe('when non-nullable fields are not included', () => {
+  describe('when non-nullable attributes are not included', () => {
     it('should return a Bad Request error response', (done) => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
@@ -170,6 +170,124 @@ describe('Resource POST failure', function() {
                 attributes: {
                   size: 'M'
                 }
+              }
+            })
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
+            .expect(400)
+            .end(done);
+        });
+    });
+  });
+
+  describe('when resource has non-nullable meta, and meta is omitted', () => {
+    it('should return a Bad Request error response', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
+      };
+
+      const expectedErrors = [{
+        title: 'Bad Request',
+        detail: '"body.data" should have required property \'meta\''
+      }];
+
+      const expectedLinks = {
+        self: '/v5/required_metas'
+      };
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .post('/v5/required_metas')
+            .send({
+              data: {
+                type: 'required_metas',
+                attributes: {
+                  first_name: 'james',
+                  last_name: 'please'
+                }
+              }
+            })
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
+            .expect(400)
+            .end(done);
+        });
+    });
+  });
+
+  describe('when non-nullable meta is not included in request', () => {
+    it('should return a Bad Request error response', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
+      };
+
+      const expectedErrors = [{
+        title: 'Bad Request',
+        detail: '"body.data.meta" should have required property \'copyright\''
+      }];
+
+      const expectedLinks = {
+        self: '/v5/required_metas'
+      };
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .post('/v5/required_metas')
+            .send({
+              data: {
+                type: 'required_metas',
+                attributes: {
+                  first_name: 'james',
+                  last_name: 'please'
+                },
+                meta: {}
+              }
+            })
+            .expect(validators.basicValidation)
+            .expect(validators.assertErrors(expectedErrors))
+            .expect(validators.assertLinks(expectedLinks))
+            .expect(400)
+            .end(done);
+        });
+    });
+  });
+
+  describe('when non-nullable data and meta is not included', () => {
+    it('should return a Bad Request error response', (done) => {
+      const options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 5
+      };
+
+      const expectedErrors = [{
+        title: 'Bad Request',
+        detail: '"body.data.attributes" should have required property \'first_name\''
+      }, {
+        title: 'Bad Request',
+        detail: '"body.data.meta" should have required property \'copyright\''
+      }];
+
+      const expectedLinks = {
+        self: '/v5/requireds'
+      };
+
+      applyMigrations(options)
+        .then(() => {
+          request(app(options))
+            .post('/v5/requireds')
+            .send({
+              data: {
+                type: 'requireds',
+                attributes: {
+                  last_name: 'please'
+                },
+                meta: {}
               }
             })
             .expect(validators.basicValidation)

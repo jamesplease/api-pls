@@ -248,4 +248,58 @@ describe('Resource PATCH success', function() {
         .end(done);
     });
   });
+
+  describe('when the request leaves out non-nullable data in a patch', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please',
+        copyright: 'sandwiches'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('required', seeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 response', (done) => {
+      const expectedLinks = {
+        self: '/v1/requireds/1'
+      };
+
+      const expectedData = {
+        type: 'requireds',
+        id: '1',
+        attributes: {
+          first_name: 'james',
+          last_name: 'please',
+        },
+        meta: {
+          copyright: 'pasta'
+        }
+      };
+
+      request(app(this.options))
+        .patch('/v1/requireds/1')
+        .send({
+          data: {
+            type: 'requireds',
+            id: '1',
+            meta: {
+              copyright: 'pasta'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(200)
+        .end(done);
+    });
+  });
 });

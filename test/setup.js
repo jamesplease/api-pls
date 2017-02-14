@@ -3,7 +3,9 @@
 const log = require('../server/util/log');
 
 // Disable logging for testing.
-log.level = 'silent';
+if (!process.env.TEST_LOGS) {
+  log.level = 'silent';
+}
 
 global.TESTING = true;
 global.assert = require('assert');

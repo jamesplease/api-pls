@@ -126,4 +126,102 @@ describe('Resource PATCH failure', function() {
         .end(done);
     });
   });
+
+  describe('when the request tries to null non-nullable meta', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please',
+        copyright: 'sandwiches'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('required_meta', seeds))
+        .then(() => done());
+    });
+
+    it('should return a Bad Request response', (done) => {
+      const expectedErrors = [{
+        title: 'Bad Request',
+        // What a weird message...
+        detail: '"body.data.meta.copyright" should NOT be valid'
+      }];
+
+      const expectedLinks = {
+        self: '/v1/required_metas/1'
+      };
+
+      request(app(this.options))
+        .patch('/v1/required_metas/1')
+        .send({
+          data: {
+            type: 'required_metas',
+            id: '1',
+            meta: {
+              copyright: null
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .end(done);
+    });
+  });
+
+  describe('when the request does not have a "data" property', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 1
+      };
+
+      const seeds = [{
+        first_name: 'james',
+        last_name: 'please',
+        copyright: 'sandwiches'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('required', seeds))
+        .then(() => done());
+    });
+
+    it('should return a Bad Request response', (done) => {
+      const expectedLinks = {
+        self: '/v1/requireds/1'
+      };
+
+      const expectedErrors = [{
+        title: 'Bad Request',
+        detail: '"body" should have required property \'data\''
+      },
+      // This error could be hard to interpret
+      {
+        detail: '"params.id" should be equal to constant',
+        title: 'Bad Request'
+      }];
+
+      request(app(this.options))
+        .patch('/v1/requireds/1')
+        .send({
+          type: 'requireds',
+          id: '1',
+          meta: {
+            copyright: 'pasta'
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .end(done);
+    });
+  });
 });
