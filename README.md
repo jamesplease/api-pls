@@ -36,6 +36,7 @@ set up are currently unsupported.
 - [JSON API Feature Support](#json-api-feature-support)
 - [Acknowledgements](#acknowledgements)
 - [Resource Model Definition ⇗](https://github.com/jmeas/api-pls/wiki/Resource-Model)
+- [Contributing Code ⇗](https://github.com/jmeas/api-pls/wiki/Contributing-code)
 - [Examples ⇗](https://github.com/jmeas/api-pls/wiki/Example-Projects)
 
 ### Technologies Used
