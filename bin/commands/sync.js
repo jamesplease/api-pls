@@ -6,8 +6,12 @@ const path = require('path');
 const inquirer = require('inquirer');
 const VError = require('verror');
 const getDb = require('../../lib/database');
+const loadResourceModels = require('../../lib/load-resource-models');
+const normalizeModel = require('../../lib/normalize-model');
 const sync = require('../../lib/sync');
 const log = require('../util/log');
+const getTableDescriptions = require('../../lib/get-table-descriptions');
+const resourceModelFromTable = require('../../lib/get-table-descriptions/util/resource-model-from-table');
 
 module.exports = function(options) {
   inquirer.prompt([{
@@ -35,7 +39,19 @@ module.exports = function(options) {
         return;
       }
 
-      // TODO: handle errors here.
+      const models = loadResourceModels(resourcesDir);
+      const names = _.map(models, 'name');
+
+      const db = getDb(options);
+      getTableDescriptions(names)
+        .then(descriptions => {
+          const columns = descriptions.transaction;
+          const currentModel = _.find(models, {name: columns[0].table_name});
+          resourceModelFromTable({columns, currentModel});
+          // _.map(descriptions, d => resourceModelFromTable(d));
+          // console.log('hello', _.size(descriptions));
+        });
+
       let migrationStrings;
       try {
         migrationStrings = sync.build(resourcesDir);
@@ -70,25 +86,24 @@ module.exports = function(options) {
         process.exit(1);
       }
 
-      log.success('✔ Migrations successfully built.');
-      log.debug(`SQL statements: ${migrationStrings.join('\n\n')}`);
-      log.info('Running migrations...');
-
-      const db = getDb(options);
-      sync.apply(db, migrationStrings)
-        .then(() => {
-          log.success('✔ Migrations successfully run. The database is synchronized.');
-          process.exit();
-        })
-        .catch((e) => {
-          log.error('There was an error while running the migrations.');
-          log.debug(e);
-
-          if (log.level !== 'trace') {
-            log.error('Run this command with --verbose to see more information about this error.');
-          }
-
-          process.exit(1);
-        });
+      // log.success('✔ Migrations successfully built.');
+      // log.debug(`SQL statements: ${migrationStrings.join('\n\n')}`);
+      // log.info('Running migrations...');
+      //
+      // sync.apply(db, migrationStrings)
+      //   .then(() => {
+      //     log.success('✔ Migrations successfully run. The database is synchronized.');
+      //     process.exit();
+      //   })
+      //   .catch((e) => {
+      //     log.error('There was an error while running the migrations.');
+      //     log.debug(e);
+      //
+      //     if (log.level !== 'trace') {
+      //       log.error('Run this command with --verbose to see more information about this error.');
+      //     }
+      //
+      //     process.exit(1);
+      //   });
     });
 };
