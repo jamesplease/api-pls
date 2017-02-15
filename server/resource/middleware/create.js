@@ -60,12 +60,15 @@ module.exports = function(req, res) {
 
   this.db.one(query)
     .then(result => {
+      const createdLink = `${selfLinkBase}/${result.id}`;
       log.info({reqId: req.id}, 'Resource created.');
-      res.status(201);
+      res
+        .status(201)
+        .header('Location', createdLink);
       sendJson(res, {
         data: formatTransaction(result, this.resource, this.version),
         links: {
-          self: `${selfLinkBase}/${result.id}`
+          self: createdLink
         }
       });
     })

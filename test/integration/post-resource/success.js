@@ -61,6 +61,7 @@ describe('Resource POST success', function() {
             .expect(validators.basicValidation)
             .expect(validators.assertData(expectedData))
             .expect(validators.assertLinks(expectedLinks))
+            .expect('Location', '/v2/nopes/1')
             .expect(201)
             .end(done);
         });
@@ -107,6 +108,7 @@ describe('Resource POST success', function() {
             .expect(validators.basicValidation)
             .expect(validators.assertData(expectedData))
             .expect(validators.assertLinks(expectedLinks))
+            .expect('Location', '/v50/nopes/1')
             .expect(201)
             .end(done);
         });
@@ -176,6 +178,7 @@ describe('Resource POST success', function() {
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
+        .expect('Location', '/v10/relations/1')
         .expect(201)
         .end(done);
     });
@@ -223,6 +226,7 @@ describe('Resource POST success', function() {
             .expect(validators.basicValidation)
             .expect(validators.assertData(expectedData))
             .expect(validators.assertLinks(expectedLinks))
+            .expect('Location', '/v5/required_metas/1')
             .expect(201)
             .end(done);
         });
