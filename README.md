@@ -206,8 +206,8 @@ This project only partially supports JSON API. Features currently supported are:
 - [ ] Compound documents
 - [x] Links
 - [ ] Relations
-  - [x] One-to-one (limited support)
-  - [x] Many-to-one (limited supported)
+  - [x] One-to-one
+  - [x] Many-to-one
   - [ ] Many-to-many
   - [ ] Relationship endpoints (`/v1/:resource/relationships/:related`)
   - [ ] Related endpoints (`/v1/:resource/:id/:related`)
