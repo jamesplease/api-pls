@@ -5,6 +5,7 @@ const getDb = require('../../../lib/database');
 const wipeDatabase = require('../../../lib/wipe-database');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
+const seed = require('../../helpers/seed');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
@@ -325,6 +326,64 @@ describe('Resource POST failure', function() {
         .send({
           data: {
             type: 'relations',
+            attributes: {
+              name: 'please'
+            },
+            relationships: {
+              owner: {
+                data: {
+                  id: '1',
+                  type: 'paginates'
+                }
+              }
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(500)
+        .end(done);
+    });
+  });
+
+  describe('when the request violates a one-to-one relationship', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
+      };
+
+      const paginateSeeds = [{
+        first_name: 'sandwiches'
+      }];
+
+      const oneToOneSeeds = [{
+        name: 'ok',
+        owner_id: '1'
+      }];
+
+      applyMigrations(this.options)
+      .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('one_to_one', oneToOneSeeds))
+        .then(() => done());
+    });
+
+    it('should return a 500 response', (done) => {
+      const expectedErrors = [{
+        title: 'Server Error',
+        detail: 'The server encounted an error while processing your request'
+      }];
+
+      const expectedLinks = {
+        self: '/v10/one_to_ones'
+      };
+
+      request(app(this.options))
+        .post('/v10/one_to_ones')
+        .send({
+          data: {
+            type: 'one_to_ones',
             attributes: {
               name: 'please'
             },
