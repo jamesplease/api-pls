@@ -118,7 +118,7 @@
           "oneOf": [
             {
               "type": "string",
-              "enum": ["many-to-one", "one-to-one", "many-to-many"]
+              "enum": ["many-to-one", "one-to-many", "one-to-one", "many-to-many"]
             },
             {
               "type": "object",
@@ -129,7 +129,10 @@
                 },
                 "relationship": {
                   "type": "string",
-                  "enum": ["many-to-one", "one-to-one", "many-to-many"]
+                  "enum": ["many-to-one", "one-to-many", "one-to-one", "many-to-many"]
+                },
+                "host": {
+                  "type": "boolean"
                 }
               }
             }
