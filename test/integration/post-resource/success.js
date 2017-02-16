@@ -115,7 +115,7 @@ describe('Resource POST success', function() {
     });
   });
 
-  describe('when the request is valid, with a relationship', () => {
+  describe('when the request is valid, with a many-to-one relationship', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
@@ -179,6 +179,75 @@ describe('Resource POST success', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect('Location', '/v10/relations/1')
+        .expect(201)
+        .end(done);
+    });
+  });
+
+  describe('when the request is valid, with a one-to-one relationship', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 10
+      };
+
+      const paginateSeeds = [{
+        first_name: 'sandwiches'
+      }];
+
+      applyMigrations(this.options)
+        .then(() => seed('paginate', paginateSeeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 OK, with the created resource', (done) => {
+      const expectedData = {
+        type: 'one_to_ones',
+        id: '1',
+        attributes: {
+          name: 'please',
+          size: null
+        },
+        relationships: {
+          owner: {
+            data: {
+              id: '1',
+              type: 'paginates'
+            },
+            links: {
+              self: '/v10/paginates/1',
+              related: '/v10/one_to_ones/1/owner'
+            }
+          }
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v10/one_to_ones/1'
+      };
+
+      request(app(this.options))
+        .post('/v10/one_to_ones')
+        .send({
+          data: {
+            type: 'one_to_ones',
+            attributes: {
+              name: 'please'
+            },
+            relationships: {
+              owner: {
+                data: {
+                  id: '1',
+                  type: 'paginates'
+                }
+              }
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect('Location', '/v10/one_to_ones/1')
         .expect(201)
         .end(done);
     });

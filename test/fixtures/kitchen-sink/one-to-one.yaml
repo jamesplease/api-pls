@@ -1,0 +1,14 @@
+name: 'one_to_one'
+
+relationships:
+  owner:
+    resource: 'paginate'
+    relationship: 'one-to-one'
+
+attributes:
+  name: 'VARCHAR(30)'
+  size: 'VARCHAR(30)'
+
+built_in_meta:
+  created_at: false
+  updated_at: false
