@@ -8,6 +8,7 @@ const serverErrors = require('./util/server-errors');
 const loadResourceModels = require('../lib/load-resource-models');
 const normalizeModel = require('../lib/normalize-model');
 const buildJsonSchema = require('../lib/build-json-schema');
+const fillRelationships = require('../lib/fill-relationships');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
 const createDb = require('../lib/database');
@@ -24,13 +25,20 @@ module.exports = function(options) {
   log.info({
     resourcesDirectory: options.resourcesDirectory
   }, 'Loading resources from the resources directory.');
-  var definitions = loadResourceModels(options.resourcesDirectory)
-    .map(resourceModel => {
-      const normalized = normalizeModel(resourceModel);
-      return Object.assign(normalized, {
-        validations: buildJsonSchema(normalized)
+
+  // Load and normalize our models.
+  var normalizedModels = loadResourceModels(options.resourcesDirectory)
+    .map(normalizeModel);
+
+  // Fill in non-host relationships, and then build our schemas for the
+  // Resource Definitions.
+  const definitions = fillRelationships(normalizedModels)
+    .map(definition => {
+      return Object.assign(definition, {
+        validations: buildJsonSchema(definition)
       });
     });
+
   log.info({
     resourcesDirectory: options.resourcesDirectory
   }, 'Successfully loaded resources from the resources directory.');
