@@ -137,7 +137,7 @@ describe('Resource PATCH failure', function() {
       const seeds = [{
         first_name: 'james',
         last_name: 'please',
-        copyright: 'sandwiches'
+        meta_copyright: 'sandwiches'
       }];
 
       applyMigrations(this.options)
@@ -185,7 +185,7 @@ describe('Resource PATCH failure', function() {
       const seeds = [{
         first_name: 'james',
         last_name: 'please',
-        copyright: 'sandwiches'
+        meta_copyright: 'sandwiches'
       }];
 
       applyMigrations(this.options)

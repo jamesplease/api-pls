@@ -259,7 +259,7 @@ describe('Resource PATCH success', function() {
       const seeds = [{
         first_name: 'james',
         last_name: 'please',
-        copyright: 'sandwiches'
+        meta_copyright: 'sandwiches'
       }];
 
       applyMigrations(this.options)
