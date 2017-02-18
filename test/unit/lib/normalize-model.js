@@ -4,7 +4,8 @@ const normalizeModel = require('../../../lib/resource-model/normalize');
 // These are the defaults.
 const baseModel = {
   attributes: {},
-  meta: {
+  meta: {},
+  built_in_meta: {
     created_at: {
       type: 'TIMESTAMPTZ',
       nullable: false,
@@ -61,7 +62,7 @@ describe('normalizeModel', function() {
     const expected = Object.assign({}, baseModel, {
       name: 'cat',
       plural_form: 'cats',
-      meta: {}
+      built_in_meta: {}
     });
     assert.deepEqual(normalizeModel(input), expected);
   });

@@ -15,11 +15,11 @@ module.exports = function(req, res) {
   const rawMeta = _.get(req, 'body.data.meta', {});
   const rawRelations = _.get(req, 'body.data.relationships', {});
 
-  const attrs = _.pick(rawAttrs, _.map(this.definition.attributes, 'name'));
+  const attrs = _.pick(rawAttrs, this.definition.attributeNames);
   // At the moment, this allows users to modify the built-in-meta, which is
   // no good.
-  const meta = _.pick(rawMeta, _.map(this.definition.meta, 'name'));
-  const relations = _.pick(rawRelations, _.map(this.definition.relationships, 'name'));
+  const meta = _.pick(rawMeta, this.definition.metaNames);
+  const relations = _.pick(rawRelations, this.definition.relationshipNames);
 
   // This maps the name that the user passes in to the ID that they pass in.
   // A chain().mapValue().mapKeys() could probably do this in a cleaner
