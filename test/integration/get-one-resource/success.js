@@ -146,7 +146,7 @@ describe('Resource GET (one) success', function() {
     });
   });
 
-  describe('when the request succeeds, with a relationship', () => {
+  describe('when the request succeeds, with a host relationship', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
