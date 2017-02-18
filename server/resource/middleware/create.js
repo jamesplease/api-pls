@@ -17,8 +17,6 @@ module.exports = function(req, res) {
   const rawRelations = data.relationships;
 
   const attrs = _.pick(rawAttrs, this.definition.attributeNames);
-  // At the moment, this allows users to modify the built-in-meta, which is
-  // no good.
   const meta = _.pick(rawMeta, this.definition.metaNames);
   const relations = _.pick(rawRelations, this.definition.relationshipNames);
 

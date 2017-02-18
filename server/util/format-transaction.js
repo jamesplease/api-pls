@@ -10,10 +10,12 @@ const buildResponseRelationships = require('./build-response-relationships');
 module.exports = function(t, definition, version) {
   const attrs = ([]).concat(_.map(definition.attributes, 'name'));
   const meta = ([]).concat(_.map(definition.meta, 'name'));
+  const builtInMeta = definition.builtInMetaNames;
   const relationships = buildResponseRelationships(t, definition, version);
 
   const pickedAttrs = _.pick(t, attrs);
   const pickedMeta = _.pick(t, meta);
+  const pickedBuiltInMeta = _.pick(t, builtInMeta);
 
   const response = {
     id: String(t.id),
@@ -23,8 +25,8 @@ module.exports = function(t, definition, version) {
   if (_.size(pickedAttrs)) {
     response.attributes = pickedAttrs;
   }
-  if (_.size(pickedMeta)) {
-    response.meta = pickedMeta;
+  if (_.size(pickedMeta) || _.size(pickedBuiltInMeta)) {
+    response.meta = Object.assign(pickedMeta, pickedBuiltInMeta);
   }
   if (_.size(relationships)) {
     response.relationships = relationships;
