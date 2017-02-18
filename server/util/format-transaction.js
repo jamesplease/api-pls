@@ -8,14 +8,10 @@ const buildResponseRelationships = require('./build-response-relationships');
 // This would one day have things like supporting more types from the ORM
 // layer. For now it's pretty basic.
 module.exports = function(t, definition, version) {
-  const attrs = ([]).concat(_.map(definition.attributes, 'name'));
-  const meta = ([]).concat(_.map(definition.meta, 'name'));
-  const builtInMeta = definition.builtInMetaNames;
+  const pickedAttrs = _.pick(t, definition.attributeNames);
+  const pickedMeta = _.pick(t, definition.metaNames);
+  const pickedBuiltInMeta = _.pick(t, definition.builtInMetaNames);
   const relationships = buildResponseRelationships(t, definition, version);
-
-  const pickedAttrs = _.pick(t, attrs);
-  const pickedMeta = _.pick(t, meta);
-  const pickedBuiltInMeta = _.pick(t, builtInMeta);
 
   const response = {
     id: String(t.id),
