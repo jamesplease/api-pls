@@ -53,11 +53,11 @@ module.exports = function(req, res) {
     });
   }
 
-  log.info({query, resource: this.definition, reqId: req.id}, 'Updating a resource');
+  log.info({query, definition: this.definition, reqId: req.id}, 'Updating a resource');
 
   this.db.one(query)
     .then(result => {
-      log.info({query, resource: this.definition, reqId: req.id}, 'Updated a resource');
+      log.info({query, definition: this.definition, reqId: req.id}, 'Updated a resource');
       sendJson(res, {
         data: formatTransaction(result, this.definition, this.version),
         links: {
@@ -65,5 +65,5 @@ module.exports = function(req, res) {
         }
       });
     })
-    .catch(err => handleQueryError({err, req, res, resource: this.definition, crudAction: 'update', query, selfLink}));
+    .catch(err => handleQueryError({err, req, res, definition: this.definition, crudAction: 'update', query, selfLink}));
 };

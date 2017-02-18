@@ -19,5 +19,5 @@ module.exports = function(req, res) {
       log.info({reqId: req.id}, 'Deleted a resource');
       res.status(204).end();
     })
-    .catch(err => handleQueryError({err, req, res, resource: this.definition, crudAction: 'delete', query}));
+    .catch(err => handleQueryError({err, req, res, definition: this.definition, crudAction: 'delete', query}));
 };

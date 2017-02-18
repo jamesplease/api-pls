@@ -56,7 +56,7 @@ module.exports = function(req, res) {
     attrs: columns
   });
 
-  log.info({query, resource: this.definition, reqId: req.id}, 'Creating a resource');
+  log.info({query, definition: this.definition, reqId: req.id}, 'Creating a resource');
 
   this.db.one(query)
     .then(result => {
@@ -73,7 +73,7 @@ module.exports = function(req, res) {
       });
     })
     .catch(err => handleQueryError({
-      resource: this.definition,
+      definition: this.definition,
       selfLink: selfLinkBase,
       crudAction: 'create',
       err, req, res, query

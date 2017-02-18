@@ -218,6 +218,6 @@ module.exports = function(req, res) {
     })
     .catch(err => {
       const crudAction = isSingular ? 'readOne' : 'readMany';
-      handleQueryError({err, req, res, resource: this.definition, crudAction, query, selfLink});
+      handleQueryError({err, req, res, definition: this.definition, crudAction, query, selfLink});
     });
 };

@@ -5,9 +5,9 @@ const pino = require('pino');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isDevEnv = NODE_ENV === 'development';
 
-function resourceSerializer(resource) {
+function definitionSerializer(definition) {
   return {
-    resourceName: resource.name
+    resourceName: definition.name
   };
 }
 
@@ -21,7 +21,7 @@ const log = pino({
   name: 'api-pls',
   serializers: Object.assign({}, pino.stdSerializers, {
     req: reqSerializer,
-    resource: resourceSerializer
+    definition: definitionSerializer
   }),
   src: isDevEnv,
   prettyPrint: isDevEnv

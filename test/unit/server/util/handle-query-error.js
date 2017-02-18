@@ -38,12 +38,12 @@ describe('handleQueryError', function() {
   describe('when the error is a pgp.errors.QueryResultError', () => {
     it('should return the mapped error', () => {
       const req = {};
-      const resource = {};
+      const definition = {};
 
       handleQueryError({
         err: new pgp.errors.QueryResultError(0, {rows: {}}),
         res: this.res,
-        req, resource
+        req, definition
       });
 
       assert(this.res.status.calledOnce);
@@ -60,12 +60,12 @@ describe('handleQueryError', function() {
   describe('when the error is not an Error from pgp.error', () => {
     it('should return a generic error', () => {
       const req = {};
-      const resource = {};
+      const definition = {};
 
       handleQueryError({
         err: {},
         res: this.res,
-        req, resource
+        req, definition
       });
 
       assert(this.res.status.calledOnce);
