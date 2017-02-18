@@ -116,7 +116,7 @@ module.exports = function(req, res) {
       else if (result.length || !enablePagination) {
         return {
           result,
-          totalCount: result[0].total_count
+          totalCount: _.get(result[0], 'total_count', 0)
         };
       }
       log.info({reqId: req.id}, 'No results returned on a paginated read many.');
