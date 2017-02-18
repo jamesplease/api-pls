@@ -3,11 +3,11 @@
 const Controller = require('./controller');
 const Routes = require('./routes');
 
-module.exports = function({resource, version, db}) {
-  var controller = new Controller({resource, version, db});
+module.exports = function({definition, version, db}) {
+  var controller = new Controller({definition, version, db});
 
   var routes = new Routes({
-    resource,
+    definition,
     controller,
     version
   });
@@ -15,6 +15,6 @@ module.exports = function({resource, version, db}) {
   return {
     routes: routes.routes,
     location: routes.location,
-    resource
+    definition
   };
 };

@@ -7,17 +7,17 @@ const buildResponseRelationships = require('./build-response-relationships');
 // database to the one we need for our endpoint.
 // This would one day have things like supporting more types from the ORM
 // layer. For now it's pretty basic.
-module.exports = function(t, resource, version) {
-  const attrs = ([]).concat(Object.keys(resource.attributes));
-  const meta = ([]).concat(Object.keys(resource.meta));
-  const relationships = buildResponseRelationships(t, resource, version);
+module.exports = function(t, definition, version) {
+  const attrs = ([]).concat(_.map(definition.attributes, 'name'));
+  const meta = ([]).concat(_.map(definition.meta, 'name'));
+  const relationships = buildResponseRelationships(t, definition, version);
 
   const pickedAttrs = _.pick(t, attrs);
   const pickedMeta = _.pick(t, meta);
 
   const response = {
     id: String(t.id),
-    type: resource.plural_form,
+    type: definition.plural_form,
   };
 
   if (_.size(pickedAttrs)) {

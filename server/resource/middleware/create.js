@@ -16,11 +16,11 @@ module.exports = function(req, res) {
   const rawMeta = data.meta;
   const rawRelations = data.relationships;
 
-  const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
+  const attrs = _.pick(rawAttrs, _.map(this.definition.attributes, 'name'));
   // At the moment, this allows users to modify the built-in-meta, which is
   // no good.
-  const meta = _.pick(rawMeta, Object.keys(this.resource.meta));
-  const relations = _.pick(rawRelations, Object.keys(this.resource.relationships));
+  const meta = _.pick(rawMeta, _.map(this.definition.meta, 'name'));
+  const relations = _.pick(rawRelations, _.map(this.definition.relationships, 'name'));
 
   // This maps the name that the user passes in to the ID that they pass in.
   // A chain().mapValue().mapKeys() could probably do this in a cleaner
@@ -42,7 +42,7 @@ module.exports = function(req, res) {
     log.info({reqId: req.id}, 'A create request had no columns to update');
     res.status(serverErrors.noValidFields.code);
     sendJson(res, {
-      errors: [serverErrors.noValidFields.body(this.resource.plural_form)],
+      errors: [serverErrors.noValidFields.body(this.definition.plural_form)],
       links: {
         self: selfLinkBase
       }
@@ -51,12 +51,12 @@ module.exports = function(req, res) {
   }
 
   const query = baseSql.create({
-    tableName: this.resource.name,
+    tableName: this.definition.name,
     db: this.db,
     attrs: columns
   });
 
-  log.info({query, resource: this.resource, reqId: req.id}, 'Creating a resource');
+  log.info({query, resource: this.definition, reqId: req.id}, 'Creating a resource');
 
   this.db.one(query)
     .then(result => {
@@ -66,14 +66,14 @@ module.exports = function(req, res) {
         .status(201)
         .header('Location', createdLink);
       sendJson(res, {
-        data: formatTransaction(result, this.resource, this.version),
+        data: formatTransaction(result, this.definition, this.version),
         links: {
           self: createdLink
         }
       });
     })
     .catch(err => handleQueryError({
-      resource: this.resource,
+      resource: this.definition,
       selfLink: selfLinkBase,
       crudAction: 'create',
       err, req, res, query

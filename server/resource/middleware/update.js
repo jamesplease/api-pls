@@ -15,11 +15,11 @@ module.exports = function(req, res) {
   const rawMeta = _.get(req, 'body.data.meta', {});
   const rawRelations = _.get(req, 'body.data.relationships', {});
 
-  const attrs = _.pick(rawAttrs, Object.keys(this.resource.attributes));
+  const attrs = _.pick(rawAttrs, _.map(this.definition.attributes, 'name'));
   // At the moment, this allows users to modify the built-in-meta, which is
   // no good.
-  const meta = _.pick(rawMeta, Object.keys(this.resource.meta));
-  const relations = _.pick(rawRelations, Object.keys(this.resource.relationships));
+  const meta = _.pick(rawMeta, _.map(this.definition.meta, 'name'));
+  const relations = _.pick(rawRelations, _.map(this.definition.relationships, 'name'));
 
   // This maps the name that the user passes in to the ID that they pass in.
   // A chain().mapValue().mapKeys() could probably do this in a cleaner
@@ -36,7 +36,7 @@ module.exports = function(req, res) {
   // If there's nothing to update, we can use a read query.
   if (!_.size(columns)) {
     query = baseSql.read({
-      tableName: this.resource.name,
+      tableName: this.definition.tableName,
       db: this.db,
       fields: '*',
       id
@@ -46,24 +46,24 @@ module.exports = function(req, res) {
   // Otherwise, we get the update query.
   else {
     query = baseSql.update({
-      tableName: this.resource.name,
+      tableName: this.definition.tableName,
       db: this.db,
       attrs: columns,
       id
     });
   }
 
-  log.info({query, resource: this.resource, reqId: req.id}, 'Updating a resource');
+  log.info({query, resource: this.definition, reqId: req.id}, 'Updating a resource');
 
   this.db.one(query)
     .then(result => {
-      log.info({query, resource: this.resource, reqId: req.id}, 'Updated a resource');
+      log.info({query, resource: this.definition, reqId: req.id}, 'Updated a resource');
       sendJson(res, {
-        data: formatTransaction(result, this.resource, this.version),
+        data: formatTransaction(result, this.definition, this.version),
         links: {
           self: selfLink
         }
       });
     })
-    .catch(err => handleQueryError({err, req, res, resource: this.resource, crudAction: 'update', query, selfLink}));
+    .catch(err => handleQueryError({err, req, res, resource: this.definition, crudAction: 'update', query, selfLink}));
 };
