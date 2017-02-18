@@ -7,7 +7,6 @@ const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const loadResourceModels = require('../lib/load-resource-models');
 const normalizeModel = require('../lib/normalize-model');
-const buildJsonSchema = require('../lib/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
 const generateResourceDefinition = require('../lib/resource-definition/generate');
@@ -26,12 +25,7 @@ module.exports = function(options) {
     resourcesDirectory: options.resourcesDirectory
   }, 'Loading resources from the resources directory.');
   var definitions = loadResourceModels(options.resourcesDirectory)
-    .map(resourceModel => {
-      const normalized = normalizeModel(resourceModel);
-      return Object.assign(normalized, {
-        validations: buildJsonSchema(normalized)
-      });
-    });
+    .map(normalizeModel);
 
   const realDefinitions = generateResourceDefinition(definitions);
 
