@@ -5,11 +5,10 @@ const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
-const loadResourceModels = require('../lib/load-resource-models');
-const normalizeModel = require('../lib/normalize-model');
+const loadResourceModels = require('../lib/resource-model/load-from-disk');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
-const generateResourceDefinition = require('../lib/resource-definition/generate');
+const generateDefinitions = require('../lib/resource-definition/generate-from-raw');
 const createDb = require('../lib/database');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 const log = require('./util/log');
@@ -24,18 +23,16 @@ module.exports = function(options) {
   log.info({
     resourcesDirectory: options.resourcesDirectory
   }, 'Loading resources from the resources directory.');
-  var definitions = loadResourceModels(options.resourcesDirectory)
-    .map(normalizeModel);
-
-  const realDefinitions = generateResourceDefinition(definitions);
+  var resourceModels = loadResourceModels(options.resourcesDirectory);
+  const definitions = generateDefinitions(resourceModels);
 
   log.info({
     resourcesDirectory: options.resourcesDirectory
   }, 'Successfully loaded resources from the resources directory.');
 
-  adjustResourceQuantity.setResources(realDefinitions);
+  adjustResourceQuantity.setResources(definitions);
 
-  var resources = realDefinitions.map(definition => new Resource({
+  var resources = definitions.map(definition => new Resource({
     version: apiVersion,
     definition,
     db

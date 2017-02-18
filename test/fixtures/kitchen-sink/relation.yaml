@@ -2,7 +2,7 @@ name: 'relation'
 
 relationships:
   owner:
-    resource: 'paginate'
+    resource: 'relation_guest'
     relationship: 'many-to-one'
 
 attributes:

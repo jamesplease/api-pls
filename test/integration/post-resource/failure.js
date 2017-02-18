@@ -354,7 +354,7 @@ describe('Resource POST failure', function() {
         apiVersion: 10
       };
 
-      const paginateSeeds = [{
+      const relationGuestSeeds = [{
         first_name: 'sandwiches'
       }];
 
@@ -364,7 +364,7 @@ describe('Resource POST failure', function() {
       }];
 
       applyMigrations(this.options)
-      .then(() => seed('paginate', paginateSeeds))
+      .then(() => seed('relation_guest', relationGuestSeeds))
         .then(() => seed('one_to_one', oneToOneSeeds))
         .then(() => done());
     });
@@ -391,7 +391,7 @@ describe('Resource POST failure', function() {
               owner: {
                 data: {
                   id: '1',
-                  type: 'paginates'
+                  type: 'relation_guests'
                 }
               }
             }

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const normalizeModel = require('../../../lib/normalize-model');
+const normalizeModel = require('../../../lib/resource-model/normalize');
 
 // These are the defaults.
 const baseModel = {
