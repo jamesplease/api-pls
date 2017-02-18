@@ -328,7 +328,7 @@ describe('validateResourceModel', function() {
             relationship: 'one-to-one',
             hungry: true
           },
-          license: 'many-to-one'
+          license: 'many-to-uno'
         }
       }), false);
     });
@@ -353,7 +353,7 @@ describe('validateResourceModel', function() {
       assert.equal(validate({
         name: 'person',
         relationships: {
-          license: 'one-to-many'
+          license: 'uno-to-many'
         }
       }), false);
 

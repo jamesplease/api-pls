@@ -30,19 +30,19 @@ describe('resourceDependencyGraph', function() {
       },
       {
         name: 'b', relationships: {
-          one: {resource: 'a'}
+          one: {resource: 'a', host: true}
         }
       },
       {
         name: 'c', relationships: {
-          one: {resource: 'b'},
-          two: {resource: 'a'}
+          one: {resource: 'b', host: true},
+          two: {resource: 'a', host: true}
         }
       },
       {
         name: 'd', relationships: {
-          one: {resource: 'a'},
-          two: {resource: 'c'}
+          one: {resource: 'a', host: true},
+          two: {resource: 'c', host: true}
         }
       },
     ];
@@ -53,19 +53,19 @@ describe('resourceDependencyGraph', function() {
       },
       {
         name: 'b', relationships: {
-          one: {resource: 'a'}
+          one: {resource: 'a', host: true}
         }
       },
       {
         name: 'c', relationships: {
-          one: {resource: 'b'},
-          two: {resource: 'a'}
+          one: {resource: 'b', host: true},
+          two: {resource: 'a', host: true}
         }
       },
       {
         name: 'd', relationships: {
-          one: {resource: 'a'},
-          two: {resource: 'c'}
+          one: {resource: 'a', host: true},
+          two: {resource: 'c', host: true}
         }
       },
     ];
@@ -77,12 +77,12 @@ describe('resourceDependencyGraph', function() {
     const resources = [
       {
         name: 'a', relationships: {
-          one: {resource: 'b'}
+          one: {resource: 'b', host: true}
         }
       },
       {
         name: 'b', relationships: {
-          one: {resource: 'a'}
+          one: {resource: 'a', host: true}
         }
       }
     ];
