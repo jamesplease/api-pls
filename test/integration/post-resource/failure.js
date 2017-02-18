@@ -2,7 +2,7 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
-const wipeDatabase = require('../../../lib/wipe-database');
+const wipeDatabase = require('../../../lib/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 const seed = require('../../helpers/seed');
@@ -354,7 +354,7 @@ describe('Resource POST failure', function() {
         apiVersion: 10
       };
 
-      const paginateSeeds = [{
+      const relationGuestSeeds = [{
         first_name: 'sandwiches'
       }];
 
@@ -364,7 +364,7 @@ describe('Resource POST failure', function() {
       }];
 
       applyMigrations(this.options)
-      .then(() => seed('paginate', paginateSeeds))
+      .then(() => seed('relation_guest', relationGuestSeeds))
         .then(() => seed('one_to_one', oneToOneSeeds))
         .then(() => done());
     });
@@ -391,7 +391,7 @@ describe('Resource POST failure', function() {
               owner: {
                 data: {
                   id: '1',
-                  type: 'paginates'
+                  type: 'relation_guests'
                 }
               }
             }

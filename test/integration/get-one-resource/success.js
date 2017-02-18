@@ -2,7 +2,7 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
-const wipeDatabase = require('../../../lib/wipe-database');
+const wipeDatabase = require('../../../lib/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 const seed = require('../../helpers/seed');
@@ -153,7 +153,7 @@ describe('Resource GET (one) success', function() {
         apiVersion: 2
       };
 
-      const paginateSeeds = [
+      const relationGuestSeeds = [
         {first_name: 'sandwiches'},
         {first_name: 'what'},
         {first_name: 'pls'}
@@ -164,7 +164,7 @@ describe('Resource GET (one) success', function() {
       ];
 
       applyMigrations(this.options)
-        .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('relation_guest', relationGuestSeeds))
         .then(() => seed('relation', relationSeeds))
         .then(() => done());
     });
@@ -181,11 +181,11 @@ describe('Resource GET (one) success', function() {
           owner: {
             data: {
               id: '1',
-              type: 'paginates'
+              type: 'relation_guests'
             },
             links: {
               related: '/v2/relations/1/owner',
-              self: '/v2/paginates/1'
+              self: '/v2/relation_guests/1'
             }
           }
         }

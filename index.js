@@ -4,11 +4,11 @@ const _ = require('lodash');
 const database = require('./lib/database');
 const startServer = require('./lib/start-server');
 const sync = require('./lib/sync');
-const normalizeModel = require('./lib/normalize-model');
-const buildJsonSchema = require('./lib/build-json-schema');
-const loadResourceModels = require('./lib/load-resource-models');
-const validateResourceModel = require('./lib/validate-resource-model');
-const wipeDatabase = require('./lib/wipe-database');
+const normalizeModel = require('./lib/resource-model/normalize');
+const buildJsonSchema = require('./lib/resource-definition/build-json-schema');
+const loadResourceModels = require('./lib/resource-model/load-from-disk');
+const validateResourceModel = require('./lib/resource-model/validate');
+const wipeDatabase = require('./lib/database/wipe');
 
 // Options are all of the valid options for api-pls. Refer to the documentation
 // for the full list.

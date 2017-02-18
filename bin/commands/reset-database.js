@@ -2,7 +2,7 @@
 
 const inquirer = require('inquirer');
 const log = require('../util/log');
-const wipeDatabase = require('../../lib/wipe-database');
+const wipeDatabase = require('../../lib/database/wipe');
 
 function performWipe(options) {
   const db = require('../../lib/database')(options);

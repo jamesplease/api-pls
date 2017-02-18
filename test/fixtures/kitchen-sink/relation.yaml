@@ -2,8 +2,8 @@ name: 'relation'
 
 relationships:
   owner:
-    resource: 'paginate'
-    relationship: 'many-to-one'
+    resource: 'relation_guest'
+    cardinality: 'many-to-one'
 
 attributes:
   name: 'VARCHAR(30)'

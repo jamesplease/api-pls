@@ -1,4 +1,4 @@
-const validate = require('../../../lib/validate-resource-model');
+const validate = require('../../../lib/resource-model/validate');
 
 describe('validateResourceModel', function() {
   it('should return false for empty models', () => {
@@ -312,7 +312,7 @@ describe('validateResourceModel', function() {
         relationships: {
           club: {
             resource: 'clubs',
-            relationship: 'one-to-one'
+            cardinality: 'one-to-one'
           },
           secret_heirloom: 'many-to-one'
         }
@@ -369,7 +369,7 @@ describe('validateResourceModel', function() {
         relationships: {
           club: {
             resource: 'clubs',
-            relationship: 'ok'
+            cardinality: 'ok'
           },
           secret_heirloom: 'many-to-one'
         }

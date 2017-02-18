@@ -2,7 +2,7 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
-const wipeDatabase = require('../../../lib/wipe-database');
+const wipeDatabase = require('../../../lib/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 const seed = require('../../helpers/seed');
@@ -122,12 +122,12 @@ describe('Resource POST success', function() {
         apiVersion: 10
       };
 
-      const paginateSeeds = [{
+      const relationGuestSeeds = [{
         first_name: 'sandwiches'
       }];
 
       applyMigrations(this.options)
-        .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('relation_guest', relationGuestSeeds))
         .then(() => done());
     });
 
@@ -143,10 +143,10 @@ describe('Resource POST success', function() {
           owner: {
             data: {
               id: '1',
-              type: 'paginates'
+              type: 'relation_guests'
             },
             links: {
-              self: '/v10/paginates/1',
+              self: '/v10/relation_guests/1',
               related: '/v10/relations/1/owner'
             }
           }
@@ -169,7 +169,7 @@ describe('Resource POST success', function() {
               owner: {
                 data: {
                   id: '1',
-                  type: 'paginates'
+                  type: 'relation_guests'
                 }
               }
             }
@@ -191,12 +191,12 @@ describe('Resource POST success', function() {
         apiVersion: 10
       };
 
-      const paginateSeeds = [{
+      const relationGuestSeeds = [{
         first_name: 'sandwiches'
       }];
 
       applyMigrations(this.options)
-        .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('relation_guest', relationGuestSeeds))
         .then(() => done());
     });
 
@@ -212,10 +212,10 @@ describe('Resource POST success', function() {
           owner: {
             data: {
               id: '1',
-              type: 'paginates'
+              type: 'relation_guests'
             },
             links: {
-              self: '/v10/paginates/1',
+              self: '/v10/relation_guests/1',
               related: '/v10/one_to_ones/1/owner'
             }
           }
@@ -238,7 +238,7 @@ describe('Resource POST success', function() {
               owner: {
                 data: {
                   id: '1',
-                  type: 'paginates'
+                  type: 'relation_guests'
                 }
               }
             }

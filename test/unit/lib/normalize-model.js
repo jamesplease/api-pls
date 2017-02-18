@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const normalizeModel = require('../../../lib/normalize-model');
+const normalizeModel = require('../../../lib/resource-model/normalize');
 
 // These are the defaults.
 const baseModel = {
@@ -191,7 +191,7 @@ describe('normalizeModel', function() {
       relationships: {
         owner: 'many-to-one',
         nicknames: {
-          relationship: 'many-to-many',
+          cardinality: 'many-to-many',
           resource: 'nickname',
           nullable: false,
           host: false
@@ -204,12 +204,12 @@ describe('normalizeModel', function() {
       relationships: {
         owner: {
           resource: 'owner',
-          relationship: 'many-to-one',
+          cardinality: 'many-to-one',
           nullable: true,
           host: true
         },
         nicknames: {
-          relationship: 'many-to-many',
+          cardinality: 'many-to-many',
           resource: 'nickname',
           nullable: false,
           host: false

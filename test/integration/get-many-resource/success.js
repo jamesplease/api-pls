@@ -2,7 +2,7 @@ const path = require('path');
 const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
-const wipeDatabase = require('../../../lib/wipe-database');
+const wipeDatabase = require('../../../lib/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 const seed = require('../../helpers/seed');
@@ -442,7 +442,7 @@ describe('Resource GET (many)', function() {
         apiVersion: 5
       };
 
-      const paginateSeeds = [
+      const relationGuestSeeds = [
         {first_name: 'sandwiches'},
         {first_name: 'what'},
         {first_name: 'pls'}
@@ -455,7 +455,7 @@ describe('Resource GET (many)', function() {
       ];
 
       applyMigrations(this.options)
-        .then(() => seed('paginate', paginateSeeds))
+        .then(() => seed('relation_guest', relationGuestSeeds))
         .then(() => seed('relation', relationSeeds))
         .then(() => done());
     });
@@ -473,10 +473,10 @@ describe('Resource GET (many)', function() {
             owner: {
               data: {
                 id: '1',
-                type: 'paginates'
+                type: 'relation_guests'
               },
               links: {
-                self: '/v5/paginates/1',
+                self: '/v5/relation_guests/1',
                 related: '/v5/relations/1/owner'
               }
             }
@@ -493,10 +493,10 @@ describe('Resource GET (many)', function() {
             owner: {
               data: {
                 id: '3',
-                type: 'paginates'
+                type: 'relation_guests'
               },
               links: {
-                self: '/v5/paginates/3',
+                self: '/v5/relation_guests/3',
                 related: '/v5/relations/2/owner'
               }
             }

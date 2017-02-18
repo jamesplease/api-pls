@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require('../../../server/app');
 const getDb = require('../../../lib/database');
 const seed = require('../../helpers/seed');
-const wipeDatabase = require('../../../lib/wipe-database');
+const wipeDatabase = require('../../../lib/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 

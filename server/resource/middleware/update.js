@@ -36,7 +36,7 @@ module.exports = function(req, res) {
   // If there's nothing to update, we can use a read query.
   if (!_.size(columns)) {
     query = baseSql.read({
-      tableName: this.definition.tableName,
+      tableName: this.definition.tableName.raw,
       db: this.db,
       fields: '*',
       id
@@ -46,7 +46,7 @@ module.exports = function(req, res) {
   // Otherwise, we get the update query.
   else {
     query = baseSql.update({
-      tableName: this.definition.tableName,
+      tableName: this.definition.tableName.raw,
       db: this.db,
       attrs: columns,
       id

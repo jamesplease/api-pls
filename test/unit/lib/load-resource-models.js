@@ -1,5 +1,5 @@
 const path = require('path');
-const loadResourceModels = require('../../../lib/load-resource-models');
+const loadResourceModels = require('../../../lib/resource-model/load-from-disk');
 
 const fixturesPath = path.join(__dirname, '..', '..', 'fixtures');
 
