@@ -127,7 +127,7 @@
                 "resource": {
                   "type": "string"
                 },
-                "relationship": {
+                "cardinality": {
                   "type": "string",
                   "enum": ["many-to-one", "one-to-many", "one-to-one", "many-to-many"]
                 },

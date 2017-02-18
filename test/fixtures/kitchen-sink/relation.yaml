@@ -3,7 +3,7 @@ name: 'relation'
 relationships:
   owner:
     resource: 'relation_guest'
-    relationship: 'many-to-one'
+    cardinality: 'many-to-one'
 
 attributes:
   name: 'VARCHAR(30)'
