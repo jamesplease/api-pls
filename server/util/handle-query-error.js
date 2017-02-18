@@ -8,7 +8,7 @@ let mapPgError = require('./map-pgp-error');
 let sendJson = require('./send-json');
 
 // Call this when a query fails, and the response will be properly handled.
-module.exports = function({err, req, res, resource, crudAction, query, selfLink}) {
+module.exports = function({err, req, res, definition, crudAction, query, selfLink}) {
   var serverError;
 
   // First, check to see if it's a pgp QueryResultError. If it
@@ -33,7 +33,7 @@ module.exports = function({err, req, res, resource, crudAction, query, selfLink}
   }
 
   log.warn({
-    resourceName: resource.name,
+    resourceName: definition.name,
     reqId: req.id,
     err, crudAction, query
   }, 'There was a query error with a CRUD request.');

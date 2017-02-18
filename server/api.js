@@ -7,9 +7,9 @@ const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const loadResourceModels = require('../lib/load-resource-models');
 const normalizeModel = require('../lib/normalize-model');
-const buildJsonSchema = require('../lib/build-json-schema');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
+const generateResourceDefinition = require('../lib/resource-definition/generate');
 const createDb = require('../lib/database');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 const log = require('./util/log');
@@ -25,21 +25,19 @@ module.exports = function(options) {
     resourcesDirectory: options.resourcesDirectory
   }, 'Loading resources from the resources directory.');
   var definitions = loadResourceModels(options.resourcesDirectory)
-    .map(resourceModel => {
-      const normalized = normalizeModel(resourceModel);
-      return Object.assign(normalized, {
-        validations: buildJsonSchema(normalized)
-      });
-    });
+    .map(normalizeModel);
+
+  const realDefinitions = generateResourceDefinition(definitions);
+
   log.info({
     resourcesDirectory: options.resourcesDirectory
   }, 'Successfully loaded resources from the resources directory.');
 
-  adjustResourceQuantity.setResources(definitions);
+  adjustResourceQuantity.setResources(realDefinitions);
 
-  var resources = definitions.map(resource => new Resource({
+  var resources = realDefinitions.map(definition => new Resource({
     version: apiVersion,
-    resource,
+    definition,
     db
   }));
 
@@ -59,12 +57,12 @@ module.exports = function(options) {
 
   const links = {};
   resources.forEach(r => {
-    const supportedActions = _.chain(r.resource.actions)
+    const supportedActions = _.chain(r.definition.actions)
       .pickBy()
       .map((bool, name) => name)
       .value();
 
-    links[r.resource.plural_form] = {
+    links[r.definition.plural_form] = {
       href: r.location,
       meta: {
         supported_actions: supportedActions

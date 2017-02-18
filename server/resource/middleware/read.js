@@ -14,7 +14,7 @@ module.exports = function(req, res) {
   const selfLink = req.originalUrl;
   const id = req.params.id;
   const isSingular = Boolean(id);
-  const pagination = this.resource.pagination;
+  const pagination = this.definition.pagination;
   const pageNumber = Number(_.get(req.query, 'page.number', pagination.default_page_number));
   const pageSize = Number(_.get(req.query, 'page.size', pagination.default_page_size));
 
@@ -38,7 +38,7 @@ module.exports = function(req, res) {
   }
 
   // Find the fields to return
-  let fieldsToReturn = _.get(req.query, `fields.${this.resource.plural_form}`, '*');
+  let fieldsToReturn = _.get(req.query, `fields.${this.definition.plural_form}`, '*');
 
   // This captures if the user specifies the parameter, but doesn't actually
   // enter a value.
@@ -53,7 +53,7 @@ module.exports = function(req, res) {
     fieldsToReturn = fieldsToReturn
       .split(',')
       // Ensure only valid fields are specified
-      .filter(field => _.includes(Object.keys(this.resource.attributes), field));
+      .filter(field => _.includes(_.map(this.definition.attributes, 'name'), field));
   }
 
   let fieldsIsArray = Array.isArray(fieldsToReturn);
@@ -64,7 +64,7 @@ module.exports = function(req, res) {
     log.info({reqId: req.id}, 'A read request specified sparse fields, but provided no valid fields.');
     res.status(serverErrors.noValidFields.code);
     sendJson(res, {
-      errors: [serverErrors.noValidFields.body(this.resource.plural_form)],
+      errors: [serverErrors.noValidFields.body(this.definition.plural_form)],
       links: {
         self: selfLink
       }
@@ -76,7 +76,7 @@ module.exports = function(req, res) {
   if (fieldsIsArray) {
     // We always need the ID, as well as the meta attributes. `fields`
     // only refers to relationships and attributes.
-    fieldsToReturn = fieldsToReturn.concat('id', Object.keys(this.resource.meta));
+    fieldsToReturn = fieldsToReturn.concat('id', _.map(this.definition.meta, 'name'));
   }
 
   // Only paginate if this is a readMany, and if the resource has specified
@@ -86,7 +86,7 @@ module.exports = function(req, res) {
   // `isSingular` is whether or not we're looking for 1
   // or all. This coercion is fine because SERIALs start at 1
   const query = baseSql.read({
-    tableName: this.resource.name,
+    tableName: this.definition.tableName,
     db: this.db,
     fields: fieldsToReturn,
     pageSize,
@@ -96,7 +96,7 @@ module.exports = function(req, res) {
   });
   const method = isSingular ? 'one' : 'any';
 
-  log.info({query, resourceName: this.resource.name, reqId: req.id}, 'Reading a resource');
+  log.info({query, resourceName: this.definition.name, reqId: req.id}, 'Reading a resource');
 
   this.db[method](query)
     // This first section guarantees that we get an accurate total count when
@@ -116,13 +116,13 @@ module.exports = function(req, res) {
       else if (result.length || !enablePagination) {
         return {
           result,
-          totalCount: result[0].total_count
+          totalCount: _.get(result[0], 'total_count', 0)
         };
       }
       log.info({reqId: req.id}, 'No results returned on a paginated read many.');
 
       const readOneAttempt = baseSql.read({
-        tableName: this.resource.name,
+        tableName: this.definition.tableName,
         db: this.db,
         pageSize: 1,
         pageNumber: 1,
@@ -142,9 +142,9 @@ module.exports = function(req, res) {
       let formattedResult;
       let totalCount = val.totalCount;
       if (isSingular) {
-        formattedResult = formatTransaction(result, this.resource, this.version);
+        formattedResult = formatTransaction(result, this.definition, this.version);
       } else {
-        formattedResult = _.map(result, t => formatTransaction(t, this.resource, this.version));
+        formattedResult = _.map(result, t => formatTransaction(t, this.definition, this.version));
       }
 
       const dataToSend = {
@@ -218,6 +218,6 @@ module.exports = function(req, res) {
     })
     .catch(err => {
       const crudAction = isSingular ? 'readOne' : 'readMany';
-      handleQueryError({err, req, res, resource: this.resource, crudAction, query, selfLink});
+      handleQueryError({err, req, res, definition: this.definition, crudAction, query, selfLink});
     });
 };

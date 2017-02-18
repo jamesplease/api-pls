@@ -3,8 +3,8 @@
 const validator = require('../util/validator');
 const notAllowed = require('./middleware/not-allowed');
 
-module.exports = function({version, resource, controller}) {
-  const {validations, plural_form, actions} = resource;
+module.exports = function({version, definition, controller}) {
+  const {validations, plural_form, actions} = definition;
 
   const postMiddleware = !actions.create ? notAllowed : [
     validator(validations.create),
