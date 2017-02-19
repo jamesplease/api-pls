@@ -7,6 +7,7 @@
     "lint": "gulp lint",
     "pretest": "dropdb api_pls_test_db -U postgres || true && createdb api_pls_test_db -U postgres",
     "test": "gulp",
+    "test:logs": "TEST_LOGS=true npm t",
     "precoverage": "dropdb api_pls_test_db -U postgres || true && createdb api_pls_test_db -U postgres",
     "coverage": "gulp coverage"
   },
