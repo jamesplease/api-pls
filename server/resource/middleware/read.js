@@ -86,6 +86,7 @@ module.exports = function(req, res) {
   // `isSingular` is whether or not we're looking for 1
   // or all. This coercion is fine because SERIALs start at 1
   const query = baseSql.read({
+    definition: this.definition,
     tableName: this.definition.tableName.raw,
     db: this.db,
     fields: fieldsToReturn,
@@ -122,7 +123,7 @@ module.exports = function(req, res) {
       log.info({reqId: req.id}, 'No results returned on a paginated read many.');
 
       const readOneAttempt = baseSql.read({
-        tableName: this.definition.tableName.raw,
+        definition: this.definition,
         db: this.db,
         pageSize: 1,
         pageNumber: 1,

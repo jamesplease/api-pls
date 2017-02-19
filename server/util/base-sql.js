@@ -13,7 +13,7 @@ exports.create = function({tableName, attrs, db}) {
 // ['first_name', 'last_name'],
 // or an asterisk to get everything: '*'.
 // By default, the asterisk is used.
-exports.read = function({tableName, fields, db, id, pageSize, pageNumber, enablePagination}) {
+exports.read = function({definition, fields, db, id, pageSize, pageNumber, enablePagination}) {
   const zeroIndexPageNumber = pageNumber - 1;
   const pgp = db.$config.pgp;
 
@@ -23,13 +23,10 @@ exports.read = function({tableName, fields, db, id, pageSize, pageNumber, enable
 
   let totalCountQuery = '';
   if (enablePagination) {
-    totalCountQuery = pgp.as.format(', COUNT(*) OVER () AS total_count', {
-    });
+    totalCountQuery = ', COUNT(*) OVER () AS total_count';
   }
 
-  const baseQuery = pgp.as.format(`SELECT ${columns} ${totalCountQuery} FROM $[tableName~]`, {
-    tableName
-  });
+  const baseQuery = `SELECT ${columns} ${totalCountQuery} FROM ${definition.tableName.escaped}`;
 
   let paginationQuery = '';
   if (enablePagination) {
