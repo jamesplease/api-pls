@@ -2,35 +2,84 @@
 
 const _ = require('lodash');
 const adjustResourceQuantity = require('./adjust-resource-quantity');
+const sqlUtil = require('../../lib/sql/sql-util');
+const relationshipUtil = require('../../lib/relationship-util');
+
+function formatToOneResult({result, definition, value, version, columnBase, relation}) {
+  const id = value ? String(value) : null;
+  const relatedObject = {
+    links: {
+      related: `/v${version}/${definition.plural_form}/${result.id}/${columnBase}`
+    }
+  };
+
+  // If something is associated, then we can add more information.
+  if (id) {
+    const pluralRelated = adjustResourceQuantity.getPluralName(relation.resource);
+    relatedObject.links.self = `/v${version}/${pluralRelated}/${id}`;
+    relatedObject.data = {
+      type: pluralRelated,
+      id
+    };
+  }
+
+  return relatedObject;
+}
+
+function formatToManyResult({result, definition, value, version, columnBase, relation}) {
+  // Ensure that all of the IDs are strings.
+  const ids = value.map(id => String(id));
+
+  const relatedObject = {
+    links: {
+      self: `/v${version}/${definition.plural_form}/${result.id}/relationships/${columnBase}`
+    }
+  };
+
+  if (ids.length) {
+    relatedObject.links.related = `/v${version}/${definition.plural_form}/${result.id}/${columnBase}`;
+    relatedObject.data = ids.map(v => {
+      return {
+        id: v,
+        type: relation.resource
+      };
+    });
+  }
+
+  return relatedObject;
+}
+
+function findOwnRelationships(result, definition, version) {
+  return _.reduce(definition.relationshipsInOwnTable, (memo, relation) => {
+    const columnBase = relation.name;
+    const columnName = sqlUtil.getRelationshipColumnName(relation);
+    const value = result[columnName];
+    // Relationships in this table can necessarily only be a single value, as
+    // that means it is stored as a foreign key.
+    const relatedObject = formatToOneResult({result, definition, version, value, columnBase, relation});
+    memo[columnBase] = relatedObject;
+    return memo;
+  }, {});
+}
+
+function findHostedRelationships(result, definition, version) {
+  return _.reduce(definition.relationshipsInHostTable, (memo, relation) => {
+    const columnBase = relation.name;
+    const columnName = sqlUtil.getRelationshipColumnName(relation);
+    const value = result[columnName];
+
+    const isToMany = relationshipUtil.isToMany(relation);
+    const args = {result, definition, version, value, columnBase, relation};
+    const relatedObject = isToMany ? formatToManyResult(args) : formatToOneResult(args);
+
+    memo[columnBase] = relatedObject;
+    return memo;
+  }, {});
+}
 
 module.exports = function(result, definition, version) {
-  const response = {};
-  _.forEach(definition.relationships, (relation) => {
-    const columnBase = relation.name;
-    const columnName = `${columnBase}_id`;
-    const value = result[columnName];
-    const id = value ? String(value) : null;
+  const hostedRelationships = findOwnRelationships(result, definition, version);
+  const otherHostedRelationships = findHostedRelationships(result, definition, version);
 
-    // We always include the direct link to the relationship, even if nothing
-    // is associated at the moment.
-    const relatedObject = {
-      links: {
-        related: `/v${version}/${definition.plural_form}/${result.id}/${columnBase}`
-      }
-    };
-
-    // If something is associated, then we can add more information.
-    if (id) {
-      const pluralRelated = adjustResourceQuantity.getPluralName(relation.resource);
-      relatedObject.links.self = `/v${version}/${pluralRelated}/${id}`;
-      relatedObject.data = {
-        type: pluralRelated,
-        id
-      };
-    }
-
-    response[columnBase] = relatedObject;
-  });
-
-  return response;
+  return Object.assign(hostedRelationships, otherHostedRelationships);
 };
