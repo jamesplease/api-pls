@@ -28,7 +28,7 @@ function formatToOneResult({result, definition, value, version, columnBase, rela
 
 function formatToManyResult({result, definition, value, version, columnBase, relation}) {
   // Ensure that all of the IDs are strings.
-  const ids = value.map(id => String(id));
+  const ids = _.map(value, id => String(id));
 
   const relatedObject = {
     links: {
