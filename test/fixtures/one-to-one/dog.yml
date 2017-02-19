@@ -1,0 +1,14 @@
+name: 'dog'
+
+relationships:
+  device:
+    resource: 'chip'
+    cardinality: 'one-to-one'
+
+attributes:
+  name: 'VARCHAR(30)'
+  size: 'VARCHAR(30)'
+
+built_in_meta:
+  created_at: false
+  updated_at: false

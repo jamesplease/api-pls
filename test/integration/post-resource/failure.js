@@ -350,22 +350,22 @@ describe('Resource POST failure', function() {
   describe('when the request violates a one-to-one relationship', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        resourcesDirectory: path.join(fixturesDirectory, 'one-to-one'),
         apiVersion: 10
       };
 
-      const relationGuestSeeds = [{
-        first_name: 'sandwiches'
+      const chipSeeds = [{
+        type: 'fancy'
       }];
 
-      const oneToOneSeeds = [{
+      const dogSeeds = [{
         name: 'ok',
-        owner_id: '1'
+        device_id: '1'
       }];
 
       applyMigrations(this.options)
-      .then(() => seed('relation_guest', relationGuestSeeds))
-        .then(() => seed('one_to_one', oneToOneSeeds))
+      .then(() => seed('chip', chipSeeds))
+        .then(() => seed('dog', dogSeeds))
         .then(() => done());
     });
 
@@ -376,22 +376,22 @@ describe('Resource POST failure', function() {
       }];
 
       const expectedLinks = {
-        self: '/v10/one_to_ones'
+        self: '/v10/dogs'
       };
 
       request(app(this.options))
-        .post('/v10/one_to_ones')
+        .post('/v10/dogs')
         .send({
           data: {
-            type: 'one_to_ones',
+            type: 'dogs',
             attributes: {
               name: 'please'
             },
             relationships: {
-              owner: {
+              device: {
                 data: {
                   id: '1',
-                  type: 'relation_guests'
+                  type: 'chips'
                 }
               }
             }
