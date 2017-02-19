@@ -1,0 +1,14 @@
+name: 'chip'
+
+relationships:
+  host:
+    resource: 'dog'
+    cardinality: 'one-to-one'
+    host: false
+
+attributes:
+  type: 'VARCHAR(30)'
+
+built_in_meta:
+  created_at: false
+  updated_at: false
