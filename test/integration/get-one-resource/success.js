@@ -146,7 +146,7 @@ describe('Resource GET (one) success', function() {
     });
   });
 
-  describe('when the request succeeds, with a relationship', () => {
+  describe('when the request succeeds, with a host relationship', () => {
     beforeEach((done) => {
       this.options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
@@ -197,6 +197,65 @@ describe('Resource GET (one) success', function() {
 
       request(app(this.options))
         .get('/v2/relations/1')
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('when the request succeeds, with a guest relationship', () => {
+    beforeEach((done) => {
+      this.options = {
+        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        apiVersion: 2
+      };
+
+      const relationGuestSeeds = [
+        {first_name: 'sandwiches'},
+        {first_name: 'what'},
+        {first_name: 'pls'}
+      ];
+
+      const relationSeeds = [
+        {name: 'james', owner_id: '1'}
+      ];
+
+      applyMigrations(this.options)
+        .then(() => seed('relation_guest', relationGuestSeeds))
+        .then(() => seed('relation', relationSeeds))
+        .then(() => done());
+    });
+
+    it('should return a 200 OK, with the resource', (done) => {
+      const expectedData = {
+        type: 'relation_guests',
+        id: '1',
+        attributes: {
+          first_name: 'sandwiches',
+          last_name: null
+        },
+        relationships: {
+          pets: {
+            links: {
+              related: '/v2/relation_guests/1/pets'
+            }
+          },
+          one_to_one: {
+            links: {
+              related: '/v2/relation_guests/1/one_to_one'
+            }
+          }
+        }
+      };
+
+      const expectedLinks = {
+        self: '/v2/relation_guests/1'
+      };
+
+      request(app(this.options))
+        .get('/v2/relation_guests/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))

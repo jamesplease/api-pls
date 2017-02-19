@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const log = require('../../util/log');
-const baseSql = require('../../util/base-sql');
+const crud = require('../../../lib/sql/crud');
 const sendJson = require('../../util/send-json');
 const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
@@ -35,8 +35,8 @@ module.exports = function(req, res) {
 
   // If there's nothing to update, we can use a read query.
   if (!_.size(columns)) {
-    query = baseSql.read({
-      tableName: this.definition.tableName.raw,
+    query = crud.read({
+      definition: this.definition,
       db: this.db,
       fields: '*',
       id
@@ -45,7 +45,7 @@ module.exports = function(req, res) {
 
   // Otherwise, we get the update query.
   else {
-    query = baseSql.update({
+    query = crud.update({
       tableName: this.definition.tableName.raw,
       db: this.db,
       attrs: columns,

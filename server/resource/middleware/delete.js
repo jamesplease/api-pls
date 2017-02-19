@@ -1,12 +1,12 @@
 'use strict';
 
 const log = require('../../util/log');
-const baseSql = require('../../util/base-sql');
+const crud = require('../../../lib/sql/crud');
 const handleQueryError = require('../../util/handle-query-error');
 
 module.exports = function(req, res) {
   log.info({req}, 'A delete request is being processed.');
-  const query = baseSql.delete({
+  const query = crud.delete({
     tableName: this.definition.name,
     db: this.db,
     id: req.params.id
