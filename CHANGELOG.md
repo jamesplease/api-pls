@@ -1,3 +1,31 @@
+## 0.13.0 (2/18/2017)
+
+**Breaking**:
+
+- Resource Model: `relations` property has been renamed to `relationships`
+- Resource Model: `relations.relationship` property has been renamed to `relationship.cardinality`
+- Resource Model: `built_in_meta_attributes` property has been renamed to `built_in_meta`
+- Root route now lists available CRUD actions as `supported_actions`, rather than just `actions`
+
+**New features**:
+
+- Links objects are now returned from resources
+  - Self links
+  - Pagination links
+  - Relationship links
+- Server logs are now more human-readable in dev mode
+- The server now logs more useful information in more situations
+- Errors when running `sync` now returns better messaging to help you fix the problem
+- A `Location` header is returned when resources are created
+- Relationships now have a notion of "host" and "guest"
+  - One-to-one relationships now have basic support
+  - "Guest" relationships can now provide a `name` to their side of the relationship
+  - For more details, please read the [Relationships Guide](https://github.com/jmeas/api-pls/wiki/Relationships) on the wiki
+
+**Bug fixes**:
+
+- Many-to-one relationships may now be nullable
+
 ## 0.12.0 (2/10/2017)
 
 **Breaking**:
