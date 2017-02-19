@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const log = require('../../util/log');
-const baseSql = require('../../util/base-sql');
+const crud = require('../../../lib/sql/crud');
 const serverErrors = require('../../util/server-errors');
 const sendJson = require('../../util/send-json');
 const handleQueryError = require('../../util/handle-query-error');
@@ -48,7 +48,7 @@ module.exports = function(req, res) {
     return;
   }
 
-  const query = baseSql.create({
+  const query = crud.create({
     tableName: this.definition.name,
     db: this.db,
     attrs: columns

@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const qs = require('qs');
 const log = require('../../util/log');
-const baseSql = require('../../util/base-sql');
+const crud = require('../../../lib/sql/crud');
 const serverErrors = require('../../util/server-errors');
 const sendJson = require('../../util/send-json');
 const handleQueryError = require('../../util/handle-query-error');
@@ -85,7 +85,7 @@ module.exports = function(req, res) {
 
   // `isSingular` is whether or not we're looking for 1
   // or all. This coercion is fine because SERIALs start at 1
-  const query = baseSql.read({
+  const query = crud.read({
     definition: this.definition,
     tableName: this.definition.tableName.raw,
     db: this.db,
@@ -122,7 +122,7 @@ module.exports = function(req, res) {
       }
       log.info({reqId: req.id}, 'No results returned on a paginated read many.');
 
-      const readOneAttempt = baseSql.read({
+      const readOneAttempt = crud.read({
         definition: this.definition,
         db: this.db,
         pageSize: 1,
