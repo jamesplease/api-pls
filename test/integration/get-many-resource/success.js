@@ -476,7 +476,7 @@ describe('Resource GET (many)', function() {
                 type: 'relation_guests'
               },
               links: {
-                self: '/v5/relation_guests/1',
+                self: '/v5/relations/1/relationships/owner',
                 related: '/v5/relations/1/owner'
               }
             }
@@ -496,7 +496,7 @@ describe('Resource GET (many)', function() {
                 type: 'relation_guests'
               },
               links: {
-                self: '/v5/relation_guests/3',
+                self: '/v5/relations/2/relationships/owner',
                 related: '/v5/relations/2/owner'
               }
             }
@@ -512,7 +512,7 @@ describe('Resource GET (many)', function() {
           relationships: {
             owner: {
               links: {
-                related: '/v5/relations/3/owner'
+                self: '/v5/relations/3/relationships/owner'
               }
             }
           }

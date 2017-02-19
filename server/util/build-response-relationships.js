@@ -9,14 +9,14 @@ function formatToOneResult({result, definition, value, version, columnBase, rela
   const id = value ? String(value) : null;
   const relatedObject = {
     links: {
-      related: `/v${version}/${definition.plural_form}/${result.id}/${columnBase}`
+      self: `/v${version}/${definition.plural_form}/${result.id}/relationships/${columnBase}`
     }
   };
 
   // If something is associated, then we can add more information.
   if (id) {
     const pluralRelated = adjustResourceQuantity.getPluralName(relation.resource);
-    relatedObject.links.self = `/v${version}/${pluralRelated}/${id}`;
+    relatedObject.links.related = `/v${version}/${definition.plural_form}/${result.id}/${columnBase}`;
     relatedObject.data = {
       type: pluralRelated,
       id

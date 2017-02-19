@@ -185,7 +185,7 @@ describe('Resource GET (one) success', function() {
             },
             links: {
               related: '/v2/relations/1/owner',
-              self: '/v2/relation_guests/1'
+              self: '/v2/relations/1/relationships/owner'
             }
           }
         }
@@ -254,7 +254,7 @@ describe('Resource GET (one) success', function() {
           },
           one_to_one: {
             links: {
-              related: '/v2/relation_guests/1/one_to_one'
+              self: '/v2/relation_guests/1/relationships/one_to_one'
             }
           }
         }

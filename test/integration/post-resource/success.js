@@ -146,7 +146,7 @@ describe('Resource POST success', function() {
               type: 'relation_guests'
             },
             links: {
-              self: '/v10/relation_guests/1',
+              self: '/v10/relations/1/relationships/owner',
               related: '/v10/relations/1/owner'
             }
           }
@@ -215,7 +215,7 @@ describe('Resource POST success', function() {
               type: 'relation_guests'
             },
             links: {
-              self: '/v10/relation_guests/1',
+              self: '/v10/one_to_ones/1/relationships/owner',
               related: '/v10/one_to_ones/1/owner'
             }
           }
