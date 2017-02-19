@@ -51,13 +51,21 @@ describe('sqlUtil', function() {
 
   describe('getRelationshipColumnName', () => {
     it('should return the right column name', () => {
-      assert.equal(sqlUtil.getRelationshipColumnName(this.oneToManyRelationship), '"owner_ids"');
+      assert.equal(sqlUtil.getRelationshipColumnName(this.oneToManyRelationship), 'owner_ids');
+    });
+
+    it('should return the right escaped column name', () => {
+      assert.equal(sqlUtil.getRelationshipColumnName(this.oneToManyRelationship, {escaped: true}), '"owner_ids"');
     });
   });
 
   describe('getVirtualHostTableName', () => {
     it('should return the right temporary table name', () => {
-      assert.equal(sqlUtil.getVirtualHostTableName(this.oneToManyRelationship), '"related_person_ids"');
+      assert.equal(sqlUtil.getVirtualHostTableName(this.oneToManyRelationship), 'related_person_ids');
+    });
+
+    it('should return the right escaped temporary table name', () => {
+      assert.equal(sqlUtil.getVirtualHostTableName(this.oneToManyRelationship, {escaped: true}), '"related_person_ids"');
     });
   });
 });

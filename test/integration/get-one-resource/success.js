@@ -219,7 +219,11 @@ describe('Resource GET (one) success', function() {
       ];
 
       const relationSeeds = [
-        {name: 'james', owner_id: '1'}
+        {name: 'james', owner_id: '1'},
+        {name: 'hungry', owner_id: '3'},
+        {name: 'pizza', owner_id: '1'},
+        {name: 'sammy', owner_id: '2'},
+        {name: 'meow', owner_id: '1'},
       ];
 
       applyMigrations(this.options)
@@ -228,7 +232,7 @@ describe('Resource GET (one) success', function() {
         .then(() => done());
     });
 
-    it('should return a 200 OK, with the resource', (done) => {
+    it('should return a 200 OK, with the resource and its related items', (done) => {
       const expectedData = {
         type: 'relation_guests',
         id: '1',
@@ -238,7 +242,13 @@ describe('Resource GET (one) success', function() {
         },
         relationships: {
           pets: {
+            data: [
+              {id: '1', type: 'relation'},
+              {id: '3', type: 'relation'},
+              {id: '5', type: 'relation'},
+            ],
             links: {
+              self: '/v2/relation_guests/1/relationships/pets',
               related: '/v2/relation_guests/1/pets'
             }
           },
@@ -251,7 +261,7 @@ describe('Resource GET (one) success', function() {
       };
 
       const expectedLinks = {
-        self: '/v2/relation_guests/1'
+        self: '/v2/relation_guests/1',
       };
 
       request(app(this.options))
