@@ -214,7 +214,7 @@ describe('Resource PATCH success', function() {
               type: 'relation_guests'
             },
             links: {
-              self: '/v24/relation_guests/3',
+              self: '/v24/relations/1/relationships/owner',
               related: '/v24/relations/1/owner'
             }
           }
