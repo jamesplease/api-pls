@@ -8,7 +8,6 @@ const applyMigrations = require('../../helpers/apply-migrations');
 const seed = require('../../helpers/seed');
 
 const db = getDb();
-const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
 
 describe('Resource GET (one) failure', function() {
   // Ensure that the DB connection drops immediately after each test
@@ -25,7 +24,7 @@ describe('Resource GET (one) failure', function() {
   describe('when the resource does not exist', () => {
     it('should return a Not Found error response', (done) => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 3
       };
 
@@ -54,7 +53,7 @@ describe('Resource GET (one) failure', function() {
   describe('when no valid fields are requested via sparse fields', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'kitchen-sink'),
         apiVersion: 4
       };
 
