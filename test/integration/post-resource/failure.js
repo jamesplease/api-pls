@@ -5,7 +5,6 @@ const getDb = require('../../../lib/database');
 const wipeDatabase = require('../../../lib/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
-const seed = require('../../helpers/seed');
 
 const db = getDb();
 const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
@@ -297,111 +296,6 @@ describe('Resource POST failure', function() {
             .expect(400)
             .end(done);
         });
-    });
-  });
-
-  describe('when the request references a nonexistent related resource', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
-        apiVersion: 10
-      };
-
-      applyMigrations(this.options)
-        .then(() => done());
-    });
-
-    it('should return a 500 response', (done) => {
-      const expectedLinks = {
-        self: '/v10/relations'
-      };
-
-      const expectedErrors = [{
-        title: 'Server Error',
-        detail: 'The server encounted an error while processing your request'
-      }];
-
-      request(app(this.options))
-        .post('/v10/relations')
-        .send({
-          data: {
-            type: 'relations',
-            attributes: {
-              name: 'please'
-            },
-            relationships: {
-              owner: {
-                data: {
-                  id: '1',
-                  type: 'paginates'
-                }
-              }
-            }
-          }
-        })
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(500)
-        .end(done);
-    });
-  });
-
-  describe('when the request violates a one-to-one relationship', () => {
-    beforeEach((done) => {
-      this.options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'one-to-one'),
-        apiVersion: 10
-      };
-
-      const chipSeeds = [{
-        type: 'fancy'
-      }];
-
-      const dogSeeds = [{
-        name: 'ok',
-        device_id: '1'
-      }];
-
-      applyMigrations(this.options)
-      .then(() => seed('chip', chipSeeds))
-        .then(() => seed('dog', dogSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 500 response', (done) => {
-      const expectedErrors = [{
-        title: 'Server Error',
-        detail: 'The server encounted an error while processing your request'
-      }];
-
-      const expectedLinks = {
-        self: '/v10/dogs'
-      };
-
-      request(app(this.options))
-        .post('/v10/dogs')
-        .send({
-          data: {
-            type: 'dogs',
-            attributes: {
-              name: 'please'
-            },
-            relationships: {
-              device: {
-                data: {
-                  id: '1',
-                  type: 'chips'
-                }
-              }
-            }
-          }
-        })
-        .expect(validators.basicValidation)
-        .expect(validators.assertErrors(expectedErrors))
-        .expect(validators.assertLinks(expectedLinks))
-        .expect(500)
-        .end(done);
     });
   });
 });
