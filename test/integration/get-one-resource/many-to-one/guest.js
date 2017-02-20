@@ -9,7 +9,7 @@ const seed = require('../../../helpers/seed');
 
 const db = getDb();
 
-describe('Resource GET (one) many-to-one (host)', function() {
+describe('Resource GET (one) many-to-one (guest)', function() {
   // Ensure that the DB connection drops immediately after each test
   afterEach(() => {
     db.$config.pgp.end();
@@ -21,20 +21,20 @@ describe('Resource GET (one) many-to-one (host)', function() {
     wipeDatabase(db).then(() => done());
   });
 
-  describe('when the request succeeds, with a guest relationship', () => {
+  describe('when the request succeeds', () => {
     beforeEach((done) => {
       this.options = {
-        resourcesDirectory: path.join(global.fixturesDirectory, 'kitchen-sink'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-one'),
         apiVersion: 2
       };
 
-      const relationGuestSeeds = [
+      const personSeeds = [
         {first_name: 'sandwiches'},
         {first_name: 'what'},
         {first_name: 'pls'}
       ];
 
-      const relationSeeds = [
+      const catSeeds = [
         {name: 'james', owner_id: '1'},
         {name: 'hungry', owner_id: '3'},
         {name: 'pizza', owner_id: '1'},
@@ -43,14 +43,14 @@ describe('Resource GET (one) many-to-one (host)', function() {
       ];
 
       applyMigrations(this.options)
-        .then(() => seed('relation_guest', relationGuestSeeds))
-        .then(() => seed('relation', relationSeeds))
+        .then(() => seed('person', personSeeds))
+        .then(() => seed('cat', catSeeds))
         .then(() => done());
     });
 
     it('should return a 200 OK, with the resource and its related items', (done) => {
       const expectedData = {
-        type: 'relation_guests',
+        type: 'people',
         id: '1',
         attributes: {
           first_name: 'sandwiches',
@@ -59,29 +59,24 @@ describe('Resource GET (one) many-to-one (host)', function() {
         relationships: {
           pets: {
             data: [
-              {id: '1', type: 'relation'},
-              {id: '3', type: 'relation'},
-              {id: '5', type: 'relation'},
+              {id: '1', type: 'cat'},
+              {id: '3', type: 'cat'},
+              {id: '5', type: 'cat'},
             ],
             links: {
-              self: '/v2/relation_guests/1/relationships/pets',
-              related: '/v2/relation_guests/1/pets'
-            }
-          },
-          one_to_one: {
-            links: {
-              self: '/v2/relation_guests/1/relationships/one_to_one'
+              self: '/v2/people/1/relationships/pets',
+              related: '/v2/people/1/pets'
             }
           }
         }
       };
 
       const expectedLinks = {
-        self: '/v2/relation_guests/1',
+        self: '/v2/people/1',
       };
 
       request(app(this.options))
-        .get('/v2/relation_guests/1')
+        .get('/v2/people/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))

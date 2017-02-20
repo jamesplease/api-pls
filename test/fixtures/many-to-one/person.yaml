@@ -1,0 +1,16 @@
+name: 'person'
+plural_form: 'people'
+
+relationships:
+  pets:
+    resource: 'cat'
+    cardinality: 'one-to-many'
+    host: false
+
+attributes:
+  first_name: 'VARCHAR(30)'
+  last_name: 'VARCHAR(30)'
+
+built_in_meta:
+  created_at: false
+  updated_at: false

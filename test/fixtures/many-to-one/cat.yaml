@@ -1,0 +1,13 @@
+name: 'cat'
+
+relationships:
+  owner:
+    resource: 'person'
+    cardinality: 'many-to-one'
+
+attributes:
+  name: 'VARCHAR(30)'
+
+built_in_meta:
+  created_at: false
+  updated_at: false
