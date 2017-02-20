@@ -1,0 +1,14 @@
+ name: 'many_to_many'
+
+ relationships:
+   friends:
+     resource: 'paginate'
+     cardinality: 'many-to-many'
+
+ attributes:
+   name: 'VARCHAR(30)'
+   size: 'VARCHAR(30)'
+
+ built_in_meta:
+   created_at: false
+   updated_at: false
