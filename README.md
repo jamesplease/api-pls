@@ -11,11 +11,11 @@ api-pls enables you to effortlessly create
 
 ### Motivation
 
-It can be time-consuming to put together an application with a robust backend.
-Use api-pls to speed up that process considerably.
+It requires a lot of knowledge and time to put together a robust backend.
+api-pls is intended to speed up that process considerably.
 
-Instead of writing database and API code within your project, simply define
-models, and let this tool do the rest.
+Instead of writing boilerplate database and API code within your project, simply
+define models, and let this tool do the rest.
 
 api-pls will:
 
@@ -28,23 +28,17 @@ set up are currently unsupported.
 
 ### Table of Contents
 
-- [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [CLI API](#cli-api)
 - [Programmatic API](#programmatic-api)
 - [JSON API Feature Support](#json-api-feature-support)
+- [Technologies Used](#technologies-used)
+- [FAQ](#frequently-asked-questions)
 - [Acknowledgements](#acknowledgements)
 - [Resource Model Definition ⇗](https://github.com/jmeas/api-pls/wiki/Resource-Model)
 - [Contributing Code ⇗](https://github.com/jmeas/api-pls/wiki/Contributing-code)
 - [Examples ⇗](https://github.com/jmeas/api-pls/wiki/Example-Projects)
-
-### Technologies Used
-
-Currently, the only supported database is
-[PostgreSQL](https://www.postgresql.org/). The webserver is written
-in [Node.js](https://nodejs.org/en/) using
-[Express](https://github.com/expressjs/express).
 
 ### Installation
 
@@ -62,8 +56,8 @@ api-pls is a system that reads configuration files that you write, called
 Resource Models, and uses those to run migrations on your database. It also
 has the ability to start an API based on your Resource Models.
 
-The intent of api-pls is for you to replace database and backend API code in
-your web application with these declarative definitions.
+The intent of api-pls is for you to replace database and API code in your
+web application with these declarative descriptions of resources.
 
 For complete documentation on Resource Models, refer to the:
 
@@ -211,6 +205,28 @@ This project only partially supports JSON API. Features currently supported are:
   - [ ] Many-to-many
   - [ ] Relationship endpoints (`/v1/:resource/relationships/:related`)
   - [ ] Related endpoints (`/v1/:resource/:id/:related`)
+
+### Technologies Used
+
+Currently, the only supported database is
+[PostgreSQL](https://www.postgresql.org/). The webserver is written
+in [Node.js](https://nodejs.org/en/) using
+[Express](https://github.com/expressjs/express).
+
+### FAQ
+
+#### Who is the target audience for api-pls?
+
+It is my hope that engineers of all skill levels could find value in api-pls.
+
+Engineers who may not feel confident in building a backend can use api-pls to
+get up-and-running quickly. They might even use api-pls as the entire backend
+for an application.
+
+More confident engineers might find that api-pls is sufficient for some of the
+resources in an application they are building, so they may leverage it for
+those resources. And because api-pls tables can coexist with manually managed
+tables, there's no issue in only using api-pls for part of an application.
 
 ### Acknowledgements
 
