@@ -59,9 +59,9 @@ describe('Resource GET (one) many-to-one (guest)', function() {
         relationships: {
           pets: {
             data: [
-              {id: '1', type: 'cat'},
-              {id: '3', type: 'cat'},
-              {id: '5', type: 'cat'},
+              {id: '1', type: 'cats'},
+              {id: '3', type: 'cats'},
+              {id: '5', type: 'cats'},
             ],
             links: {
               self: '/v2/people/1/relationships/pets',

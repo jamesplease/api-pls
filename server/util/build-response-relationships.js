@@ -41,7 +41,7 @@ function formatToManyResult({result, definition, value, version, columnBase, rel
     relatedObject.data = ids.map(v => {
       return {
         id: v,
-        type: relation.resource
+        type: adjustResourceQuantity.getPluralName(relation.resource)
       };
     });
   }
