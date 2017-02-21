@@ -38,7 +38,7 @@ module.exports = function(req, res) {
   }
 
   // Find the fields to return
-  let fieldsToReturn = _.get(req.query, `fields.${this.definition.plural_form}`, '*');
+  let fieldsToReturn = _.get(req.query, `fields.${this.definition.plural_form}`);
 
   // This captures if the user specifies the parameter, but doesn't actually
   // enter a value.

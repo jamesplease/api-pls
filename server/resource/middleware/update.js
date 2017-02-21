@@ -38,7 +38,6 @@ module.exports = function(req, res) {
     query = crud.read({
       definition: this.definition,
       db: this.db,
-      fields: '*',
       id
     });
   }
