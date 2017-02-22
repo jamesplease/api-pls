@@ -3,6 +3,7 @@
 const _ = require('lodash');
 const adjustResourceQuantity = require('./adjust-resource-quantity');
 const sqlUtil = require('../../lib/sql/sql-util');
+// const manyToManyUtil = require('../../lib/sql/many-to-many-util');
 const relationshipUtil = require('../../lib/relationship-util');
 
 function formatToOneResult({result, definition, value, version, columnBase, relation}) {
@@ -77,9 +78,26 @@ function findHostedRelationships(result, definition, version) {
   }, {});
 }
 
+function findAssociatedRelationships(result, definition, version) {
+  return _.reduce(definition.relationshipsInAssociativeTable, (memo, relation) => {
+    // const hostResource = _.find(definition.definitionsInRelationships, {name: relationship.resource});
+    const columnBase = adjustResourceQuantity.getPluralName(relation.resource);
+    const columnName = sqlUtil.getRelationshipColumnName(relation);
+    const value = result[columnName];
+
+    const isToMany = relationshipUtil.isToMany(relation);
+    const args = {result, definition, version, value, columnBase, relation};
+    const relatedObject = isToMany ? formatToManyResult(args) : formatToOneResult(args);
+
+    memo[columnBase] = relatedObject;
+    return memo;
+  }, {});
+}
+
 module.exports = function(result, definition, version) {
   const hostedRelationships = findOwnRelationships(result, definition, version);
   const otherHostedRelationships = findHostedRelationships(result, definition, version);
+  const associatedRelationships = findAssociatedRelationships(result, definition, version);
 
-  return Object.assign(hostedRelationships, otherHostedRelationships);
+  return Object.assign(hostedRelationships, otherHostedRelationships, associatedRelationships);
 };
