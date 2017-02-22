@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const adjustResourceQuantity = require('./adjust-resource-quantity');
 const sqlUtil = require('../../lib/sql/sql-util');
-// const manyToManyUtil = require('../../lib/sql/many-to-many-util');
+const manyToManyUtil = require('../../lib/sql/many-to-many-util');
 const relationshipUtil = require('../../lib/relationship-util');
 
 function formatToOneResult({result, definition, value, version, columnBase, relation}) {
@@ -80,9 +80,14 @@ function findHostedRelationships(result, definition, version) {
 
 function findAssociatedRelationships(result, definition, version) {
   return _.reduce(definition.relationshipsInAssociativeTable, (memo, relation) => {
-    // const hostResource = _.find(definition.definitionsInRelationships, {name: relationship.resource});
+    const otherResource = _.find(definition.definitionsInRelationships, {name: relation.resource});
     const columnBase = adjustResourceQuantity.getPluralName(relation.resource);
-    const columnName = sqlUtil.getRelationshipColumnName(relation);
+    let columnName;
+    if (!relation.host) {
+      columnName = manyToManyUtil.getHostIdColumnName({host: otherResource});
+    } else {
+      columnName = manyToManyUtil.getGuestIdColumnName({guest: otherResource});
+    }
     const value = result[columnName];
 
     const isToMany = relationshipUtil.isToMany(relation);
