@@ -9,7 +9,7 @@ const seed = require('../../../helpers/seed');
 
 const db = getDb();
 
-describe('Resource GET (one) many-to-many (guest)', function() {
+describe('Resource GET (one) many-to-many (host)', function() {
   // Ensure that the DB connection drops immediately after each test
   afterEach(() => {
     db.$config.pgp.end();
@@ -61,31 +61,32 @@ describe('Resource GET (one) many-to-many (guest)', function() {
 
     it('should return a 200 OK, with the resource and its related items', (done) => {
       const expectedData = {
-        type: 'toppings',
-        id: '2',
+        type: 'pizzas',
+        id: '1',
         attributes: {
-          name: 'marinara'
+          name: 'cheese',
+          size: 'small'
         },
         relationships: {
-          pizzas: {
+          toppings: {
             data: [
-              {id: '1', type: 'pizzas'},
-              {id: '2', type: 'pizzas'},
+              {id: '1', type: 'toppings'},
+              {id: '2', type: 'toppings'},
             ],
             links: {
-              self: '/v2/toppings/2/relationships/pizzas',
-              related: '/v2/toppings/2/pizzas'
+              self: '/v2/pizzas/1/relationships/toppings',
+              related: '/v2/pizzas/1/toppings'
             }
           }
         }
       };
 
       const expectedLinks = {
-        self: '/v2/toppings/2',
+        self: '/v2/pizzas/1',
       };
 
       request(app(this.options))
-        .get('/v2/toppings/2')
+        .get('/v2/pizzas/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
