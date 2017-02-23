@@ -7,7 +7,6 @@ const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 
 const db = getDb();
-const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
 
 describe('The root endpoint', function() {
   // Ensure that the DB connection drops immediately after each test
@@ -17,30 +16,28 @@ describe('The root endpoint', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('Root route', () => {
-    it('should forward you to the version, if a version is not specified', (done) => {
+    it('should forward you to the version, if a version is not specified', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 5
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/')
-            .expect('Location', '/v5')
-            .expect(302)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .get('/')
+        .expect('Location', '/v5')
+        .expect(302)
+        .then();
     });
 
-    it('should return 406 if the invalid Accepts is specified', (done) => {
+    it('should return 406 if the invalid Accepts is specified', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 1
       };
 
@@ -49,21 +46,19 @@ describe('The root endpoint', function() {
         detail: 'No instances of the JSON API media type in the Accepts header were specified without media type parameters.'
       }];
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v1')
-            .set('Accept', 'sandwiches')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(406)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .get('/v1')
+        .set('Accept', 'sandwiches')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(406)
+        .then();
     });
 
-    it('should return 415 if an invalid Content-Type header is specified', (done) => {
+    it('should return 415 if an invalid Content-Type header is specified', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 10
       };
 
@@ -72,21 +67,19 @@ describe('The root endpoint', function() {
         detail: 'The header "Content-Type: application/vnd.api+json" cannot have media type parameters.'
       }];
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v10')
-            .set('Content-Type', 'application/vnd.api+json; sandwiches=true')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(415)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .get('/v10')
+        .set('Content-Type', 'application/vnd.api+json; sandwiches=true')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(415)
+        .then();
     });
 
-    it('should return 200, with the proper response, when there are no resources', (done) => {
+    it('should return 200, with the proper response, when there are no resources', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 500
       };
 
@@ -103,22 +96,20 @@ describe('The root endpoint', function() {
 
       const links = {};
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v500')
-            .expect('Content-Type', 'application/json')
-            .expect(validators.assertJsonapi(jsonapi))
-            .expect(validators.assertMeta(meta))
-            .expect(validators.assertLinks(links))
-            .expect(200)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .get('/v500')
+        .expect('Content-Type', 'application/json')
+        .expect(validators.assertJsonapi(jsonapi))
+        .expect(validators.assertMeta(meta))
+        .expect(validators.assertLinks(links))
+        .expect(200)
+        .then();
     });
 
-    it('should return 200, with the proper response, when there is one resource', (done) => {
+    it('should return 200, with the proper response, when there is one resource', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'one-resource'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'one-resource'),
         apiVersion: 2
       };
 
@@ -146,17 +137,15 @@ describe('The root endpoint', function() {
         }
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v2')
-            .expect('Content-Type', 'application/json')
-            .expect(validators.assertJsonapi(jsonapi))
-            .expect(validators.assertMeta(meta))
-            .expect(validators.assertLinks(links))
-            .expect(200)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .get('/v2')
+        .expect('Content-Type', 'application/json')
+        .expect(validators.assertJsonapi(jsonapi))
+        .expect(validators.assertMeta(meta))
+        .expect(validators.assertLinks(links))
+        .expect(200)
+        .then();
     });
   });
 });

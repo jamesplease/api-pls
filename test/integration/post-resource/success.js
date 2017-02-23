@@ -17,12 +17,12 @@ describe('Resource POST success', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request is valid', () => {
-    it('should return a 200 OK, with the created resource', (done) => {
+    it('should return a 200 OK, with the created resource', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 2
@@ -44,31 +44,29 @@ describe('Resource POST success', function() {
         self: '/v2/nopes/1'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v2/nopes')
-            .send({
-              data: {
-                type: 'nopes',
-                attributes: {
-                  label: 'sandwiches',
-                  size: 'M'
-                }
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertData(expectedData))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect('Location', '/v2/nopes/1')
-            .expect(201)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v2/nopes')
+        .send({
+          data: {
+            type: 'nopes',
+            attributes: {
+              label: 'sandwiches',
+              size: 'M'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect('Location', '/v2/nopes/1')
+        .expect(201)
+        .then();
     });
   });
 
   describe('when the request is valid, but has extraneous fields', () => {
-    it('should return a 200 OK, with the created resource', (done) => {
+    it('should return a 200 OK, with the created resource', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 50
@@ -90,32 +88,30 @@ describe('Resource POST success', function() {
         self: '/v50/nopes/1'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v50/nopes')
-            .send({
-              data: {
-                type: 'nopes',
-                attributes: {
-                  label: 'sandwiches',
-                  size: 'M',
-                  notARealField: true
-                }
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertData(expectedData))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect('Location', '/v50/nopes/1')
-            .expect(201)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v50/nopes')
+        .send({
+          data: {
+            type: 'nopes',
+            attributes: {
+              label: 'sandwiches',
+              size: 'M',
+              notARealField: true
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect('Location', '/v50/nopes/1')
+        .expect(201)
+        .then();
     });
   });
 
   describe('when non-nullable meta is included, and the request succeeds', () => {
-    it('should return a 201 Created response', (done) => {
+    it('should return a 201 Created response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -137,29 +133,27 @@ describe('Resource POST success', function() {
         }
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v5/required_metas')
-            .send({
-              data: {
-                type: 'required_metas',
-                attributes: {
-                  first_name: 'james',
-                  last_name: 'please'
-                },
-                meta: {
-                  copyright: 'sandwiches'
-                }
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertData(expectedData))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect('Location', '/v5/required_metas/1')
-            .expect(201)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v5/required_metas')
+        .send({
+          data: {
+            type: 'required_metas',
+            attributes: {
+              first_name: 'james',
+              last_name: 'please'
+            },
+            meta: {
+              copyright: 'sandwiches'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertData(expectedData))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect('Location', '/v5/required_metas/1')
+        .expect(201)
+        .then();
     });
   });
 });

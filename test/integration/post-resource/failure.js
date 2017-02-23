@@ -17,12 +17,12 @@ describe('Resource POST failure', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', (done) => {
+    it('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
         apiVersion: 2
@@ -37,21 +37,19 @@ describe('Resource POST failure', function() {
         self: '/v2/pastas'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v2/pastas')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(404)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v2/pastas')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(404)
+        .then();
     });
   });
 
   describe('attempting to POST a single resource', () => {
-    it('should return a Method Not Allowed error response', (done) => {
+    it('should return a Method Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 3
@@ -66,21 +64,19 @@ describe('Resource POST failure', function() {
         self: '/v3/nopes/1'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v3/nopes/1')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(405)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v3/nopes/1')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(405)
+        .then();
     });
   });
 
   describe('when the resource does not permit POST', () => {
-    it('should return a Not Allowed error response', (done) => {
+    it('should return a Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 4
@@ -95,21 +91,19 @@ describe('Resource POST failure', function() {
         self: '/v4/no-cruds'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v4/no-cruds')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(405)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v4/no-cruds')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(405)
+        .then();
     });
   });
 
   describe('when the request does not have a "data" property', () => {
-    it('should return a Bad Request error response', (done) => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
@@ -124,28 +118,26 @@ describe('Resource POST failure', function() {
         self: '/v1/nopes'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v1/nopes')
-            // The issue is that these aren't nested within `data`.
-            .send({
-              type: 'nopes',
-              attributes: {
-                size: 'M'
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(400)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v1/nopes')
+        // The issue is that these aren't nested within `data`.
+        .send({
+          type: 'nopes',
+          attributes: {
+            size: 'M'
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .then();
     });
   });
 
   describe('when non-nullable attributes are not included', () => {
-    it('should return a Bad Request error response', (done) => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -160,29 +152,27 @@ describe('Resource POST failure', function() {
         self: '/v5/nopes'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v5/nopes')
-            .send({
-              data: {
-                type: 'nopes',
-                attributes: {
-                  size: 'M'
-                }
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(400)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v5/nopes')
+        .send({
+          data: {
+            type: 'nopes',
+            attributes: {
+              size: 'M'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .then();
     });
   });
 
   describe('when resource has non-nullable meta, and meta is omitted', () => {
-    it('should return a Bad Request error response', (done) => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -197,30 +187,28 @@ describe('Resource POST failure', function() {
         self: '/v5/required_metas'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v5/required_metas')
-            .send({
-              data: {
-                type: 'required_metas',
-                attributes: {
-                  first_name: 'james',
-                  last_name: 'please'
-                }
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(400)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v5/required_metas')
+        .send({
+          data: {
+            type: 'required_metas',
+            attributes: {
+              first_name: 'james',
+              last_name: 'please'
+            }
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .then();
     });
   });
 
   describe('when non-nullable meta is not included in request', () => {
-    it('should return a Bad Request error response', (done) => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -235,31 +223,29 @@ describe('Resource POST failure', function() {
         self: '/v5/required_metas'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v5/required_metas')
-            .send({
-              data: {
-                type: 'required_metas',
-                attributes: {
-                  first_name: 'james',
-                  last_name: 'please'
-                },
-                meta: {}
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(400)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v5/required_metas')
+        .send({
+          data: {
+            type: 'required_metas',
+            attributes: {
+              first_name: 'james',
+              last_name: 'please'
+            },
+            meta: {}
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .then();
     });
   });
 
   describe('when non-nullable data and meta is not included', () => {
-    it('should return a Bad Request error response', (done) => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -277,25 +263,23 @@ describe('Resource POST failure', function() {
         self: '/v5/requireds'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .post('/v5/requireds')
-            .send({
-              data: {
-                type: 'requireds',
-                attributes: {
-                  last_name: 'please'
-                },
-                meta: {}
-              }
-            })
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(400)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .post('/v5/requireds')
+        .send({
+          data: {
+            type: 'requireds',
+            attributes: {
+              last_name: 'please'
+            },
+            meta: {}
+          }
+        })
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(400)
+        .then();
     });
   });
 });

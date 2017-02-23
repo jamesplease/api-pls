@@ -17,13 +17,13 @@ describe('Resource GET (one) success', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'kitchen-sink'),
         apiVersion: 10
       };
@@ -33,12 +33,6 @@ describe('Resource GET (one) success', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = {
         type: 'no_metas',
         id: '1',
@@ -52,19 +46,21 @@ describe('Resource GET (one) success', function() {
         self: '/v10/no_metas/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v10/no_metas/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when an empty sparse fieldsets param is specified', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response with all fields', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'kitchen-sink'),
         apiVersion: 16
       };
@@ -74,12 +70,6 @@ describe('Resource GET (one) success', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response with all fields', (done) => {
       const expectedData = {
         type: 'no_metas',
         id: '1',
@@ -93,20 +83,22 @@ describe('Resource GET (one) success', function() {
         self: '/v16/no_metas/1?fields[no_metas]'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v16/no_metas/1')
         .query('fields[no_metas]')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds with sparse fieldsets', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
       };
@@ -116,12 +108,6 @@ describe('Resource GET (one) success', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = {
         type: 'no_metas',
         id: '1',
@@ -134,14 +120,16 @@ describe('Resource GET (one) success', function() {
         self: '/v1/no_metas/1?fields[no_metas]=first_name'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v1/no_metas/1')
         .query('fields[no_metas]=first_name')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

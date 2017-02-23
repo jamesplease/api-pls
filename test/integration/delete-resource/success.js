@@ -18,13 +18,13 @@ describe('Resource DELETE success', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 204 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 10
       };
@@ -33,18 +33,13 @@ describe('Resource DELETE success', function() {
         label: 'sandwiches',
         size: 'M'
       }];
-
-      applyMigrations(this.options)
-        .then(() => seed('nope', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 204 response', (done) => {
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('nope', seeds);
+      return request(app(options))
         .delete('/v10/nopes/1')
         .expect(validators.assertEmptyBody)
         .expect(204)
-        .end(done);
+        .then();
     });
   });
 });

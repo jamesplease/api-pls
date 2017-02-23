@@ -17,13 +17,13 @@ describe('Resource POST success, one-to-one (host)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request is valid', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the created resource', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'one-to-one'),
         apiVersion: 10
       };
@@ -32,12 +32,6 @@ describe('Resource POST success, one-to-one (host)', function() {
         type: 'samsung'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('chip', chipSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the created resource', (done) => {
       const expectedData = {
         type: 'dogs',
         id: '1',
@@ -63,7 +57,9 @@ describe('Resource POST success, one-to-one (host)', function() {
         self: '/v10/dogs/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('chip', chipSeeds);
+      return request(app(options))
         .post('/v10/dogs')
         .send({
           data: {
@@ -86,13 +82,13 @@ describe('Resource POST success, one-to-one (host)', function() {
         .expect(validators.assertLinks(expectedLinks))
         .expect('Location', '/v10/dogs/1')
         .expect(201)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request violates a one-to-one relationship', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 500 response', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'one-to-one'),
         apiVersion: 10
       };
@@ -106,13 +102,6 @@ describe('Resource POST success, one-to-one (host)', function() {
         device_id: '1'
       }];
 
-      applyMigrations(this.options)
-      .then(() => seed('chip', chipSeeds))
-        .then(() => seed('dog', dogSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 500 response', (done) => {
       const expectedErrors = [{
         title: 'Server Error',
         detail: 'The server encounted an error while processing your request'
@@ -122,7 +111,10 @@ describe('Resource POST success, one-to-one (host)', function() {
         self: '/v10/dogs'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('chip', chipSeeds);
+      await seed('dog', dogSeeds);
+      return request(app(options))
         .post('/v10/dogs')
         .send({
           data: {
@@ -144,7 +136,7 @@ describe('Resource POST success, one-to-one (host)', function() {
         .expect(validators.assertErrors(expectedErrors))
         .expect(validators.assertLinks(expectedLinks))
         .expect(500)
-        .end(done);
+        .then();
     });
   });
 });

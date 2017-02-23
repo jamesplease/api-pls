@@ -17,13 +17,13 @@ describe('Resource GET (many) many-to-one (host)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the resource and links', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-one'),
         apiVersion: 5
       };
@@ -40,13 +40,6 @@ describe('Resource GET (many) many-to-one (host)', function() {
         {name: 'tim', owner_id: null},
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('person', personSeeds))
-        .then(() => seed('cat', catSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the resource and links', (done) => {
       const expectedData = [
         {
           type: 'cats',
@@ -116,7 +109,10 @@ describe('Resource GET (many) many-to-one (host)', function() {
         next: null
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('person', personSeeds);
+      await seed('cat', catSeeds);
+      return request(app(options))
         .get('/v5/cats')
         .query('page[size]=10&sandwiches=tasty')
         .expect(validators.basicValidation)
@@ -124,7 +120,7 @@ describe('Resource GET (many) many-to-one (host)', function() {
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

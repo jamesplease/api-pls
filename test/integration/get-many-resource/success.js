@@ -18,13 +18,13 @@ describe('Resource GET (many)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1000
       };
@@ -36,12 +36,6 @@ describe('Resource GET (many)', function() {
         {first_name: 'stephen', last_name: 'please'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [
         {
           type: 'no_metas',
@@ -81,19 +75,21 @@ describe('Resource GET (many)', function() {
         self: '/v1000/no_metas'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v1000/no_metas')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when an empty sparse fieldsets is specified', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
       };
@@ -105,12 +101,6 @@ describe('Resource GET (many)', function() {
         {first_name: 'stephen', last_name: 'please'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [
         {
           type: 'no_metas',
@@ -150,20 +140,22 @@ describe('Resource GET (many)', function() {
         self: '/v5/no_metas?fields[no_metas]'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v5/no_metas')
         .query('fields[no_metas]')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds with sparse fieldsets', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 15
       };
@@ -175,12 +167,6 @@ describe('Resource GET (many)', function() {
         {first_name: 'stephen', last_name: 'please'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [
         {
           type: 'no_metas',
@@ -216,20 +202,22 @@ describe('Resource GET (many)', function() {
         self: '/v15/no_metas?fields[no_metas]=first_name'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v15/no_metas')
         .query('fields[no_metas]=first_name')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds with default pagination', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
       };
@@ -241,12 +229,6 @@ describe('Resource GET (many)', function() {
         {first_name: 'stephen', last_name: 'please'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('paginate', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [
         {
           type: 'paginates',
@@ -280,20 +262,22 @@ describe('Resource GET (many)', function() {
         next: '/v1/paginates?page[number]=2'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('paginate', seeds);
+      return request(app(options))
         .get('/v1/paginates')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds with a custom page and size requested', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 10
       };
@@ -305,12 +289,6 @@ describe('Resource GET (many)', function() {
         {first_name: 'stephen', last_name: 'please'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('paginate', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [
         {
           type: 'paginates',
@@ -336,7 +314,9 @@ describe('Resource GET (many)', function() {
         next: null
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('paginate', seeds);
+      return request(app(options))
         .get('/v10/paginates')
         .query('page[number]=2&page[size]=3')
         .expect(validators.basicValidation)
@@ -344,22 +324,17 @@ describe('Resource GET (many)', function() {
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds on an empty list', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 2
       };
 
-      applyMigrations(this.options)
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [];
 
       const expectedMeta = {
@@ -376,20 +351,21 @@ describe('Resource GET (many)', function() {
         next: null
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      return request(app(options))
         .get('/v2/paginates')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds on a page beyond the last page', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 2
       };
@@ -401,12 +377,6 @@ describe('Resource GET (many)', function() {
         {first_name: 'stephen', last_name: 'please'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('paginate', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = [];
 
       const expectedMeta = {
@@ -423,7 +393,9 @@ describe('Resource GET (many)', function() {
         next: null
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('paginate', seeds);
+      return request(app(options))
         .get('/v2/paginates')
         .query('page[number]=100&page[size]=2')
         .expect(validators.basicValidation)
@@ -431,7 +403,7 @@ describe('Resource GET (many)', function() {
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

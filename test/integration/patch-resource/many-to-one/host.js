@@ -17,13 +17,13 @@ describe('Resource PATCH success, many-to-one (host)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request is valid, with a relationship', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the updated resource', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-one'),
         apiVersion: 24
       };
@@ -38,13 +38,6 @@ describe('Resource PATCH success, many-to-one (host)', function() {
         {name: 'james', owner_id: '1'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('person', personSeeds))
-        .then(() => seed('cat', catSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the updated resource', (done) => {
       const expectedData = {
         type: 'cats',
         id: '1',
@@ -69,7 +62,10 @@ describe('Resource PATCH success, many-to-one (host)', function() {
         self: '/v24/cats/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('person', personSeeds);
+      await seed('cat', catSeeds);
+      return request(app(options))
         .patch('/v24/cats/1')
         .send({
           data: {
@@ -89,7 +85,7 @@ describe('Resource PATCH success, many-to-one (host)', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

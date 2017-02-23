@@ -17,13 +17,13 @@ describe('Resource GET (one) one-to-one (guest)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the resource', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'one-to-one'),
         apiVersion: 2
       };
@@ -38,13 +38,6 @@ describe('Resource GET (one) one-to-one (guest)', function() {
         {name: 'peanut', device_id: '2'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('chip', chipSeeds))
-        .then(() => seed('dog', dogSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the resource', (done) => {
       const expectedData = {
         type: 'chips',
         id: '2',
@@ -69,13 +62,16 @@ describe('Resource GET (one) one-to-one (guest)', function() {
         self: '/v2/chips/2'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('chip', chipSeeds);
+      await seed('dog', dogSeeds);
+      return request(app(options))
         .get('/v2/chips/2')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

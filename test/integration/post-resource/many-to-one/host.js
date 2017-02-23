@@ -17,13 +17,13 @@ describe('Resource POST success, many-to-one (host)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request is valid', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the created resource', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-one'),
         apiVersion: 10
       };
@@ -32,12 +32,6 @@ describe('Resource POST success, many-to-one (host)', function() {
         first_name: 'sandwiches'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('person', personSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the created resource', (done) => {
       const expectedData = {
         type: 'cats',
         id: '1',
@@ -62,7 +56,9 @@ describe('Resource POST success, many-to-one (host)', function() {
         self: '/v10/cats/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('person', personSeeds);
+      return request(app(options))
         .post('/v10/cats')
         .send({
           data: {
@@ -85,22 +81,17 @@ describe('Resource POST success, many-to-one (host)', function() {
         .expect(validators.assertLinks(expectedLinks))
         .expect('Location', '/v10/cats/1')
         .expect(201)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request references a nonexistent related resource', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 500 response', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-one'),
         apiVersion: 10
       };
 
-      applyMigrations(this.options)
-        .then(() => done());
-    });
-
-    it('should return a 500 response', (done) => {
       const expectedLinks = {
         self: '/v10/cats'
       };
@@ -110,7 +101,8 @@ describe('Resource POST success, many-to-one (host)', function() {
         detail: 'The server encounted an error while processing your request'
       }];
 
-      request(app(this.options))
+      await applyMigrations(options);
+      return request(app(options))
         .post('/v10/cats')
         .send({
           data: {
@@ -132,7 +124,7 @@ describe('Resource POST success, many-to-one (host)', function() {
         .expect(validators.assertErrors(expectedErrors))
         .expect(validators.assertLinks(expectedLinks))
         .expect(500)
-        .end(done);
+        .then();
     });
   });
 });

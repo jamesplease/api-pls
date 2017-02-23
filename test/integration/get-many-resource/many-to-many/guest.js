@@ -17,13 +17,13 @@ describe('Resource GET (many) many-to-many (guest)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the resource and its related items', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-many'),
         apiVersion: 2
       };
@@ -52,14 +52,6 @@ describe('Resource GET (many) many-to-many (guest)', function() {
         {pizza_id: '3', topping_id: '1'},
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('topping', toppingSeeds))
-        .then(() => seed('pizza', pizzaSeeds))
-        .then(() => seed('pizza_topping', pizzaToppingSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the resource and its related items', (done) => {
       const expectedData = [
         {
           type: 'toppings',
@@ -128,13 +120,17 @@ describe('Resource GET (many) many-to-many (guest)', function() {
         prev: null
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('topping', toppingSeeds);
+      await seed('pizza', pizzaSeeds);
+      await seed('pizza_topping', pizzaToppingSeeds);
+      return request(app(options))
         .get('/v2/toppings')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });
