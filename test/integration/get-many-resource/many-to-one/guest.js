@@ -22,8 +22,8 @@ describe('Resource GET (many) many-to-one (guest)', function() {
   });
 
   describe('when the request succeeds', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 OK, with the resource and links', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'many-to-one'),
         apiVersion: 5
       };
@@ -41,13 +41,6 @@ describe('Resource GET (many) many-to-one (guest)', function() {
         {name: 'sammy', owner_id: '3'}
       ];
 
-      applyMigrations(this.options)
-        .then(() => seed('person', personSeeds))
-        .then(() => seed('cat', catSeeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 OK, with the resource and links', (done) => {
       const expectedData = [
         {
           type: 'people',
@@ -119,7 +112,10 @@ describe('Resource GET (many) many-to-one (guest)', function() {
         next: null
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('person', personSeeds);
+      await seed('cat', catSeeds);
+      return request(app(options))
         .get('/v5/people')
         .query('page[size]=10&sandwiches=tasty')
         .expect(validators.basicValidation)
@@ -127,7 +123,7 @@ describe('Resource GET (many) many-to-one (guest)', function() {
         .expect(validators.assertMeta(expectedMeta))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

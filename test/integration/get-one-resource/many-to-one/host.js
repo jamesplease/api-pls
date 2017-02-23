@@ -65,7 +65,7 @@ describe('Resource GET (one) many-to-one (host)', function() {
       await applyMigrations(options);
       await seed('person', personSeeds);
       await seed('cat', catSeeds);
-      request(app(options))
+      return request(app(options))
         .get('/v2/cats/1')
         .expect(validators.basicValidation)
         .expect(validators.assertData(expectedData))
