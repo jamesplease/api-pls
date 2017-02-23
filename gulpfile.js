@@ -44,6 +44,7 @@ function test() {
 }
 
 function coverage(done) {
+  require('babel-register');
   gulp.src([entry, allJsFiles])
     .pipe($.istanbul({
       instrumenter: Instrumenter,
