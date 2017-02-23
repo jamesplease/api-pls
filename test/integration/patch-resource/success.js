@@ -23,8 +23,8 @@ describe('Resource PATCH success', function() {
   });
 
   describe('when the request succeeds, and data is manipulated', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
       };
@@ -34,12 +34,6 @@ describe('Resource PATCH success', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = {
         type: 'no_metas',
         id: '1',
@@ -53,7 +47,9 @@ describe('Resource PATCH success', function() {
         self: '/v5/no_metas/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .patch('/v5/no_metas/1')
         .send({
           data: {
@@ -69,13 +65,13 @@ describe('Resource PATCH success', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds, and meta is manipulated', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
       };
@@ -85,12 +81,6 @@ describe('Resource PATCH success', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('has_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = {
         type: 'has_metas',
         id: '1',
@@ -107,7 +97,9 @@ describe('Resource PATCH success', function() {
         self: '/v5/has_metas/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('has_meta', seeds);
+      return request(app(options))
         .patch('/v5/has_metas/1')
         .send({
           data: {
@@ -122,13 +114,13 @@ describe('Resource PATCH success', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request succeeds, but nothing is manipulated', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 33
       };
@@ -138,12 +130,6 @@ describe('Resource PATCH success', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedData = {
         type: 'no_metas',
         id: '1',
@@ -157,7 +143,9 @@ describe('Resource PATCH success', function() {
         self: '/v33/no_metas/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .patch('/v33/no_metas/1')
         .send({
           data: {
@@ -172,13 +160,13 @@ describe('Resource PATCH success', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request leaves out non-nullable data in a patch', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a 200 response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
       };
@@ -189,12 +177,6 @@ describe('Resource PATCH success', function() {
         copyright: 'sandwiches'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('required', seeds))
-        .then(() => done());
-    });
-
-    it('should return a 200 response', (done) => {
       const expectedLinks = {
         self: '/v1/requireds/1'
       };
@@ -211,7 +193,9 @@ describe('Resource PATCH success', function() {
         }
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('required', seeds);
+      return request(app(options))
         .patch('/v1/requireds/1')
         .send({
           data: {
@@ -226,7 +210,7 @@ describe('Resource PATCH success', function() {
         .expect(validators.assertData(expectedData))
         .expect(validators.assertLinks(expectedLinks))
         .expect(200)
-        .end(done);
+        .then();
     });
   });
 });

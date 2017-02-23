@@ -23,7 +23,7 @@ describe('Resource PATCH failure', function() {
   });
 
   describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', (done) => {
+    it('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
         apiVersion: 2
@@ -38,21 +38,19 @@ describe('Resource PATCH failure', function() {
         self: '/v2/pastas/1'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .patch('/v2/pastas/1')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(404)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .patch('/v2/pastas/1')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(404)
+        .then();
     });
   });
 
   describe('attempting to PATCH an entire list of resources', () => {
-    it('should return a Method Not Allowed error response', (done) => {
+    it('should return a Method Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: '1.5'
@@ -67,22 +65,20 @@ describe('Resource PATCH failure', function() {
         self: '/v1.5/nopes'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .patch('/v1.5/nopes')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(405)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .patch('/v1.5/nopes')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(405)
+        .then();
     });
   });
 
   describe('when the ID in the body does not match the url', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a Bad Request response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
       };
@@ -92,12 +88,6 @@ describe('Resource PATCH failure', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a Bad Request response', (done) => {
       const expectedErrors = [{
         title: 'Bad Request',
         detail: '"params.id" should be equal to constant'
@@ -107,7 +97,9 @@ describe('Resource PATCH failure', function() {
         self: '/v1/no_metas/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .patch('/v1/no_metas/1')
         .send({
           data: {
@@ -123,13 +115,13 @@ describe('Resource PATCH failure', function() {
         .expect(validators.assertErrors(expectedErrors))
         .expect(validators.assertLinks(expectedLinks))
         .expect(400)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request tries to null non-nullable meta', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a Bad Request response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
       };
@@ -140,12 +132,6 @@ describe('Resource PATCH failure', function() {
         copyright: 'sandwiches'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('required_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a Bad Request response', (done) => {
       const expectedErrors = [{
         title: 'Bad Request',
         // What a weird message...
@@ -156,7 +142,9 @@ describe('Resource PATCH failure', function() {
         self: '/v1/required_metas/1'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('required_meta', seeds);
+      return request(app(options))
         .patch('/v1/required_metas/1')
         .send({
           data: {
@@ -171,13 +159,13 @@ describe('Resource PATCH failure', function() {
         .expect(validators.assertErrors(expectedErrors))
         .expect(validators.assertLinks(expectedLinks))
         .expect(400)
-        .end(done);
+        .then();
     });
   });
 
   describe('when the request does not have a "data" property', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a Bad Request response', async () => {
+      const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
       };
@@ -188,12 +176,6 @@ describe('Resource PATCH failure', function() {
         copyright: 'sandwiches'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('required', seeds))
-        .then(() => done());
-    });
-
-    it('should return a Bad Request response', (done) => {
       const expectedLinks = {
         self: '/v1/requireds/1'
       };
@@ -208,7 +190,9 @@ describe('Resource PATCH failure', function() {
         title: 'Bad Request'
       }];
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('required', seeds);
+      return request(app(options))
         .patch('/v1/requireds/1')
         .send({
           type: 'requireds',
@@ -221,7 +205,7 @@ describe('Resource PATCH failure', function() {
         .expect(validators.assertErrors(expectedErrors))
         .expect(validators.assertLinks(expectedLinks))
         .expect(400)
-        .end(done);
+        .then();
     });
   });
 });
