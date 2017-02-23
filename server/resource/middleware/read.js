@@ -146,88 +146,81 @@ module.exports = async function(req, res) {
       .catch(r => r);
   }
 
-  Promise.resolve(val)
-    .then(val => {
-      const result = val.result;
-      let formattedResult;
-      let totalCount = val.totalCount;
-      if (isSingular) {
-        formattedResult = formatTransaction(result, this.definition, this.version);
+  const newResult = val.result;
+  let formattedResult;
+  let totalCount = val.totalCount;
+  if (isSingular) {
+    formattedResult = formatTransaction(newResult, this.definition, this.version);
+  } else {
+    formattedResult = _.map(newResult, t => formatTransaction(t, this.definition, this.version));
+  }
+
+  const dataToSend = {
+    data: formattedResult,
+    links: {
+      self: selfLink
+    }
+  };
+
+  if (enablePagination) {
+    const basePath = req.path;
+    const numTotalCount = Number(totalCount);
+    const noResources = numTotalCount === 0;
+    const selfQuery = _.size(req.query) ? `?${qs.stringify(req.query, {encode: false})}` : '';
+    dataToSend.links.self = `${basePath}${selfQuery}`;
+
+    // If we have no resources, then there are no pages of data, and all
+    // pagination links are null.
+    if (noResources) {
+      dataToSend.links.first = null;
+      dataToSend.links.last = null;
+      dataToSend.links.prev = null;
+      dataToSend.links.next = null;
+    }
+    // Otherwise, we do a bit of number crunching to get the different
+    // pagination links.
+    else {
+      const totalPages = Math.ceil(numTotalCount / pageSize);
+      const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
+      let prevPage;
+      // If the `pageNumber` is 1, then there is nowhere back to go.
+      // If there are no results, then no previous page has any results.
+      if (pageNumber === 1 || numTotalCount === 0) {
+        prevPage = null;
+      } else if (newResult.length === 0) {
+        prevPage = totalPages;
       } else {
-        formattedResult = _.map(result, t => formatTransaction(t, this.definition, this.version));
+        prevPage = pageNumber - 1;
       }
 
-      const dataToSend = {
-        data: formattedResult,
-        links: {
-          self: selfLink
-        }
-      };
-
-      if (enablePagination) {
-        const basePath = req.path;
-        const numTotalCount = Number(totalCount);
-        const noResources = numTotalCount === 0;
-        const selfQuery = _.size(req.query) ? `?${qs.stringify(req.query, {encode: false})}` : '';
-        dataToSend.links.self = `${basePath}${selfQuery}`;
-
-        // If we have no resources, then there are no pages of data, and all
-        // pagination links are null.
-        if (noResources) {
-          dataToSend.links.first = null;
-          dataToSend.links.last = null;
-          dataToSend.links.prev = null;
-          dataToSend.links.next = null;
-        }
-        // Otherwise, we do a bit of number crunching to get the different
-        // pagination links.
-        else {
-          const totalPages = Math.ceil(numTotalCount / pageSize);
-          const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
-          let prevPage;
-          // If the `pageNumber` is 1, then there is nowhere back to go.
-          // If there are no results, then no previous page has any results.
-          if (pageNumber === 1 || numTotalCount === 0) {
-            prevPage = null;
-          } else if (result.length === 0) {
-            prevPage = totalPages;
-          } else {
-            prevPage = pageNumber - 1;
-          }
-
-          const firstPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: 1}}), {encode: false});
-          const lastPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: totalPages}}), {encode: false});
-          let prevPageLink = null;
-          if (prevPage) {
-            const prevPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: prevPage}}), {encode: false});
-            prevPageLink = `${basePath}?${prevPageQuery}`;
-          }
-
-          let nextPageLink = null;
-          if (nextPage) {
-            const nextPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: nextPage}}), {encode: false});
-            nextPageLink = `${basePath}?${nextPageQuery}`;
-          }
-
-          dataToSend.links.self = `${basePath}${selfQuery}`;
-          dataToSend.links.first = `${basePath}?${firstPageQuery}`;
-          dataToSend.links.last = `${basePath}?${lastPageQuery}`;
-          dataToSend.links.prev = prevPageLink;
-          dataToSend.links.next = nextPageLink;
-        }
-
-        dataToSend.meta = {
-          page_number: pageNumber,
-          page_size: pageSize,
-          total_count: numTotalCount
-        };
+      const firstPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: 1}}), {encode: false});
+      const lastPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: totalPages}}), {encode: false});
+      let prevPageLink = null;
+      if (prevPage) {
+        const prevPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: prevPage}}), {encode: false});
+        prevPageLink = `${basePath}?${prevPageQuery}`;
       }
 
-      log.info({reqId: req.id}, 'Read a resource');
-      sendJson(res, dataToSend);
-    })
-    .catch(err => {
-      const crudAction = isSingular ? 'readOne' : 'readMany';
-      handleQueryError({err, req, res, definition: this.definition, crudAction, query, selfLink});
-    });
+      let nextPageLink = null;
+      if (nextPage) {
+        const nextPageQuery = qs.stringify(_.merge({}, req.query, {page: {number: nextPage}}), {encode: false});
+        nextPageLink = `${basePath}?${nextPageQuery}`;
+      }
+
+      dataToSend.links.self = `${basePath}${selfQuery}`;
+      dataToSend.links.first = `${basePath}?${firstPageQuery}`;
+      dataToSend.links.last = `${basePath}?${lastPageQuery}`;
+      dataToSend.links.prev = prevPageLink;
+      dataToSend.links.next = nextPageLink;
+    }
+
+    dataToSend.meta = {
+      page_number: pageNumber,
+      page_size: pageSize,
+      total_count: numTotalCount
+    };
+  }
+
+  log.info({reqId: req.id}, 'Read a resource');
+  sendJson(res, dataToSend);
 };
