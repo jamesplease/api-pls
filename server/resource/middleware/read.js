@@ -110,38 +110,43 @@ module.exports = async function(req, res) {
     });
   }
 
-  Promise.resolve(result)
-    .then(result => {
-      // Singular results have no total count, so we don't do anything special.
-      if (isSingular) {
-        return {result};
-      }
-      // If we do get results, or pagination is disabled, then it's not possible
-      // that our total count is wrong.
-      else if (result.length || !enablePagination) {
-        return {
-          result,
-          totalCount: _.get(result[0], 'total_count', 0)
-        };
-      }
-      log.info({reqId: req.id}, 'No results returned on a paginated read many.');
+  let val;
 
-      const readOneAttempt = crud.read({
-        definition: this.definition,
-        db: this.db,
-        pageSize: 1,
-        pageNumber: 1,
-        enablePagination
-      });
+  // Singular results have no total count, so we don't do anything special.
+  if (isSingular) {
+    val = {result};
+  }
+  // If we do get results, or pagination is disabled, then it's not possible
+  // that our total count is wrong.
+  else if (result.length || !enablePagination) {
+    val = {
+      result,
+      totalCount: _.get(result[0], 'total_count', 0)
+    };
+  }
 
-      log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
-      return this.db.oneOrNone(readOneAttempt)
-        .then(result => {
-          log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
-          const totalCount = result ? result.total_count : 0;
-          return {result: [], totalCount};
-        });
-    })
+  else {
+    log.info({reqId: req.id}, 'No results returned on a paginated read many.');
+
+    const readOneAttempt = crud.read({
+      definition: this.definition,
+      db: this.db,
+      pageSize: 1,
+      pageNumber: 1,
+      enablePagination
+    });
+
+    log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
+    val = await this.db.oneOrNone(readOneAttempt)
+      .then(result => {
+        log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
+        const totalCount = result ? result.total_count : 0;
+        return {result: [], totalCount};
+      })
+      .catch(r => r);
+  }
+
+  Promise.resolve(val)
     .then(val => {
       const result = val.result;
       let formattedResult;
