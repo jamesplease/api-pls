@@ -17,8 +17,8 @@ describe('Resource GET (one) many-to-one (guest)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(async () => {
-    await wipeDatabase(db);
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {

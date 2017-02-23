@@ -16,8 +16,8 @@ describe('The root endpoint', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(async () => {
-    await wipeDatabase(db);
+  beforeEach(() => {
+    return wipeDatabase(db);
   });
 
   describe('Root route', () => {
