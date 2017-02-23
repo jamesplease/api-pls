@@ -80,7 +80,7 @@ function findHostedRelationships(result, definition, version) {
 
 function findAssociatedRelationships(result, definition, version) {
   return _.reduce(definition.relationshipsInAssociativeTable, (memo, relation) => {
-    const otherResource = _.find(definition.definitionsInRelationships, {name: relation.resource});
+    const otherResource = relation.relatedDefinition;
     const columnBase = adjustResourceQuantity.getPluralName(relation.resource);
     let columnName;
     if (!relation.host) {
