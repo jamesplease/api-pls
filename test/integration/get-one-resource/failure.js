@@ -22,7 +22,7 @@ describe('Resource GET (one) failure', function() {
   });
 
   describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', (done) => {
+    it('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 3
@@ -37,22 +37,20 @@ describe('Resource GET (one) failure', function() {
         self: '/v3/pastas/1'
       };
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .get('/v3/pastas/1')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(validators.assertLinks(expectedLinks))
-            .expect(404)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .get('/v3/pastas/1')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(validators.assertLinks(expectedLinks))
+        .expect(404)
+        .then();
     });
   });
 
   describe('when no valid fields are requested via sparse fields', () => {
-    beforeEach((done) => {
-      this.options = {
+    it('should return a Bad Request error response', async () => {
+      const options = {
         resourcesDirectory: path.join(global.fixturesDirectory, 'kitchen-sink'),
         apiVersion: 4
       };
@@ -62,12 +60,6 @@ describe('Resource GET (one) failure', function() {
         last_name: 'please'
       }];
 
-      applyMigrations(this.options)
-        .then(() => seed('no_meta', seeds))
-        .then(() => done());
-    });
-
-    it('should return a Bad Request error response', (done) => {
       const expectedErrors = [{
         title: 'Bad Request',
         detail: 'No valid fields were specified for resource "no_metas".'
@@ -77,14 +69,16 @@ describe('Resource GET (one) failure', function() {
         self: '/v4/no_metas/1?fields[no_metas]=sandwiches'
       };
 
-      request(app(this.options))
+      await applyMigrations(options);
+      await seed('no_meta', seeds);
+      return request(app(options))
         .get('/v4/no_metas/1')
         .query('fields[no_metas]=sandwiches')
         .expect(validators.basicValidation)
         .expect(validators.assertErrors(expectedErrors))
         .expect(validators.assertLinks(expectedLinks))
         .expect(400)
-        .end(done);
+        .then();
     });
   });
 });
