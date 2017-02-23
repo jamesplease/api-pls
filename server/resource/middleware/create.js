@@ -8,7 +8,7 @@ const sendJson = require('../../util/send-json');
 const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
-module.exports = function(req, res) {
+module.exports = async function(req, res) {
   log.info({req}, 'A create request is being processed.');
   const selfLinkBase = req.path;
   const data = _.get(req, 'body.data', {});
@@ -56,24 +56,27 @@ module.exports = function(req, res) {
 
   log.info({query, definition: this.definition, reqId: req.id}, 'Creating a resource');
 
-  this.db.one(query)
-    .then(result => {
-      const createdLink = `${selfLinkBase}/${result.id}`;
-      log.info({reqId: req.id}, 'Resource created.');
-      res
-        .status(201)
-        .header('Location', createdLink);
-      sendJson(res, {
-        data: formatTransaction(result, this.definition, this.version),
-        links: {
-          self: createdLink
-        }
-      });
-    })
-    .catch(err => handleQueryError({
+  const result = await this.db.one(query).catch(r => r);
+
+  if (_.isError(result)) {
+    return handleQueryError({
+      err: result,
       definition: this.definition,
       selfLink: selfLinkBase,
       crudAction: 'create',
-      err, req, res, query
-    }));
+      req, res, query
+    });
+  }
+
+  const createdLink = `${selfLinkBase}/${result.id}`;
+  log.info({reqId: req.id}, 'Resource created.');
+  res
+    .status(201)
+    .header('Location', createdLink);
+  sendJson(res, {
+    data: formatTransaction(result, this.definition, this.version),
+    links: {
+      self: createdLink
+    }
+  });
 };
