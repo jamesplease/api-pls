@@ -22,7 +22,7 @@ describe('Resource DELETE failure', function() {
   });
 
   describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', (done) => {
+    it('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
         apiVersion: 2
@@ -33,20 +33,18 @@ describe('Resource DELETE failure', function() {
         detail: 'The requested resource does not exist.'
       }];
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .delete('/v2/pastas/1')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(404)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .delete('/v2/pastas/1')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(404)
+        .then();
     });
   });
 
   describe('attempting to DELETE an entire list of resources', () => {
-    it('should return a Method Not Allowed error response', (done) => {
+    it('should return a Method Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
@@ -57,15 +55,13 @@ describe('Resource DELETE failure', function() {
         detail: 'This method is not permitted on this resource.'
       }];
 
-      applyMigrations(options)
-        .then(() => {
-          request(app(options))
-            .delete('/v1/nopes')
-            .expect(validators.basicValidation)
-            .expect(validators.assertErrors(expectedErrors))
-            .expect(405)
-            .end(done);
-        });
+      await applyMigrations(options);
+      return request(app(options))
+        .delete('/v1/nopes')
+        .expect(validators.basicValidation)
+        .expect(validators.assertErrors(expectedErrors))
+        .expect(405)
+        .then();
     });
   });
 });
