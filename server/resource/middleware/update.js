@@ -7,7 +7,7 @@ const sendJson = require('../../util/send-json');
 const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
-module.exports = function(req, res) {
+module.exports = async function(req, res) {
   log.info({req}, 'An update request is being processed.');
   const selfLink = req.path;
   const id = req.params.id;
@@ -54,15 +54,23 @@ module.exports = function(req, res) {
 
   log.info({query, definition: this.definition, reqId: req.id}, 'Updating a resource');
 
-  this.db.one(query)
-    .then(result => {
-      log.info({query, definition: this.definition, reqId: req.id}, 'Updated a resource');
-      sendJson(res, {
-        data: formatTransaction(result, this.definition, this.version),
-        links: {
-          self: selfLink
-        }
-      });
-    })
-    .catch(err => handleQueryError({err, req, res, definition: this.definition, crudAction: 'update', query, selfLink}));
+  const result = await this.db.one(query).catch(r => r);
+
+  if (_.isError(result)) {
+    return handleQueryError({
+      err: result,
+      definition: this.definition,
+      crudAction: 'update',
+      req, res,
+      query, selfLink
+    });
+  }
+
+  log.info({query, definition: this.definition, reqId: req.id}, 'Updated a resource');
+  sendJson(res, {
+    data: formatTransaction(result, this.definition, this.version),
+    links: {
+      self: selfLink
+    }
+  });
 };
