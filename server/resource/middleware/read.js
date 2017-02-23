@@ -9,7 +9,7 @@ const sendJson = require('../../util/send-json');
 const handleQueryError = require('../../util/handle-query-error');
 const formatTransaction = require('../../util/format-transaction');
 
-module.exports = function(req, res) {
+module.exports = async function(req, res) {
   log.info({req}, 'A read request is being processed.');
   const selfLink = req.originalUrl;
   const id = req.params.id;
@@ -99,14 +99,18 @@ module.exports = function(req, res) {
 
   log.info({query, resourceName: this.definition.name, reqId: req.id}, 'Reading a resource');
 
-  this.db[method](query)
-    // This first section guarantees that we get an accurate total count when
-    // performing a read many. Our system for getting the total count with
-    // pagination only works when at least one result is returned. If no
-    // results are returned (which can happen if the user accesses a page
-    // beyond the last page), then we will not get a value. In those situations,
-    // we do one more read to get the total count before sending our response
-    // back.
+  const result = await this.db[method](query).catch(r => r);
+
+  if (_.isError(result)) {
+    const crudAction = isSingular ? 'readOne' : 'readMany';
+    return handleQueryError({
+      err: result,
+      definition: this.definition,
+      req, res, crudAction, query, selfLink,
+    });
+  }
+
+  Promise.resolve(result)
     .then(result => {
       // Singular results have no total count, so we don't do anything special.
       if (isSingular) {
