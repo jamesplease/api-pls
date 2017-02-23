@@ -17,8 +17,8 @@ describe('Resource GET (one) many-to-many (host)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(async () => {
+    await wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {

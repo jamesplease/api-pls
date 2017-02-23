@@ -18,8 +18,8 @@ describe('Resource PATCH success', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(async () => {
+    await wipeDatabase(db);
   });
 
   describe('when the request succeeds, and data is manipulated', () => {

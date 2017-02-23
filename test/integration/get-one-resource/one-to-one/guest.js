@@ -17,8 +17,8 @@ describe('Resource GET (one) one-to-one (guest)', function() {
 
   // Ensure that there's no lingering data between tests by wiping the
   // database before each test.
-  beforeEach(done => {
-    wipeDatabase(db).then(() => done());
+  beforeEach(async () => {
+    await wipeDatabase(db);
   });
 
   describe('when the request succeeds', () => {
