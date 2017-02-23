@@ -7,7 +7,6 @@ const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 
 const db = getDb();
-const fixturesDirectory = path.join(__dirname, '..', '..', 'fixtures');
 
 describe('The root endpoint', function() {
   // Ensure that the DB connection drops immediately after each test
@@ -24,7 +23,7 @@ describe('The root endpoint', function() {
   describe('Root route', () => {
     it('should forward you to the version, if a version is not specified', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 5
       };
 
@@ -38,7 +37,7 @@ describe('The root endpoint', function() {
 
     it('should return 406 if the invalid Accepts is specified', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 1
       };
 
@@ -59,7 +58,7 @@ describe('The root endpoint', function() {
 
     it('should return 415 if an invalid Content-Type header is specified', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 10
       };
 
@@ -80,7 +79,7 @@ describe('The root endpoint', function() {
 
     it('should return 200, with the proper response, when there are no resources', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'empty-resources'),
         apiVersion: 500
       };
 
@@ -110,7 +109,7 @@ describe('The root endpoint', function() {
 
     it('should return 200, with the proper response, when there is one resource', async () => {
       const options = {
-        resourcesDirectory: path.join(fixturesDirectory, 'one-resource'),
+        resourcesDirectory: path.join(global.fixturesDirectory, 'one-resource'),
         apiVersion: 2
       };
 
