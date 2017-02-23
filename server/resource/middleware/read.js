@@ -101,8 +101,8 @@ module.exports = async function(req, res) {
 
   const result = await this.db[method](query).catch(r => r);
 
+  const crudAction = isSingular ? 'readOne' : 'readMany';
   if (_.isError(result)) {
-    const crudAction = isSingular ? 'readOne' : 'readMany';
     return handleQueryError({
       err: result,
       definition: this.definition,
@@ -137,13 +137,18 @@ module.exports = async function(req, res) {
     });
 
     log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
-    val = await this.db.oneOrNone(readOneAttempt)
-      .then(result => {
-        log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
-        const totalCount = result ? result.total_count : 0;
-        return {result: [], totalCount};
-      })
-      .catch(r => r);
+    const followUpResult = await this.db.oneOrNone(readOneAttempt).catch(r => r);
+    if (_.isError(followUpResult)) {
+      return handleQueryError({
+        err: followUpResult,
+        definition: this.definition,
+        req, res, crudAction, query, selfLink,
+      });
+    }
+
+    log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
+    const totalCount = followUpResult ? followUpResult.total_count : 0;
+    val = {result: [], totalCount};
   }
 
   const newResult = val.result;
