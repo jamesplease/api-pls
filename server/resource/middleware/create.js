@@ -18,7 +18,7 @@ module.exports = async function(req, res) {
 
   const attrs = _.pick(rawAttrs, this.definition.attributeNames);
   const meta = _.pick(rawMeta, this.definition.metaNames);
-  const relations = _.pick(rawRelations, this.definition.relationshipNames);
+  const relations = _.pick(rawRelations, this.definition.relationshipsInOwnTable.map(r => r.name));
 
   // This maps the name that the user passes in to the ID that they pass in.
   // A chain().mapValue().mapKeys() could probably do this in a cleaner

@@ -9,7 +9,7 @@ const seed = require('../../../helpers/seed');
 
 const db = getDb();
 
-describe('Resource POST success, one-to-one (host)', function() {
+describe('Resource POST, one-to-one (host)', function() {
   // Ensure that the DB connection drops immediately after each test
   afterEach(() => {
     db.$config.pgp.end();
