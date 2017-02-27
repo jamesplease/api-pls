@@ -56,7 +56,10 @@ module.exports = async function(req, res) {
 
   log.info({query, definition: this.definition, reqId: req.id}, 'Creating a resource');
 
-  const result = await this.db.one(query).catch(r => r);
+  const result = await this.db.tx(t => {
+    const primaryTableQuery = t.one(query);
+    return t.batch([primaryTableQuery]);
+  }).catch(r => r);
 
   if (_.isError(result)) {
     return handleQueryError({
@@ -68,13 +71,14 @@ module.exports = async function(req, res) {
     });
   }
 
-  const createdLink = `${selfLinkBase}/${result.id}`;
+  const primaryTableResult = result[0];
+  const createdLink = `${selfLinkBase}/${primaryTableResult.id}`;
   log.info({reqId: req.id}, 'Resource created.');
   res
     .status(201)
     .header('Location', createdLink);
   sendJson(res, {
-    data: formatTransaction(result, this.definition, this.version),
+    data: formatTransaction(primaryTableResult, this.definition, this.version),
     links: {
       self: createdLink
     }

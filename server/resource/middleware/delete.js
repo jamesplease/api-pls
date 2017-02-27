@@ -15,7 +15,11 @@ module.exports = async function(req, res) {
 
   log.info({query, resourceName: this.definition.name, reqId: req.id}, 'Deleting a resource');
 
-  const result = await this.db.one(query).catch(r => r);
+  const result = await this.db.tx(t => {
+    const primaryTableQuery = t.one(query);
+    return t.batch([primaryTableQuery]);
+  }).catch(r => r);
+
   if (_.isError(result)) {
     return handleQueryError({
       err: result,
