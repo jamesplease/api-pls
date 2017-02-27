@@ -54,7 +54,10 @@ module.exports = async function(req, res) {
 
   log.info({query, definition: this.definition, reqId: req.id}, 'Updating a resource');
 
-  const result = await this.db.one(query).catch(r => r);
+  const result = await this.db.tx(t => {
+    const primaryTableQuery = t.one(query);
+    return t.batch([primaryTableQuery]);
+  }).catch(r => r);
 
   if (_.isError(result)) {
     return handleQueryError({
@@ -66,9 +69,10 @@ module.exports = async function(req, res) {
     });
   }
 
+  const primaryTableUpdate = result[0];
   log.info({query, definition: this.definition, reqId: req.id}, 'Updated a resource');
   sendJson(res, {
-    data: formatTransaction(result, this.definition, this.version),
+    data: formatTransaction(primaryTableUpdate, this.definition, this.version),
     links: {
       self: selfLink
     }
