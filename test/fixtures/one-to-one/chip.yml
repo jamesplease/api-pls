@@ -5,6 +5,7 @@ relationships:
     resource: 'dog'
     cardinality: 'one-to-one'
     host: false
+    host_relationship_name: 'device'
 
 attributes:
   type: 'VARCHAR(30)'

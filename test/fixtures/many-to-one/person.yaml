@@ -6,6 +6,7 @@ relationships:
     resource: 'cat'
     cardinality: 'one-to-many'
     host: false
+    host_relationship_name: 'owner'
 
 attributes:
   first_name: 'VARCHAR(30)'

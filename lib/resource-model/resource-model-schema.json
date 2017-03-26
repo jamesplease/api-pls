@@ -132,7 +132,29 @@
                   "enum": ["many-to-one", "one-to-many", "one-to-one", "many-to-many"]
                 },
                 "host": {
-                  "type": "boolean"
+                  "type": "boolean",
+                  "constant": true
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["host", "hostRelationshipName"],
+              "properties": {
+                "resource": {
+                  "type": "string"
+                },
+                "cardinality": {
+                  "type": "string",
+                  "enum": ["many-to-one", "one-to-many", "one-to-one", "many-to-many"]
+                },
+                "host_relationship_name": {
+                  "type": "string"
+                },
+                "host": {
+                  "type": "boolean",
+                  "constant": false
                 }
               }
             }
