@@ -113,7 +113,14 @@ pls start -p 6000 -s false -r ./my-resources
 
 #### Programmatic API
 
-The module exports a constructor, `ApiPls`.
+There are two general approaches to using `ApiPls` programmatically. The first
+involves using the constructor, `ApiPls`, which can be used to interact with
+your database and start a server for you.
+
+If you'd like more fine-grained control, you can use the `ApiPls.ApiRouter`
+function to create a Router that you can mount on your own server. This provides
+you with more options, such as configuring custom auth and using the Extended
+Resource Model definition.
 
 ##### `ApiPls( options )`
 
@@ -147,11 +154,27 @@ this to make sure that the database is up-to-date.
 Removes all tables, and therefore, all of the data, from the database. This can
 be useful for testing. Be careful out there.
 
+##### `apiPls.apiRouter()`
+
+Returns an Express router that can be mounted to any Express server to host an
+api-pls API.
+
+##### `apiPls.db`
+
+An instance of the Database object from
+[pg-promise](https://github.com/vitaly-t/pg-promise).
+
 #### Static Methods
 
 These are methods that are attached to the `ApiPls` constructor. If you're
 writing libraries, plugins, or extensions to api-pls, then you might find these
 useful. Otherwise, you may never use them.
+
+##### `ApiPls.ApiRouter( options )`
+
+A function that returns a Router that can be mounted on any Express app. This
+allows you to pass in additional options to configure the hosted API. It
+also allows you to pass in features from the Extended Resource Model.
 
 ##### `ApiPls.loadResourceModels( resourcesDirectory )`
 

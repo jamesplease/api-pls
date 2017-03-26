@@ -7,15 +7,15 @@ const addRequestId = require('express-request-id');
 const contentType = require('content-type');
 const compress = require('compression');
 const bodyParser = require('body-parser');
+const api = require('./api');
 const log = require('./util/log');
 const jsonApiMediaType = require('./util/json-api-media-type');
+const loadResourceModels = require('../lib/resource-model/load-from-disk');
 
-const api = require('./api');
-
-// Heroku sets NODE_ENV to production by default. So if we're not
-// on Heroku, we assume that we're developing locally.
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+// This is an Express app that mounts your API endpoints. It's useful to use if
+// you don't need to customize the behavior of api-pls programmatically.
 module.exports = function(options) {
   const app = express();
 
@@ -56,8 +56,18 @@ module.exports = function(options) {
     setHeader: false
   }));
 
+  log.info({
+    resourcesDirectory: options.resourcesDirectory
+  }, 'Loading resources from the resources directory.');
+
+  var resourceModels = loadResourceModels(options.resourcesDirectory);
+
+  log.info({
+    resourcesDirectory: options.resourcesDirectory
+  }, 'Successfully loaded resources from the resources directory.');
+
   // Register the API
-  app.use(api(options));
+  app.use(api(Object.assign({}, options, {resourceModels})));
 
   const port = options.port;
   app.set('port', port);
