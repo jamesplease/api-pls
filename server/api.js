@@ -5,11 +5,10 @@ const express = require('express');
 const routeBuilder = require('express-routebuilder');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
-const loadResourceModels = require('../lib/resource-model/load-from-disk');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
-const generateDefinitions = require('../lib/resource-definition/generate-from-raw');
 const createDb = require('../lib/database');
+const generateDefinitions = require('../lib/resource-definition/generate-from-raw');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 const log = require('./util/log');
 
@@ -20,16 +19,7 @@ module.exports = function(options) {
   const db = createDb(options);
   const apiVersion = options.apiVersion;
 
-  log.info({
-    resourcesDirectory: options.resourcesDirectory
-  }, 'Loading resources from the resources directory.');
-  var resourceModels = loadResourceModels(options.resourcesDirectory);
-  const definitions = generateDefinitions(resourceModels);
-
-  log.info({
-    resourcesDirectory: options.resourcesDirectory
-  }, 'Successfully loaded resources from the resources directory.');
-
+  const definitions = generateDefinitions(options.resourceModels);
   adjustResourceQuantity.setResources(definitions);
 
   var resources = definitions.map(definition => new Resource({

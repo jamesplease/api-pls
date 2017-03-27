@@ -9,6 +9,7 @@ const buildJsonSchema = require('./lib/resource-definition/build-json-schema');
 const loadResourceModels = require('./lib/resource-model/load-from-disk');
 const validateResourceModel = require('./lib/resource-model/validate');
 const wipeDatabase = require('./lib/database/wipe');
+const ApiRouter = require('./server/api');
 
 // Options are all of the valid options for api-pls. Refer to the documentation
 // for the full list.
@@ -34,6 +35,12 @@ function ApiPls(options) {
 
   this.db = database(this.options);
 }
+
+ApiPls.prototype.apiRouter = function() {
+  return ApiRouter(Object.assign({}, this.options, {
+    resourceModels: loadResourceModels(this.options.resourcesDirectory)
+  }));
+};
 
 // Start the server with the passed-in options.
 ApiPls.prototype.start = function() {

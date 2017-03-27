@@ -147,6 +147,16 @@ this to make sure that the database is up-to-date.
 Removes all tables, and therefore, all of the data, from the database. This can
 be useful for testing. Be careful out there.
 
+##### `apiPls.apiRouter()`
+
+Returns an Express router that can be mounted to any Express server to host an
+api-pls API.
+
+##### `apiPls.db`
+
+An instance of the Database object from
+[pg-promise](https://github.com/vitaly-t/pg-promise).
+
 #### Static Methods
 
 These are methods that are attached to the `ApiPls` constructor. If you're
