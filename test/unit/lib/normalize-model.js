@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const normalizeModel = require('../../../lib/resource-model/normalize');
+const nonSerializableFields = require('../../../lib/resource-model/non-serializable-fields');
 
 // These are the defaults.
 const baseModel = {
@@ -39,7 +40,7 @@ describe('normalizeModel', function() {
       name: 'cat',
       plural_form: 'cats'
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with a name and a plural_form', () => {
@@ -48,7 +49,7 @@ describe('normalizeModel', function() {
       name: 'person',
       plural_form: 'people'
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with custom built_in_meta', () => {
@@ -64,7 +65,7 @@ describe('normalizeModel', function() {
       plural_form: 'cats',
       built_in_meta: {}
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with custom pagination, as an object', () => {
@@ -81,7 +82,7 @@ describe('normalizeModel', function() {
         default_page_number: 5
       }
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with custom pagination, as a boolean', () => {
@@ -96,7 +97,7 @@ describe('normalizeModel', function() {
         enabled: false
       }
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with custom actions', () => {
@@ -113,7 +114,7 @@ describe('normalizeModel', function() {
         read_many: false
       }
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with custom meta', () => {
@@ -144,7 +145,7 @@ describe('normalizeModel', function() {
         }
       }
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with custom attributes', () => {
@@ -183,7 +184,7 @@ describe('normalizeModel', function() {
         }
       }
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 
   it('should normalize a model with relations', () => {
@@ -217,6 +218,6 @@ describe('normalizeModel', function() {
         }
       }
     });
-    assert.deepEqual(normalizeModel(input), expected);
+    assert.deepEqual(_.omit(normalizeModel(input), nonSerializableFields), expected);
   });
 });
