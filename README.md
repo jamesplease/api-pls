@@ -170,12 +170,6 @@ These are methods that are attached to the `ApiPls` constructor. If you're
 writing libraries, plugins, or extensions to api-pls, then you might find these
 useful. Otherwise, you may never use them.
 
-##### `ApiPls.ApiRouter( options )`
-
-A function that returns a Router that can be mounted on any Express app. This
-allows you to pass in additional options to configure the hosted API. It
-also allows you to pass in features from the Extended Resource Model.
-
 ##### `ApiPls.loadResourceModels( resourcesDirectory )`
 
 Loads all of the resource models from `resourcesDirectory`, which is a string
