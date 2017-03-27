@@ -1,31 +1,6 @@
 'use strict';
 
 module.exports = {
-  // Returned anytime a request is made against a nonexistent resource.
-  // For instance, if the user typos the URL, or if the resource has been
-  // deleted.
-  notFound: {
-    code: 404,
-    body() {
-      return {
-        title: 'Resource Not Found',
-        detail: 'The requested resource does not exist.'
-      };
-    }
-  },
-
-  // Returned if the resource does not permit this operation. For instance,
-  // trying to DELETE a resource that is read-only.
-  notAllowed: {
-    code: 405,
-    body() {
-      return {
-        title: 'Method Not Allowed',
-        detail: 'This method is not permitted on this resource.'
-      };
-    }
-  },
-
   outOfBoundsPagination: {
     code: 400,
     body(paramName) {
@@ -51,14 +26,27 @@ module.exports = {
     }
   },
 
-  // Returned when the client specifies an invalid Content-Type header. For
-  // more, see: http://jsonapi.org/format/#content-negotiation-servers
-  contentTypeHasParams: {
-    code: 415,
+  // Returned anytime a request is made against a nonexistent resource.
+  // For instance, if the user typos the URL, or if the resource has been
+  // deleted.
+  notFound: {
+    code: 404,
     body() {
       return {
-        title: 'Invalid Content-Type Header',
-        detail: 'The header "Content-Type: application/vnd.api+json" cannot have media type parameters.'
+        title: 'Resource Not Found',
+        detail: 'The requested resource does not exist.'
+      };
+    }
+  },
+
+  // Returned if the resource does not permit this operation. For instance,
+  // trying to DELETE a resource that is read-only.
+  notAllowed: {
+    code: 405,
+    body() {
+      return {
+        title: 'Method Not Allowed',
+        detail: 'This method is not permitted on this resource.'
       };
     }
   },
@@ -71,6 +59,18 @@ module.exports = {
       return {
         title: 'Invalid Accepts Header',
         detail: 'No instances of the JSON API media type in the Accepts header were specified without media type parameters.'
+      };
+    }
+  },
+
+  // Returned when the client specifies an invalid Content-Type header. For
+  // more, see: http://jsonapi.org/format/#content-negotiation-servers
+  contentTypeHasParams: {
+    code: 415,
+    body() {
+      return {
+        title: 'Invalid Content-Type Header',
+        detail: 'The header "Content-Type: application/vnd.api+json" cannot have media type parameters.'
       };
     }
   },
