@@ -26,6 +26,16 @@ module.exports = {
     }
   },
 
+  unauthorized: {
+    code: 401,
+    body() {
+      return {
+        title: 'Unauthorized',
+        detail: 'You are not authorized to perform this action.'
+      };
+    }
+  },
+
   // Returned anytime a request is made against a nonexistent resource.
   // For instance, if the user typos the URL, or if the resource has been
   // deleted.
