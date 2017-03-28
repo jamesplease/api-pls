@@ -93,7 +93,8 @@ module.exports = async function(req, res) {
     pageSize,
     pageNumber,
     enablePagination,
-    id
+    id,
+    req
   });
   const method = isSingular ? 'one' : 'any';
 
@@ -133,7 +134,8 @@ module.exports = async function(req, res) {
       db: this.db,
       pageSize: 1,
       pageNumber: 1,
-      enablePagination
+      enablePagination,
+      req
     });
 
     log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
