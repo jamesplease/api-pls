@@ -1,3 +1,4 @@
 [
-  "is_authorized"
+  "is_authorized",
+  "additional_condition"
 ]

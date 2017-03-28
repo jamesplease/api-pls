@@ -1,17 +1,20 @@
 module.exports = {
-  name: 'cat',
+  name: 'transaction',
   attributes: {
-    first_name: {
+    label: {
       type: 'VARCHAR(30)',
       nullable: false
     },
-    last_name: 'VARCHAR(30)',
+    user_id: {
+      type: 'VARCHAR(30)',
+      nullable: false
+    }
   },
   built_in_meta: {
     created_at: false,
     updated_at: false
   },
-  is_authorized({crudAction}) {
-    return crudAction !== 'readOne';
+  additional_condition() {
+    return "user_id='2'";
   }
 };
