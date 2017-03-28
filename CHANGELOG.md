@@ -1,3 +1,18 @@
+## 0.14.0 (3/28/2017)
+
+**New features**:
+
+- Better relationship support:
+  - Resource Models can now define guest relationships
+  - Read one and read many supported for all relationship types (guest and host)
+- An Express router is now exported to allow you to mount an api-pls API onto
+  an existing Express app
+- Resource Models can now be defined as `.js` files
+- Add `is_authorized` hook to Resource Models to support custom resource-level
+  or CRUD-action level authorization
+- Add basic support for `additional_condition`, which will facilitate
+  the concept of "ownership."
+
 ## 0.13.0 (2/18/2017)
 
 **Breaking**:
