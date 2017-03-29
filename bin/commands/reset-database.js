@@ -33,15 +33,22 @@ function performWipe(options) {
 }
 
 module.exports = function(options) {
-  inquirer.prompt([{
-    type: 'confirm',
-    name: 'confirmation',
-    message: 'Are you sure? This will completely wipe your database. It cannot be undone.',
-    default: false
-  }])
-    .then((answers) => {
-      if (answers.confirmation) {
-        performWipe(options);
-      }
-    });
+  let confirmation;
+
+  if (options.force) {
+    confirmation = Promise.resolve({confirmation: true});
+  } else {
+    confirmation = inquirer.prompt([{
+      type: 'confirm',
+      name: 'confirmation',
+      message: 'Are you sure? This will completely wipe your database. It cannot be undone.',
+      default: false
+    }]);
+  }
+
+  confirmation.then((answers) => {
+    if (answers.confirmation) {
+      performWipe(options);
+    }
+  });
 };
