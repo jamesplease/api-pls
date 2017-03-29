@@ -1,3 +1,9 @@
+## 0.15.0 (3/28/2017)
+
+**New features**:
+
+- Add `-f, --force` flag to CLI commands
+
 ## 0.14.0 (3/28/2017)
 
 **New features**:

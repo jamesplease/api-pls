@@ -87,6 +87,7 @@ program
   .option('-r, --resources <path>', 'the directory where your resource models exist')
   .option('-s, --ssl <boolean>', 'whether or not to connect to the DB with SSL', parseBoolean)
   .option('-a --api-version <n>', 'set the API version', parseInt)
+  .option('-f --force', 'proceed with the command without confirmation')
   .option('--silent', 'disable logging')
   .option('--verbose', 'enable verbose logging');
 

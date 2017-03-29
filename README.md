@@ -99,6 +99,7 @@ call this command from.
 | -r, --resources  | ./resources | Set the directory of your resources         |
 | -s, --ssl        | true        | Whether or not to connect to the DB with SSL|
 | -a, --api-version| 1           | The API version. It appears in the API URLs |
+| -f, --force      | N/A         | Proceed with the action without confirmation|
 | --silent         | N/A         | Disable logging                             |
 | --verbose        | N/A         | Enable verbose logging                      |
 
