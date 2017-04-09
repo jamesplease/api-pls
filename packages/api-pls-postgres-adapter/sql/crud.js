@@ -4,7 +4,7 @@ const _ = require('lodash');
 const sqlUtil = require('./sql-util');
 const manyToManyUtil = require('./many-to-many-util');
 const withStatement = require('./with-statement');
-const relationshipUtil = require('../relationship-util');
+const relationshipUtil = require('../../api-pls-utils/relationship-util');
 
 // The functions in this file return CRUD queries to be passed into pg-promise.
 

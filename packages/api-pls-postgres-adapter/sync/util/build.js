@@ -4,11 +4,11 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const VError = require('verror');
-const loadResourceModels = require('../../resource-model/load-from-disk');
-const generateDefinitions = require('../../resource-definition/generate-from-raw');
-const validateResourceModel = require('../../resource-model/validate');
 const depGraph = require('./resource-dependency-graph');
 const buildSingleMigration = require('../../sql/build-single-migration');
+const loadResourceModels = require('../../../api-pls-utils/resource-model/load-from-disk');
+const generateDefinitions = require('../../../api-pls-utils/resource-definition/generate-from-raw');
+const validateResourceModel = require('../../../api-pls-utils/resource-model/validate');
 
 // Returns an array of migrations to apply. Throws an Error if a migration
 // cannot be created.

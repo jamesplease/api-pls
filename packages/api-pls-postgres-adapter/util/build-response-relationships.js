@@ -1,9 +1,9 @@
 'use strict';
 
 const _ = require('lodash');
-const sqlUtil = require('../../../lib/sql/sql-util');
-const manyToManyUtil = require('../../../lib/sql/many-to-many-util');
-const relationshipUtil = require('../../../lib/relationship-util');
+const sqlUtil = require('../sql/sql-util');
+const manyToManyUtil = require('../sql/many-to-many-util');
+const relationshipUtil = require('../../api-pls-utils/relationship-util');
 
 function formatToOneResult({result, definition, value, version, columnBase, relation, adjustResourceQuantity}) {
   const id = value ? String(value) : null;

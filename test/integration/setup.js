@@ -1,5 +1,5 @@
 const path = require('path');
-const configureDb = require('../../lib/database');
+const configureDb = require('../../packages/api-pls-postgres-adapter/database');
 
 global.fixturesDirectory = path.join(__dirname, '..', 'fixtures');
 

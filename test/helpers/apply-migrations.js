@@ -1,7 +1,7 @@
 'use strict';
 
-const getDb = require('../../lib/database');
-const sync = require('../../lib/sync');
+const getDb = require('../../packages/api-pls-postgres-adapter/database');
+const sync = require('../../packages/api-pls-postgres-adapter/sync');
 
 const db = getDb();
 

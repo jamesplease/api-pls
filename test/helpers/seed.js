@@ -1,6 +1,6 @@
 'use strict';
 
-const getDb = require('../../lib/database');
+const getDb = require('../../packages/api-pls-postgres-adapter/database');
 const db = getDb();
 
 const insert = db.$config.pgp.helpers.insert;

@@ -1,9 +1,9 @@
 'use strict';
 
 const _ = require('lodash');
+const crud = require('../sql/crud');
 const handleQueryError = require('../util/handle-query-error');
 const formatTransaction = require('../util/format-transaction');
-const crud = require('../../../lib/sql/crud');
 
 module.exports = async function(req) {
   const pls = req.pls;

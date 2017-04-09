@@ -1,15 +1,15 @@
 'use strict';
 
 const _ = require('lodash');
-const database = require('./lib/database');
 const startServer = require('./lib/start-server');
 const sync = require('./lib/sync');
 const normalizeModel = require('./lib/resource-model/normalize');
 const buildJsonSchema = require('./lib/resource-definition/build-json-schema');
 const loadResourceModels = require('./lib/resource-model/load-from-disk');
 const validateResourceModel = require('./lib/resource-model/validate');
-const wipeDatabase = require('./lib/database/wipe');
 const ApiRouter = require('./packages/api-pls-express-router');
+const database = require('./packages/api-pls-postgres-adapter/database');
+const wipeDatabase = require('./packages/api-pls-postgres-adapter/database/wipe');
 
 // Options are all of the valid options for api-pls. Refer to the documentation
 // for the full list.

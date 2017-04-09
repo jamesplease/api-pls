@@ -4,7 +4,7 @@ const create = require('./middleware/create');
 const read = require('./middleware/read');
 const update = require('./middleware/update');
 const del = require('./middleware/delete');
-const createDb = require('../../lib/database');
+const createDb = require('./database');
 
 function Adapter(options) {
   const db = createDb(options);

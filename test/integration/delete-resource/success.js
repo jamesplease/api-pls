@@ -1,9 +1,9 @@
 const path = require('path');
 const request = require('supertest');
 const app = require('../../../packages/api-pls-express-server/app');
-const getDb = require('../../../lib/database');
+const getDb = require('../../../packages/api-pls-postgres-adapter/database');
 const seed = require('../../helpers/seed');
-const wipeDatabase = require('../../../lib/database/wipe');
+const wipeDatabase = require('../../../packages/api-pls-postgres-adapter/database/wipe');
 const validators = require('../../helpers/json-api-validators');
 const applyMigrations = require('../../helpers/apply-migrations');
 

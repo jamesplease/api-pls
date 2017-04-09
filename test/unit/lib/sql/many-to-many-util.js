@@ -1,4 +1,4 @@
-const manyToManyUtil = require('../../../../lib/sql/many-to-many-util');
+const manyToManyUtil = require('../../../../packages/api-pls-postgres-adapter/sql/many-to-many-util');
 
 describe('manyToManyUtil', function() {
   beforeEach(() => {

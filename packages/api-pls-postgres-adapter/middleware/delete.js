@@ -1,7 +1,7 @@
 'use strict';
 
 const handleQueryError = require('../util/handle-query-error');
-const crud = require('../../../lib/sql/crud');
+const crud = require('../sql/crud');
 
 module.exports = async function(req) {
   const pls = req.pls;

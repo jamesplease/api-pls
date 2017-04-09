@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const normalizeModel = require('../../../lib/resource-model/normalize');
-const nonSerializableFields = require('../../../lib/resource-model/non-serializable-fields');
+const normalizeModel = require('../../../packages/api-pls-utils/resource-model/normalize');
+const nonSerializableFields = require('../../../packages/api-pls-utils/resource-model/non-serializable-fields');
 
 // These are the defaults.
 const baseModel = {

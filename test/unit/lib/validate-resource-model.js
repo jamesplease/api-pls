@@ -1,4 +1,4 @@
-const validate = require('../../../lib/resource-model/validate');
+const validate = require('../../../packages/api-pls-utils/resource-model/validate');
 
 describe('validateResourceModel', function() {
   it('should return false for empty models', () => {

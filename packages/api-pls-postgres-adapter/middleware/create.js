@@ -3,8 +3,8 @@
 const _ = require('lodash');
 const handleQueryError = require('../util/handle-query-error');
 const formatTransaction = require('../util/format-transaction');
-const crud = require('../../../lib/sql/crud');
-const serverErrors = require('../../../lib/server-errors');
+const crud = require('../sql/crud');
+const serverErrors = require('../../api-pls-utils/server-errors');
 
 module.exports = async function(req) {
   const pls = req.pls;
