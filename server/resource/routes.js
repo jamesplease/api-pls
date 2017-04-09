@@ -15,7 +15,7 @@ module.exports = function({version, definition, controller, adapter}) {
     configureRequest,
     checkAuthorization({definition, crudAction: 'create'}),
     validator(validations.create),
-    controller.create
+    crud('create')
   ];
   const getManyMiddleware = !actions.read_many ? notAllowed : [
     configureRequest,

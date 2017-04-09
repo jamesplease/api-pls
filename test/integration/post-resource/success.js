@@ -22,7 +22,7 @@ describe('Resource POST success', function() {
   });
 
   describe('when the request is valid', () => {
-    it('should return a 200 OK, with the created resource', async () => {
+    it.only('should return a 200 OK, with the created resource', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 2
@@ -66,7 +66,7 @@ describe('Resource POST success', function() {
   });
 
   describe('when the request is valid, but has extraneous fields', () => {
-    it('should return a 200 OK, with the created resource', async () => {
+    it.only('should return a 200 OK, with the created resource', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 50
@@ -111,7 +111,7 @@ describe('Resource POST success', function() {
   });
 
   describe('when non-nullable meta is included, and the request succeeds', () => {
-    it('should return a 201 Created response', async () => {
+    it.only('should return a 201 Created response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5

@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const create = require('./middleware/create');
 const read = require('./middleware/read');
 const update = require('./middleware/update');
 
@@ -11,9 +10,9 @@ function Controller({definition, version, db}) {
   this.definition = definition;
   this.db = db;
   this.version = version;
-  _.bindAll(this, ['create', 'read', 'update']);
+  _.bindAll(this, ['read', 'update']);
 }
 
-Object.assign(Controller.prototype, {create, read, update});
+Object.assign(Controller.prototype, {read, update});
 
 module.exports = Controller;
