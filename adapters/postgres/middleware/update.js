@@ -73,7 +73,7 @@ module.exports = async function(req) {
 
   return {
     body: {
-      data: formatTransaction(primaryTableUpdate, pls.definition, pls.version),
+      data: formatTransaction(primaryTableUpdate, pls.definition, pls.version, pls.adjustResourceQuantity),
       links: {
         self: selfLink
       }

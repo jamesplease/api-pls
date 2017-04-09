@@ -23,7 +23,7 @@ describe('Resource PATCH success', function() {
   });
 
   describe('when the request succeeds, and data is manipulated', () => {
-    it.only('should return a 200 response', async () => {
+    it('should return a 200 response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -70,7 +70,7 @@ describe('Resource PATCH success', function() {
   });
 
   describe('when the request succeeds, and meta is manipulated', () => {
-    it.only('should return a 200 response', async () => {
+    it('should return a 200 response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -119,7 +119,7 @@ describe('Resource PATCH success', function() {
   });
 
   describe('when the request succeeds, but nothing is manipulated', () => {
-    it.only('should return a 200 response', async () => {
+    it('should return a 200 response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 33
@@ -165,7 +165,7 @@ describe('Resource PATCH success', function() {
   });
 
   describe('when the request leaves out non-nullable data in a patch', () => {
-    it.only('should return a 200 response', async () => {
+    it('should return a 200 response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1

@@ -22,7 +22,7 @@ describe('Resource DELETE failure', function() {
   });
 
   describe('when the resource does not exist', () => {
-    it.only('should return a Not Found error response', async () => {
+    it('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
         apiVersion: 2
@@ -44,7 +44,7 @@ describe('Resource DELETE failure', function() {
   });
 
   describe('attempting to DELETE an entire list of resources', () => {
-    it.only('should return a Method Not Allowed error response', async () => {
+    it('should return a Method Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1

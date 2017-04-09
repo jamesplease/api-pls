@@ -22,7 +22,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when the resource does not exist', () => {
-    it.only('should return a Not Found error response', async () => {
+    it('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
         apiVersion: 2
@@ -49,7 +49,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('attempting to POST a single resource', () => {
-    it.only('should return a Method Not Allowed error response', async () => {
+    it('should return a Method Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 3
@@ -76,7 +76,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when the resource does not permit POST', () => {
-    it.only('should return a Not Allowed error response', async () => {
+    it('should return a Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 4
@@ -103,7 +103,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when the request does not have a "data" property', () => {
-    it.only('should return a Bad Request error response', async () => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
@@ -137,7 +137,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when non-nullable attributes are not included', () => {
-    it.only('should return a Bad Request error response', async () => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -172,7 +172,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when resource has non-nullable meta, and meta is omitted', () => {
-    it.only('should return a Bad Request error response', async () => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -208,7 +208,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when non-nullable meta is not included in request', () => {
-    it.only('should return a Bad Request error response', async () => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5
@@ -245,7 +245,7 @@ describe('Resource POST failure', function() {
   });
 
   describe('when non-nullable data and meta is not included', () => {
-    it.only('should return a Bad Request error response', async () => {
+    it('should return a Bad Request error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 5

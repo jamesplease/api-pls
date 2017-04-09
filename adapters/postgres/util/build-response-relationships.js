@@ -5,7 +5,7 @@ const sqlUtil = require('../../../lib/sql/sql-util');
 const manyToManyUtil = require('../../../lib/sql/many-to-many-util');
 const relationshipUtil = require('../../../lib/relationship-util');
 
-function formatToOneResult({result, definition, value, version, columnBase, relation}) {
+function formatToOneResult({result, definition, value, version, columnBase, relation, adjustResourceQuantity}) {
   const id = value ? String(value) : null;
   const relatedObject = {
     links: {
@@ -26,7 +26,7 @@ function formatToOneResult({result, definition, value, version, columnBase, rela
   return relatedObject;
 }
 
-function formatToManyResult({result, definition, value, version, columnBase, relation}) {
+function formatToManyResult({result, definition, value, version, columnBase, relation, adjustResourceQuantity}) {
   // Ensure that all of the IDs are strings.
   const ids = _.map(value, id => String(id));
 
@@ -49,27 +49,27 @@ function formatToManyResult({result, definition, value, version, columnBase, rel
   return relatedObject;
 }
 
-function findOwnRelationships(result, definition, version) {
+function findOwnRelationships(result, definition, version, adjustResourceQuantity) {
   return _.reduce(definition.relationshipsInOwnTable, (memo, relation) => {
     const columnBase = relation.name;
     const columnName = sqlUtil.getRelationshipColumnName(relation);
     const value = result[columnName];
     // Relationships in this table can necessarily only be a single value, as
     // that means it is stored as a foreign key.
-    const relatedObject = formatToOneResult({result, definition, version, value, columnBase, relation});
+    const relatedObject = formatToOneResult({result, definition, version, value, columnBase, relation, adjustResourceQuantity});
     memo[columnBase] = relatedObject;
     return memo;
   }, {});
 }
 
-function findHostedRelationships(result, definition, version) {
+function findHostedRelationships(result, definition, version, adjustResourceQuantity) {
   return _.reduce(definition.relationshipsInHostTable, (memo, relation) => {
     const columnBase = relation.name;
     const columnName = sqlUtil.getRelationshipColumnName(relation);
     const value = result[columnName];
 
     const isToMany = relationshipUtil.isToMany(relation);
-    const args = {result, definition, version, value, columnBase, relation};
+    const args = {result, definition, version, value, columnBase, relation, adjustResourceQuantity};
     const relatedObject = isToMany ? formatToManyResult(args) : formatToOneResult(args);
 
     memo[columnBase] = relatedObject;
@@ -77,7 +77,7 @@ function findHostedRelationships(result, definition, version) {
   }, {});
 }
 
-function findAssociatedRelationships(result, definition, version) {
+function findAssociatedRelationships(result, definition, version, adjustResourceQuantity) {
   return _.reduce(definition.relationshipsInAssociativeTable, (memo, relation) => {
     const otherResource = relation.relatedDefinition;
     const columnBase = adjustResourceQuantity.getPluralName(relation.resource);
@@ -90,7 +90,7 @@ function findAssociatedRelationships(result, definition, version) {
     const value = result[columnName];
 
     const isToMany = relationshipUtil.isToMany(relation);
-    const args = {result, definition, version, value, columnBase, relation};
+    const args = {result, definition, version, value, columnBase, relation, adjustResourceQuantity};
     const relatedObject = isToMany ? formatToManyResult(args) : formatToOneResult(args);
 
     memo[columnBase] = relatedObject;
@@ -98,10 +98,10 @@ function findAssociatedRelationships(result, definition, version) {
   }, {});
 }
 
-module.exports = function(result, definition, version) {
-  const hostedRelationships = findOwnRelationships(result, definition, version);
-  const otherHostedRelationships = findHostedRelationships(result, definition, version);
-  const associatedRelationships = findAssociatedRelationships(result, definition, version);
+module.exports = function(result, definition, version, adjustResourceQuantity) {
+  const hostedRelationships = findOwnRelationships(result, definition, version, adjustResourceQuantity);
+  const otherHostedRelationships = findHostedRelationships(result, definition, version, adjustResourceQuantity);
+  const associatedRelationships = findAssociatedRelationships(result, definition, version, adjustResourceQuantity);
 
   return Object.assign(hostedRelationships, otherHostedRelationships, associatedRelationships);
 };

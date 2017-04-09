@@ -6,7 +6,7 @@ const checkAuthorization = require('./middleware/check-authorization');
 const generateConfigRequest = require('./middleware/configure-request');
 const crud = require('./middleware/crud');
 
-module.exports = function({version, definition, controller, adapter}) {
+module.exports = function({version, definition, adapter}) {
   const {validations, plural_form, actions} = definition;
 
   const configureRequest = generateConfigRequest({definition, version, adapter});
@@ -21,13 +21,13 @@ module.exports = function({version, definition, controller, adapter}) {
     configureRequest,
     checkAuthorization({definition, crudAction: 'readMany'}),
     validator(validations.readMany),
-    controller.read
+    crud('read')
   ];
   const getOneMiddleware = !actions.read_one ? notAllowed : [
     configureRequest,
     checkAuthorization({definition, crudAction: 'readOne'}),
     validator(validations.readOne),
-    controller.read
+    crud('read')
   ];
   const patchMiddleware = !actions.update ? notAllowed : [
     configureRequest,
