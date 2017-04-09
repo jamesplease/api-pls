@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint max-len: "off" */
+
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
@@ -42,11 +44,10 @@ module.exports = function(options) {
       return;
     }
 
-    // TODO: handle errors here.
     let migrationStrings;
     try {
       migrationStrings = sync.build(resourcesDir);
-    } catch(e) {
+    } catch (e) {
       if (e.name === 'YAMLParseError') {
         const info = VError.info(e);
         log.error(`Building the migrations failed: Could not parse "${info.filename}" as YAML.`);
@@ -54,7 +55,6 @@ module.exports = function(options) {
         const info = VError.info(e);
         log.error(`Building the migrations failed: Could not parse "${info.filename}" as JSON.`);
       } else if (e.name === 'DependencyGraphError') {
-        const cause = VError.cause(e);
         if (_.startsWith(e.message, ': Dependency Cycle Found:')) {
           const rest = _.replace(e.message, ': Dependency Cycle Found: ', '');
           log.error(`Building the migrations failed, because a circular dependency was found: ${rest}.`);
