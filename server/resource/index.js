@@ -1,6 +1,6 @@
 'use strict';
 
-const validator = require('../util/validator');
+const validator = require('./middleware/validator');
 const notAllowed = require('./middleware/not-allowed');
 const checkAuthorization = require('./middleware/check-authorization');
 const generateConfigRequest = require('./middleware/configure-request');

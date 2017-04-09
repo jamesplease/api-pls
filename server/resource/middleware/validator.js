@@ -1,9 +1,9 @@
 'use strict';
 
 const Ajv = require('ajv');
-const requestErrorMap = require('./bad-request-map');
-const sendJson = require('./send-json');
-const log = require('./log');
+const requestErrorMap = require('../../util/bad-request-map');
+const sendJson = require('../../util/send-json');
+const log = require('../../util/log');
 
 const ajv = new Ajv({allErrors: true, v5: true});
 
