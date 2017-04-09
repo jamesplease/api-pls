@@ -3,34 +3,43 @@
 const validator = require('../util/validator');
 const notAllowed = require('./middleware/not-allowed');
 const checkAuthorization = require('./middleware/check-authorization');
+const generateConfigRequest = require('./middleware/configure-request');
+const crud = require('./middleware/crud');
 
-module.exports = function({version, definition, controller}) {
+module.exports = function({version, definition, controller, adapter}) {
   const {validations, plural_form, actions} = definition;
 
+  const configureRequest = generateConfigRequest({definition, version, adapter});
+
   const postMiddleware = !actions.create ? notAllowed : [
+    configureRequest,
     checkAuthorization({definition, crudAction: 'create'}),
     validator(validations.create),
     controller.create
   ];
   const getManyMiddleware = !actions.read_many ? notAllowed : [
+    configureRequest,
     checkAuthorization({definition, crudAction: 'readMany'}),
     validator(validations.readMany),
     controller.read
   ];
   const getOneMiddleware = !actions.read_one ? notAllowed : [
+    configureRequest,
     checkAuthorization({definition, crudAction: 'readOne'}),
     validator(validations.readOne),
     controller.read
   ];
   const patchMiddleware = !actions.update ? notAllowed : [
+    configureRequest,
     checkAuthorization({definition, crudAction: 'update'}),
     validator(validations.update),
     controller.update
   ];
   const deleteMiddleware = !actions.delete ? notAllowed : [
+    configureRequest,
     checkAuthorization({definition, crudAction: 'delete'}),
     validator(validations.delete),
-    controller.del
+    crud('del')
   ];
 
   return {

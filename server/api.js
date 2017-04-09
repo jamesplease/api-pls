@@ -7,7 +7,6 @@ const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
-const createDb = require('../lib/database');
 const generateDefinitions = require('../lib/resource-definition/generate-from-raw');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 const log = require('./util/log');
@@ -16,8 +15,8 @@ module.exports = function(options) {
   const router = express.Router();
   router.use(jsonApiHeaders);
 
-  const db = createDb(options);
   const apiVersion = options.apiVersion;
+  const adapter = options.adapter;
 
   const definitions = generateDefinitions(options.resourceModels);
   adjustResourceQuantity.setResources(definitions);
@@ -25,7 +24,7 @@ module.exports = function(options) {
   var resources = definitions.map(definition => new Resource({
     version: apiVersion,
     definition,
-    db
+    adapter,
   }));
 
   // Configure routes for our resources.

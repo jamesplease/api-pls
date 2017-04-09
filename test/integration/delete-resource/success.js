@@ -23,7 +23,7 @@ describe('Resource DELETE success', function() {
   });
 
   describe('when the request succeeds', () => {
-    it('should return a 204 response', async () => {
+    it.only('should return a 204 response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 10

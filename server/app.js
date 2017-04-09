@@ -11,6 +11,7 @@ const api = require('./api');
 const log = require('./util/log');
 const jsonApiMediaType = require('./util/json-api-media-type');
 const loadResourceModels = require('../lib/resource-model/load-from-disk');
+const postgresAdapter = require('../adapters/postgres');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -67,7 +68,11 @@ module.exports = function(options) {
   }, 'Successfully loaded resources from the resources directory.');
 
   // Register the API
-  app.use(api(Object.assign({}, options, {resourceModels})));
+  const apiOptions = Object.assign({}, options, {
+    adapter: new postgresAdapter(options),
+    resourceModels
+  });
+  app.use(api(apiOptions));
 
   const port = options.port;
   app.set('port', port);
