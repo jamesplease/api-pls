@@ -3,7 +3,7 @@
 const pgp = require('pg-promise');
 // Using let for these due to rewiring the tests Is that ideal? No, it stinks.
 let mapPgError = require('./map-pgp-error');
-const serverErrors = require('../../../lib/server-errors');
+const serverErrors = require('../../api-pls-utils/server-errors');
 
 // Call this when a query fails, and the response will be properly handled.
 module.exports = function({err, req, definition, crudAction, query, selfLink}) {

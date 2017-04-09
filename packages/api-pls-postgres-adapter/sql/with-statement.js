@@ -4,7 +4,7 @@ const _ = require('lodash');
 const pgp = require('pg-promise');
 const manyToManyUtil = require('./many-to-many-util');
 const sqlUtil = require('./sql-util');
-const relationshipUtil = require('../../../lib/relationship-util');
+const relationshipUtil = require('../../api-pls-utils/relationship-util');
 
 // Returns a query that aids with fetching relationship data that is stored
 // in an external table. This may be a foreign key in a host resource's table

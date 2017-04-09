@@ -7,9 +7,9 @@ const addRequestId = require('express-request-id');
 const compress = require('compression');
 const bodyParser = require('body-parser');
 const log = require('./log');
-const loadResourceModels = require('../../lib/resource-model/load-from-disk');
+const loadResourceModels = require('../api-pls-utils/resource-model/load-from-disk');
 const postgresAdapter = require('../api-pls-postgres-adapter');
-const ApiRouter = require('../../packages/api-pls-express-router');
+const ApiRouter = require('../api-pls-express-router');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 

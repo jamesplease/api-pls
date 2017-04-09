@@ -5,9 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const VError = require('verror');
-const getDb = require('../../lib/database');
-const sync = require('../../lib/sync');
 const log = require('../util/log');
+const getDb = require('../../api-pls-postgres-adapter/database');
+const sync = require('../../api-pls-postgres-adapter/sync');
 
 module.exports = function(options) {
   let confirmation;

@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const buildJsonSchema = require('./build-json-schema');
 const relationshipUtil = require('../relationship-util');
-const sqlUtil = require('../../packages/api-pls-postgres-adapter/sql/sql-util');
+const sqlUtil = require('../../api-pls-postgres-adapter/sql/sql-util');
 
 // Some of the properties of the Resource Models are objects, because that
 // minimizes the typing that a human has to do. But they are more useful to us

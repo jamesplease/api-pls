@@ -6,9 +6,9 @@ const path = require('path');
 const VError = require('verror');
 const depGraph = require('./resource-dependency-graph');
 const buildSingleMigration = require('../../sql/build-single-migration');
-const loadResourceModels = require('../../../../lib/resource-model/load-from-disk');
-const generateDefinitions = require('../../../../lib/resource-definition/generate-from-raw');
-const validateResourceModel = require('../../../../lib/resource-model/validate');
+const loadResourceModels = require('../../../api-pls-utils/resource-model/load-from-disk');
+const generateDefinitions = require('../../../api-pls-utils/resource-definition/generate-from-raw');
+const validateResourceModel = require('../../../api-pls-utils/resource-model/validate');
 
 // Returns an array of migrations to apply. Throws an Error if a migration
 // cannot be created.
