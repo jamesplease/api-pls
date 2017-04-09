@@ -2,9 +2,9 @@
 
 const _ = require('lodash');
 const qs = require('qs');
+const crud = require('../sql/crud');
 const handleQueryError = require('../util/handle-query-error');
 const formatTransaction = require('../util/format-transaction');
-const crud = require('../../../lib/sql/crud');
 const serverErrors = require('../../../lib/server-errors');
 
 module.exports = async function(req) {

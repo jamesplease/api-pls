@@ -1,7 +1,7 @@
 'use strict';
 
 const pgp = require('pg-promise');
-const relationshipUtil = require('../relationship-util');
+const relationshipUtil = require('../../../lib/relationship-util');
 
 // Given a `resource`, returns the table name for it.
 // Pass `{escaped: true}` as options to escape the table name.

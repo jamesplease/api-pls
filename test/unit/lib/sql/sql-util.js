@@ -1,4 +1,4 @@
-const sqlUtil = require('../../../../lib/sql/sql-util');
+const sqlUtil = require('../../../../packages/api-pls-postgres-adapter/sql/sql-util');
 
 describe('sqlUtil', function() {
   beforeEach(() => {
