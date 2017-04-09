@@ -3,12 +3,15 @@
 const _ = require('lodash');
 const express = require('express');
 const routeBuilder = require('express-routebuilder');
+const bodyParser = require('body-parser');
+const contentType = require('content-type');
 const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
 const generateDefinitions = require('../lib/resource-definition/generate-from-raw');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
+const jsonApiMediaType = require('./util/json-api-media-type');
 const log = require('./util/log');
 
 module.exports = function(options) {
@@ -26,6 +29,19 @@ module.exports = function(options) {
     definition,
     adapter,
   }));
+
+  // Parse bodies to JSON that have the "standard" JSON media type as well as
+  // the JSON API media type.
+  router.use(bodyParser.json({type: req => {
+    let contentTypeObj = {};
+    try {
+      contentTypeObj = contentType.parse(req);
+    } catch (e) {
+      // Intentionally blank
+    }
+    const type = contentTypeObj.type;
+    return type === 'application/json' || type === jsonApiMediaType;
+  }}));
 
   // Configure routes for our resources.
   resources.forEach(resource =>
