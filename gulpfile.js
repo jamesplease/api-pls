@@ -13,7 +13,7 @@ const $ = loadPlugins();
 // Opt in to these files so that `bin`, `node_modules`, and so on, aren't
 // picked up.
 const entry = './index.js';
-const allJsFiles = '{database,server,lib}/**/*.js';
+const allJsFiles = 'packages/!(api-pls-cli)/**/*.js';
 const testFiles = 'test/**/*.js';
 const ignoreNodeModules = '!node_modules/**/*';
 

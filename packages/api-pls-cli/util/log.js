@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('underscore');
 const chalk = require('chalk');
 const pino = require('pino');
 

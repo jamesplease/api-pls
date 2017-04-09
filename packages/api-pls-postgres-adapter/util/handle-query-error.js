@@ -6,7 +6,7 @@ let mapPgError = require('./map-pgp-error');
 const serverErrors = require('../../api-pls-utils/server-errors');
 
 // Call this when a query fails, and the response will be properly handled.
-module.exports = function({err, req, definition, crudAction, query, selfLink}) {
+module.exports = function({err, req, crudAction, query, selfLink}) {
   const pls = req.pls;
   var serverError;
 
@@ -32,7 +32,7 @@ module.exports = function({err, req, definition, crudAction, query, selfLink}) {
   }
 
   pls.log.warn({
-    resourceName: pls.  definition.name,
+    resourceName: pls.definition.name,
     reqId: req.id,
     err, crudAction, query
   }, 'There was a query error with a CRUD request.');
