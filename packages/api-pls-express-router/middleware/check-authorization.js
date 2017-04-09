@@ -1,8 +1,8 @@
 'use strict';
 
-const serverErrors = require('../../util/server-errors');
-const sendJson = require('../../util/send-json');
-const log = require('../../util/log');
+const serverErrors = require('../util/server-errors');
+const sendJson = require('../util/send-json');
+const log = require('../util/log');
 
 module.exports = function({definition, crudAction}) {
   const {isAuthorized, name} = definition;

@@ -1,10 +1,12 @@
 'use strict';
 
-const log = require('../server/util/log');
+const serverLog = require('../packages/api-pls-express-server/log');
+const routerLog = require('../packages/api-pls-express-router/util/log');
 
 // Disable logging for testing.
 if (!process.env.TEST_LOGS) {
-  log.level = 'silent';
+  serverLog.level = 'silent';
+  routerLog.level = 'silent';
 }
 
 global.TESTING = true;

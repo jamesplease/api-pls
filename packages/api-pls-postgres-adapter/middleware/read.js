@@ -2,19 +2,19 @@
 
 const _ = require('lodash');
 const qs = require('qs');
-const log = require('../../util/log');
+const handleQueryError = require('../util/handle-query-error');
+const formatTransaction = require('../util/format-transaction');
 const crud = require('../../../lib/sql/crud');
-const serverErrors = require('../../util/server-errors');
-const sendJson = require('../../util/send-json');
-const handleQueryError = require('../../util/handle-query-error');
-const formatTransaction = require('../../util/format-transaction');
+const serverErrors = require('../../../lib/server-errors');
 
-module.exports = async function(req, res) {
-  log.info({req}, 'A read request is being processed.');
+module.exports = async function(req) {
+  const pls = req.pls;
+
+  pls.log.info({req}, 'A read request is being processed.');
   const selfLink = req.originalUrl;
   const id = req.params.id;
   const isSingular = Boolean(id);
-  const pagination = this.definition.pagination;
+  const pagination = pls.definition.pagination;
   const pageNumber = Number(_.get(req.query, 'page.number', pagination.default_page_number));
   const pageSize = Number(_.get(req.query, 'page.size', pagination.default_page_size));
 
@@ -27,18 +27,19 @@ module.exports = async function(req, res) {
   }
 
   if (paginationErrors.length) {
-    res.status(serverErrors.outOfBoundsPagination.code);
-    sendJson(res, {
-      errors: paginationErrors,
-      links: {
-        self: selfLink
+    return {
+      code: serverErrors.outOfBoundsPagination.code,
+      body: {
+        errors: paginationErrors,
+        links: {
+          self: selfLink
+        }
       }
-    });
-    return;
+    };
   }
 
   // Find the fields to return
-  let fieldsToReturn = _.get(req.query, `fields.${this.definition.plural_form}`);
+  let fieldsToReturn = _.get(req.query, `fields.${pls.definition.plural_form}`);
 
   // This captures if the user specifies the parameter, but doesn't actually
   // enter a value.
@@ -53,7 +54,7 @@ module.exports = async function(req, res) {
     fieldsToReturn = fieldsToReturn
       .split(',')
       // Ensure only valid fields are specified
-      .filter(field => _.includes(_.map(this.definition.attributes, 'name'), field));
+      .filter(field => _.includes(_.map(pls.definition.attributes, 'name'), field));
   }
 
   let fieldsIsArray = Array.isArray(fieldsToReturn);
@@ -61,22 +62,23 @@ module.exports = async function(req, res) {
   // If they tried to specify fields, but none of them exist on this resource,
   // then we return an error response.
   if (fieldsIsArray && fieldsToReturn.length === 0) {
-    log.info({reqId: req.id}, 'A read request specified sparse fields, but provided no valid fields.');
-    res.status(serverErrors.noValidFields.code);
-    sendJson(res, {
-      errors: [serverErrors.noValidFields.body(this.definition.plural_form)],
-      links: {
-        self: selfLink
+    pls.log.info({reqId: req.id}, 'A read request specified sparse fields, but provided no valid fields.');
+
+    return {
+      code: serverErrors.noValidFields.code,
+      body: {
+        errors: [serverErrors.noValidFields.body(pls.definition.plural_form)],
+        links: {
+          self: selfLink
+        }
       }
-    });
-    res.end();
-    return;
+    };
   }
 
   if (fieldsIsArray) {
     // We always need the ID, as well as the meta attributes. `fields`
     // only refers to relationships and attributes.
-    fieldsToReturn = fieldsToReturn.concat('id', _.map(this.definition.meta, 'name'));
+    fieldsToReturn = fieldsToReturn.concat('id', _.map(pls.definition.meta, 'name'));
   }
 
   // Only paginate if this is a readMany, and if the resource has specified
@@ -86,9 +88,9 @@ module.exports = async function(req, res) {
   // `isSingular` is whether or not we're looking for 1
   // or all. This coercion is fine because SERIALs start at 1
   const query = crud.read({
-    definition: this.definition,
-    tableName: this.definition.tableName.raw,
-    db: this.db,
+    definition: pls.definition,
+    tableName: pls.definition.tableName.raw,
+    db: pls.adapter.db,
     fields: fieldsToReturn,
     pageSize,
     pageNumber,
@@ -98,16 +100,16 @@ module.exports = async function(req, res) {
   });
   const method = isSingular ? 'one' : 'any';
 
-  log.info({query, resourceName: this.definition.name, reqId: req.id}, 'Reading a resource');
+  pls.log.info({query, resourceName: pls.definition.name, reqId: req.id}, 'Reading a resource');
 
-  const result = await this.db[method](query).catch(r => r);
+  const result = await pls.adapter.db[method](query).catch(r => r);
 
   const crudAction = isSingular ? 'readOne' : 'readMany';
   if (_.isError(result)) {
     return handleQueryError({
       err: result,
-      definition: this.definition,
-      req, res, crudAction, query, selfLink,
+      definition: pls.definition,
+      req, crudAction, query, selfLink,
     });
   }
 
@@ -127,28 +129,28 @@ module.exports = async function(req, res) {
   }
 
   else {
-    log.info({reqId: req.id}, 'No results returned on a paginated read many.');
+    pls.log.info({reqId: req.id}, 'No results returned on a paginated read many.');
 
     const readOneAttempt = crud.read({
-      definition: this.definition,
-      db: this.db,
+      definition: pls.definition,
+      db: pls.adapter.db,
       pageSize: 1,
       pageNumber: 1,
       enablePagination,
       req
     });
 
-    log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
-    const followUpResult = await this.db.oneOrNone(readOneAttempt).catch(r => r);
+    pls.log.info({reqId: req.id, query}, 'Follow-up paginated read many query.');
+    const followUpResult = await pls.adapter.db.oneOrNone(readOneAttempt).catch(r => r);
     if (_.isError(followUpResult)) {
       return handleQueryError({
         err: followUpResult,
-        definition: this.definition,
-        req, res, crudAction, query, selfLink,
+        definition: pls.definition,
+        req, crudAction, query, selfLink,
       });
     }
 
-    log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
+    pls.log.info({reqId: req.id}, 'Successful follow-up paginated read many query.');
     const totalCount = followUpResult ? followUpResult.total_count : 0;
     val = {result: [], totalCount};
   }
@@ -157,9 +159,9 @@ module.exports = async function(req, res) {
   let formattedResult;
   let totalCount = val.totalCount;
   if (isSingular) {
-    formattedResult = formatTransaction(newResult, this.definition, this.version);
+    formattedResult = formatTransaction(newResult, pls.definition, pls.version, pls.adjustResourceQuantity);
   } else {
-    formattedResult = _.map(newResult, t => formatTransaction(t, this.definition, this.version));
+    formattedResult = _.map(newResult, t => formatTransaction(t, pls.definition, pls.version, pls.adjustResourceQuantity));
   }
 
   const dataToSend = {
@@ -228,6 +230,8 @@ module.exports = async function(req, res) {
     };
   }
 
-  log.info({reqId: req.id}, 'Read a resource');
-  sendJson(res, dataToSend);
+  pls.log.info({reqId: req.id}, 'Read a resource');
+  return {
+    body: dataToSend
+  };
 };

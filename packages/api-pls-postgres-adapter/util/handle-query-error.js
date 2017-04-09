@@ -1,14 +1,13 @@
 'use strict';
 
 const pgp = require('pg-promise');
-const log = require('./log');
-const serverErrors = require('./server-errors');
 // Using let for these due to rewiring the tests Is that ideal? No, it stinks.
 let mapPgError = require('./map-pgp-error');
-let sendJson = require('./send-json');
+const serverErrors = require('../../../lib/server-errors');
 
 // Call this when a query fails, and the response will be properly handled.
-module.exports = function({err, req, res, definition, crudAction, query, selfLink}) {
+module.exports = function({err, req, definition, crudAction, query, selfLink}) {
+  const pls = req.pls;
   var serverError;
 
   // First, check to see if it's a pgp QueryResultError. If it
@@ -32,11 +31,14 @@ module.exports = function({err, req, res, definition, crudAction, query, selfLin
     };
   }
 
-  log.warn({
-    resourceName: definition.name,
+  pls.log.warn({
+    resourceName: pls.  definition.name,
     reqId: req.id,
     err, crudAction, query
   }, 'There was a query error with a CRUD request.');
-  res.status(serverError.code);
-  sendJson(res, dataToSend);
+
+  return {
+    code: serverError.code,
+    body: dataToSend
+  };
 };

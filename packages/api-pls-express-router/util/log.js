@@ -18,7 +18,7 @@ function reqSerializer(req) {
 }
 
 const log = pino({
-  name: 'api-pls',
+  name: 'api-pls-router',
   serializers: Object.assign({}, pino.stdSerializers, {
     req: reqSerializer,
     definition: definitionSerializer

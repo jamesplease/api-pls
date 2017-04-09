@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const pgp = require('pg-promise');
-const serverErrors = require('./server-errors');
+const serverErrors = require('../../../lib/server-errors');
 
 const queryErrorCode = pgp.errors.queryResultErrorCode;
 

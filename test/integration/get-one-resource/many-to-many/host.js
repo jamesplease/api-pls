@@ -1,6 +1,6 @@
 const path = require('path');
 const request = require('supertest');
-const app = require('../../../../server/app');
+const app = require('../../../../packages/api-pls-express-server/app');
 const getDb = require('../../../../lib/database');
 const wipeDatabase = require('../../../../lib/database/wipe');
 const validators = require('../../../helpers/json-api-validators');

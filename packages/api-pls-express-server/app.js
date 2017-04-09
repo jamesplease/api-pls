@@ -4,13 +4,12 @@ const helmet = require('helmet');
 const cors = require('cors');
 const express = require('express');
 const addRequestId = require('express-request-id');
-const contentType = require('content-type');
 const compress = require('compression');
 const bodyParser = require('body-parser');
-const api = require('./api');
-const log = require('./util/log');
-const jsonApiMediaType = require('./util/json-api-media-type');
-const loadResourceModels = require('../lib/resource-model/load-from-disk');
+const log = require('./log');
+const loadResourceModels = require('../../lib/resource-model/load-from-disk');
+const postgresAdapter = require('../api-pls-postgres-adapter');
+const ApiRouter = require('../../packages/api-pls-express-router');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -30,19 +29,6 @@ module.exports = function(options) {
     hsts: false,
     noCache: {}
   }));
-
-  // Parse bodies to JSON that have the "standard" JSON media type as well as
-  // the JSON API media type.
-  app.use(bodyParser.json({type: req => {
-    let contentTypeObj = {};
-    try {
-      contentTypeObj = contentType.parse(req);
-    } catch (e) {
-      // Intentionally blank
-    }
-    const type = contentTypeObj.type;
-    return type === 'application/json' || type === jsonApiMediaType;
-  }}));
 
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(compress());
@@ -67,7 +53,12 @@ module.exports = function(options) {
   }, 'Successfully loaded resources from the resources directory.');
 
   // Register the API
-  app.use(api(Object.assign({}, options, {resourceModels})));
+  const routerOptions = Object.assign({}, options, {
+    adapter: new postgresAdapter(options),
+    resourceModels
+  });
+
+  app.use(ApiRouter(routerOptions));
 
   const port = options.port;
   app.set('port', port);
