@@ -81,7 +81,7 @@ module.exports = async function(req) {
       Location: createdLink
     },
     body: {
-      data: formatTransaction(primaryTableResult, pls.definition, this.version),
+      data: formatTransaction(primaryTableResult, pls.definition, pls.version),
       links: {
         self: createdLink
       }

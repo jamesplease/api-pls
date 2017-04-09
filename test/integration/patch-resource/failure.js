@@ -23,7 +23,7 @@ describe('Resource PATCH failure', function() {
   });
 
   describe('when the resource does not exist', () => {
-    it('should return a Not Found error response', async () => {
+    it.only('should return a Not Found error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'empty-resources'),
         apiVersion: 2
@@ -50,7 +50,7 @@ describe('Resource PATCH failure', function() {
   });
 
   describe('attempting to PATCH an entire list of resources', () => {
-    it('should return a Method Not Allowed error response', async () => {
+    it.only('should return a Method Not Allowed error response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: '1.5'
@@ -77,7 +77,7 @@ describe('Resource PATCH failure', function() {
   });
 
   describe('when the ID in the body does not match the url', () => {
-    it('should return a Bad Request response', async () => {
+    it.only('should return a Bad Request response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
@@ -120,7 +120,7 @@ describe('Resource PATCH failure', function() {
   });
 
   describe('when the request tries to null non-nullable meta', () => {
-    it('should return a Bad Request response', async () => {
+    it.only('should return a Bad Request response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1
@@ -164,7 +164,7 @@ describe('Resource PATCH failure', function() {
   });
 
   describe('when the request does not have a "data" property', () => {
-    it('should return a Bad Request response', async () => {
+    it.only('should return a Bad Request response', async () => {
       const options = {
         resourcesDirectory: path.join(fixturesDirectory, 'kitchen-sink'),
         apiVersion: 1

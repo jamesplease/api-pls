@@ -33,7 +33,7 @@ module.exports = function({version, definition, controller, adapter}) {
     configureRequest,
     checkAuthorization({definition, crudAction: 'update'}),
     validator(validations.update),
-    controller.update
+    crud('update')
   ];
   const deleteMiddleware = !actions.delete ? notAllowed : [
     configureRequest,
