@@ -1,4 +1,4 @@
-const sendJson = require('../../../../server/util/send-json');
+const sendJson = require('../../../../packages/api-pls-express-router/util/send-json');
 
 describe('sendJson', function() {
   beforeEach(() => {

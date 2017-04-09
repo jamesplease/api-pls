@@ -1,4 +1,4 @@
-const adjustResourceQuantity = require('../../../../server/util/adjust-resource-quantity');
+const adjustResourceQuantity = require('../../../../packages/api-pls-express-router/util/adjust-resource-quantity');
 
 adjustResourceQuantity.setResources([
   {name: 'cat', plural_form: 'cats'},

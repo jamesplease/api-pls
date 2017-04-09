@@ -1,4 +1,4 @@
-const requestErrorMap = require('../../../../server/util/bad-request-map');
+const requestErrorMap = require('../../../../packages/api-pls-express-router/util/bad-request-map');
 
 describe('requestErrorMap', function() {
   describe('when passing in nothing', () => {

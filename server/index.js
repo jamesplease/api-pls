@@ -1,7 +1,7 @@
 'use strict';
 
 const app = require('./app');
-const log = require('./util/log');
+const log = require('./log');
 
 module.exports = function(options) {
   if (options.silent) {

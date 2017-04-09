@@ -9,10 +9,10 @@ const Resource = require('./resource');
 const serverErrors = require('./util/server-errors');
 const sendJson = require('./util/send-json');
 const jsonApiHeaders = require('./util/json-api-headers');
-const generateDefinitions = require('../lib/resource-definition/generate-from-raw');
 const adjustResourceQuantity = require('./util/adjust-resource-quantity');
 const jsonApiMediaType = require('./util/json-api-media-type');
 const log = require('./util/log');
+const generateDefinitions = require('../../lib/resource-definition/generate-from-raw');
 
 module.exports = function(options) {
   const router = express.Router();

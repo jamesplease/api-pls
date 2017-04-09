@@ -6,10 +6,10 @@ const express = require('express');
 const addRequestId = require('express-request-id');
 const compress = require('compression');
 const bodyParser = require('body-parser');
-const api = require('./api');
-const log = require('./util/log');
+const log = require('./log');
 const loadResourceModels = require('../lib/resource-model/load-from-disk');
 const postgresAdapter = require('../adapters/postgres');
+const ApiRouter = require('../packages/api-pls-express-router');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -53,11 +53,12 @@ module.exports = function(options) {
   }, 'Successfully loaded resources from the resources directory.');
 
   // Register the API
-  const apiOptions = Object.assign({}, options, {
+  const routerOptions = Object.assign({}, options, {
     adapter: new postgresAdapter(options),
     resourceModels
   });
-  app.use(api(apiOptions));
+
+  app.use(ApiRouter(routerOptions));
 
   const port = options.port;
   app.set('port', port);
