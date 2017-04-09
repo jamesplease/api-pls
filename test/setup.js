@@ -1,6 +1,6 @@
 'use strict';
 
-const serverLog = require('../server/log');
+const serverLog = require('../packages/api-pls-express-server/log');
 const routerLog = require('../packages/api-pls-express-router/util/log');
 
 // Disable logging for testing.
