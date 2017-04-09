@@ -1,7 +1,7 @@
 'use strict';
 
-const log = require('../../util/log');
-const adjustResourceQuantity = require('../../util/adjust-resource-quantity');
+const log = require('../util/log');
+const adjustResourceQuantity = require('../util/adjust-resource-quantity');
 
 // This sets some data on the `req` Object under the `pls` key, so that
 // later middlewares can use this data.
